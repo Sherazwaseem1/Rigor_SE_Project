@@ -14,3 +14,6 @@ export const connectDB = async () => {
     process.exit(1);
   }
 };
+
+
+// Demo of branches 
