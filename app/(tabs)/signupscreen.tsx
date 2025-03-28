@@ -1,6 +1,8 @@
 import { router } from 'expo-router';
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SvgUri } from 'react-native-svg';
@@ -54,83 +56,92 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    paddingHorizontal: screenWidth * 0.05,
+    paddingTop: screenHeight * 0.05,
   },
   backButton: {
     position: 'absolute',
-    top: 40,
-    left: 20,
+    top: Math.max(screenHeight * 0.05, 20),
+    left: screenWidth * 0.05,
     zIndex: 1,
-    padding: 10,
+    padding: Math.min(screenWidth * 0.025, 15),
   },
   backButtonContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   backButtonText: {
-    fontSize: 24,
+    fontSize: Math.min(screenWidth * 0.045, 20),
     color: '#333',
-    marginRight: 4,
+    marginRight: screenWidth * 0.01,
   },
   backButtonLabel: {
-    fontSize: 16,
+    fontSize: Math.min(screenWidth * 0.04, 16),
     color: '#333',
   },
   logoContainer: {
+    flex: 1,
     alignItems: 'center',
-    marginTop: 200,
-    marginBottom: 40,
+    justifyContent: 'center',
+    marginTop: Math.min(screenHeight * 0.15, 120),
+    marginBottom: screenHeight * 0.02,
   },
   logo: {
-    width: 380,
-    height: 250,
+    width: Math.min(screenWidth * 0.8, 300),
+    height: Math.min(screenWidth * 0.8 * 0.6, 180),
+    resizeMode: 'contain',
   },
   welcomeText: {
-    fontSize: 24,
+    fontSize: Math.min(screenWidth * 0.06, 24),
     fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: screenHeight * 0.01,
     color: '#333',
   },
   subtitleText: {
-    fontSize: 16,
+    fontSize: Math.min(screenWidth * 0.04, 16),
     color: '#666',
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: screenHeight * 0.03,
   },
   buttonContainer: {
     width: '100%',
-    gap: 20,
-    marginTop: 150,
+    gap: Math.min(screenHeight * 0.02, 15),
+    marginTop: 'auto',
+    marginBottom: screenHeight * 0.05,
     alignItems: 'center',
+    paddingHorizontal: screenWidth * 0.05,
   },
   gmailButton: {
     backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 8,
+    padding: Math.min(screenWidth * 0.04, 16),
+    borderRadius: Math.min(screenWidth * 0.02, 8),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     borderWidth: 1,
     borderColor: '#ddd',
+    minHeight: 48,
   },
   gmailLogo: {
-    width: 24,
-    height: 24,
-    marginRight: 10,
+    width: Math.min(screenWidth * 0.06, 24),
+    height: Math.min(screenWidth * 0.06, 24),
+    marginRight: screenWidth * 0.025,
   },
   gmailButtonText: {
     color: '#333',
-    fontSize: 16,
+    fontSize: Math.min(screenWidth * 0.04, 16),
     fontWeight: '500',
   },
   signInLink: {
-    padding: 10,
+    padding: Math.min(screenWidth * 0.025, 12),
+    minHeight: 44,
+    justifyContent: 'center',
   },
   signInText: {
     color: '#1a237e',
-    fontSize: 14,
+    fontSize: Math.min(screenWidth * 0.035, 14),
     textDecorationLine: 'underline',
   },
 });
