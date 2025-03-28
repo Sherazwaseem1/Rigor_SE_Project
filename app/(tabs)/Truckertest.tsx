@@ -23,7 +23,6 @@ const TruckersScreen = () => {
   const loadTruckers = async () => {
     try {
       const data = await getTruckers();
-      console.log("Fetched Truckers:", data); // Debugging
       setTruckers(data);
     } catch (error) {
       console.error("Failed to load truckers:", error);
