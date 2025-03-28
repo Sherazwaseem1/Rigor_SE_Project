@@ -1,21 +1,30 @@
 import { router } from 'expo-router';
 import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { SvgUri } from 'react-native-svg';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 
 export default function SignupScreen() {
   return (
     <ThemedView style={styles.container}>
+      <TouchableOpacity 
+        style={styles.backButton}
+        onPress={() => router.back()}
+      >
+        <View style={styles.backButtonContent}>
+          <IconSymbol size={24} name="chevron.left" color="#333" />
+          <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
+        </View>
+      </TouchableOpacity>
       <View style={styles.logoContainer}>
         <Image
-          source={require('../../assets/images/truck-illustration.svg')}
-          style={styles.logo}
-          resizeMode="contain"
+          source={require('../../assets/images/truck.png')}
         />
       </View>
       
-      <ThemedText style={styles.welcomeText} type="title">Join Rigor</ThemedText>
+      {/* <ThemedText style={styles.welcomeText} type="title">Join Rigor</ThemedText> */}
       <ThemedText style={styles.subtitleText}>Have a better trucking experience</ThemedText>
 
       <View style={styles.buttonContainer}>
@@ -24,11 +33,10 @@ export default function SignupScreen() {
           onPress={() => router.push('/(tabs)')}
         >
           <Image
-            source={require('../../assets/images/gmail-logo.svg')}
+            source={require('../../assets/images/search.png')}
             style={styles.gmailLogo}
-            resizeMode="contain"
           />
-          <ThemedText style={styles.gmailButtonText}>Sign up with Gmail</ThemedText>
+          <ThemedText style={styles.gmailButtonText}>Sign up with Google</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity 
@@ -48,9 +56,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
   },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    zIndex: 1,
+    padding: 10,
+  },
+  backButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButtonText: {
+    fontSize: 24,
+    color: '#333',
+    marginRight: 4,
+  },
+  backButtonLabel: {
+    fontSize: 16,
+    color: '#333',
+  },
   logoContainer: {
     alignItems: 'center',
-    marginTop: 60,
+    marginTop: 200,
     marginBottom: 40,
   },
   logo: {
