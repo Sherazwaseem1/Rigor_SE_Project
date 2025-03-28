@@ -83,11 +83,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: Math.min(SCREEN_HEIGHT * 0.05, 20),
     marginBottom: Math.min(SCREEN_HEIGHT * 0.01, 8),
-    color: '#333',
+    color: '#202545',
   },
   subtitleText: {
     fontSize: normalize(16),
-    color: '#666',
+    color: '#7F9FB4',
     textAlign: 'center',
     marginBottom: Math.min(SCREEN_HEIGHT * 0.04, 32),
   },
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     marginTop: Math.min(SCREEN_HEIGHT * 0.4, 200),
   },
   createAccountButton: {
-    backgroundColor: '#1a237e',
+    backgroundColor: '#202545',
     padding: Math.min(SCREEN_HEIGHT * 0.02, 16),
     borderRadius: 8,
     alignItems: 'center',
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loginButtonText: {
-    color: '#1a237e',
+    color: '#202545',
     fontSize: normalize(16),
     fontWeight: '600',
   },
