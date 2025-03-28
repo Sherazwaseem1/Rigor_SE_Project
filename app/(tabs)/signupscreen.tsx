@@ -45,7 +45,10 @@ export default function SignupScreen() {
           style={styles.signInLink}
           onPress={() => router.push('/(tabs)')}
         >
-          <ThemedText style={styles.signInText}>Already have an account? Sign in</ThemedText>
+          <View style={styles.signInTextContainer}>
+            <ThemedText style={styles.signInQuestion}>Already have an account?</ThemedText>
+            <ThemedText style={styles.signInText}> Sign in</ThemedText>
+          </View>
         </TouchableOpacity>
       </View>
     </ThemedView>
@@ -78,6 +81,7 @@ const styles = StyleSheet.create({
   backButtonLabel: {
     fontSize: Math.min(screenWidth * 0.04, 16),
     color: '#333',
+    marginBottom: screenHeight * 0.004,
   },
   logoContainer: {
     flex: 1,
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
   },
   subtitleText: {
     fontSize: Math.min(screenWidth * 0.04, 16),
-    color: '#666',
+    color: '#7F9FB4',
     textAlign: 'center',
     marginBottom: screenHeight * 0.03,
   },
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
     marginRight: screenWidth * 0.025,
   },
   gmailButtonText: {
-    color: '#333',
+    color: '#202545',
     fontSize: Math.min(screenWidth * 0.04, 16),
     fontWeight: '500',
   },
@@ -139,9 +143,23 @@ const styles = StyleSheet.create({
     minHeight: 44,
     justifyContent: 'center',
   },
+  signInTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  signInQuestion: {
+    color: '#202545',
+    fontSize: Math.min(screenWidth * 0.035, 14),
+  },
   signInText: {
-    color: '#1a237e',
+    color: '#7F9FB4',
     fontSize: Math.min(screenWidth * 0.035, 14),
     textDecorationLine: 'underline',
+  },
+  signInLink: {
+    padding: Math.min(screenWidth * 0.025, 12),
+    minHeight: 44,
+    justifyContent: 'center',
   },
 });
