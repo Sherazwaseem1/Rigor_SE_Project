@@ -24,10 +24,10 @@ export default function SignupScreen() {
         <Image
           source={require('../../assets/images/truck.png')}
         />
+      <ThemedText style={styles.subtitleText}>Have a better trucking experience</ThemedText>
       </View>
       
       {/* <ThemedText style={styles.welcomeText} type="title">Join Rigor</ThemedText> */}
-      <ThemedText style={styles.subtitleText}>Have a better trucking experience</ThemedText>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: Math.min(screenHeight * 0.15, 120),
-    marginBottom: screenHeight * 0.02,
+    marginBottom: screenHeight * 0.2,
   },
   logo: {
     width: Math.min(screenWidth * 0.8, 300),
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: Math.min(screenHeight * 0.02, 15),
     marginTop: 'auto',
-    marginBottom: screenHeight * 0.05,
+    marginBottom: screenHeight * 0.1,
     alignItems: 'center',
     paddingHorizontal: screenWidth * 0.05,
   },
