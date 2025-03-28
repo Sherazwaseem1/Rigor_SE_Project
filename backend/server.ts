@@ -3,15 +3,22 @@ dotenv.config();
 
 import express, { Request, Response } from "express";
 import cors from "cors";
-import connectDB from "./db"; // Fix: Ensure connectDB is the default export
+import connectDB from "./db"; 
 
-// Importing models
 import Admin from "./models/admin";
 import Trucker from "./models/trucker";
 import Truck from "./models/truck";
 import Trip from "./models/trip";
 import Reimbursement from "./models/reimbursement";
 import Location from "./models/location";
+import truckerRoutes from "./routes/truckerRoutes"; 
+import adminRoutes from "./routes/adminRoutes";
+import reimbursementRoutes from "./routes/reimbursementRoutes";
+import tripRoutes from "./routes/tripRoutes";
+import truckRoutes from "./routes/truckRoutes";
+import locationRoutes from "./routes/locationRoutes"; 
+
+
 
 const app = express();
 app.use(express.json());
@@ -83,6 +90,17 @@ app.get("/admins", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error fetching admins" });
   }
 });
+
+
+// CRUD OPERATIONS Routes
+app.use("/api/truckers", truckerRoutes);
+app.use("/api/admins", adminRoutes);
+app.use("/api/reimbursements", reimbursementRoutes);
+app.use("/api/trips", tripRoutes);
+app.use("/api/trucks", truckRoutes);
+app.use("/api/locations", locationRoutes); 
+
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

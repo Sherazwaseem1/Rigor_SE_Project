@@ -5,8 +5,10 @@
     "outDir": "./dist",
     "rootDir": "./backend",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+
   },
   "include": ["backend"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }
