@@ -100,7 +100,5 @@ app.use("/api/trips", tripRoutes);
 app.use("/api/trucks", truckRoutes);
 app.use("/api/locations", locationRoutes); 
 
-
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
