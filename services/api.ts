@@ -2,6 +2,10 @@ import axios from "axios";
 import { Platform } from "react-native";
 
 // const API_URL = "http://localhost:5000/api"; // Change this if using a physical device
+
+// Change the IP below according to your network setup (Laptop + mobile => Same network)
+// ipconfig => Wi-Fi => IPv4 Address => pconfig => Wi-Fi => IPv4 Address => IP_ADDRESS66 => Laptop
+
 const API_URL = Platform.OS === "web" 
   ? "http://localhost:5000/api" 
   : "http://10.130.81.166:5000/api"; // Mobile devices use the laptop's IP
