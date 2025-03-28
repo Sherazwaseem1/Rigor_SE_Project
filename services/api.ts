@@ -1,18 +1,28 @@
 import axios from "axios";
 import { Platform } from "react-native";
 
-// const API_URL = "http://localhost:5000/api"; // Change this if using a physical device
+// ✅ Set API URL based on platform (change IP if needed)
+const API_URL =
+  Platform.OS === "web"
+    ? "http://localhost:5000/api"
+    : "http://10.130.81.166:5000/api"; // Replace with your IPv4 if necessary
 
-// Change the IP below according to your network setup (Laptop + mobile => Same network)
-// ipconfig => Wi-Fi => IPv4 Address => pconfig => Wi-Fi => IPv4 Address => IP_ADDRESS66 => Laptop
+// ✅ Define Trucker Interface
+export interface Trucker {
+  trucker_id: number;
+  name: string;
+  phone_number: string;
+  email: string;
+  rating: number;
+  status: string;
+  age: number;
+  gender: string;
+}
 
-const API_URL = Platform.OS === "web" 
-  ? "http://localhost:5000/api" 
-  : "http://10.130.81.166:5000/api"; // Mobile devices use the laptop's IP
-
-export const getTruckers = async () => {
+// ✅ Fetch all truckers
+export const getTruckers = async (): Promise<Trucker[]> => {
   try {
-    const response = await axios.get(`${API_URL}/truckers`);
+    const response = await axios.get<Trucker[]>(`${API_URL}/truckers`);
     return response.data;
   } catch (error) {
     console.error("Error fetching truckers:", error);
@@ -20,12 +30,47 @@ export const getTruckers = async () => {
   }
 };
 
-export const addTrucker = async (truckerData: object) => {
+// ✅ Fetch a single trucker by ID
+export const getTruckerById = async (truckerId: number): Promise<Trucker> => {
   try {
-    const response = await axios.post(`${API_URL}/truckers`, truckerData);
+    const response = await axios.get<Trucker>(`${API_URL}/truckers/${truckerId}`); // ✅ Fix: Correct endpoint
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching trucker with ID ${truckerId}:`, error);
+    throw error;
+  }
+};
+
+
+// ✅ Add a new trucker
+export const addTrucker = async (truckerData: Omit<Trucker, "trucker_id">): Promise<Trucker> => {
+  try {
+    const response = await axios.post<Trucker>(`${API_URL}/truckers`, truckerData);
     return response.data;
   } catch (error) {
     console.error("Error adding trucker:", error);
+    throw error;
+  }
+};
+
+// ✅ Update an existing trucker by ID
+export const updateTrucker = async (truckerId: number, truckerData: Partial<Trucker>): Promise<Trucker> => {
+  try {
+    const response = await axios.put<Trucker>(`${API_URL}/truckers/${truckerId}`, truckerData);
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating trucker with ID ${truckerId}:`, error);
+    throw error;
+  }
+};
+
+// ✅ Delete a trucker by ID
+export const deleteTrucker = async (truckerId: number): Promise<{ message: string }> => {
+  try {
+    await axios.delete(`${API_URL}/truckers/${truckerId}`);
+    return { message: "Trucker deleted successfully" };
+  } catch (error) {
+    console.error(`Error deleting trucker with ID ${truckerId}:`, error);
     throw error;
   }
 };

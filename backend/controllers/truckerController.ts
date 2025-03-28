@@ -24,16 +24,18 @@ export const getAllTruckers = async (req: Request, res: Response) => {
 
 // 🟣 Get a single trucker by ID
 export const getTruckerById = async (req: Request, res: Response) => {
-    try {
-      const trucker = await Trucker.findById(req.params.id);
+  try {
+      const trucker = await Trucker.findOne({ trucker_id: Number(req.params.id) }); 
       if (!trucker) {
-         res.status(404).json({ error: "Trucker not found" });
+          res.status(404).json({ error: "Trucker not found" });
       }
-       res.status(200).json(trucker); // ✅ Explicit return
-    } catch (error) {
-       res.status(500).json({ error: "Error fetching trucker", details: error });
-    }
-  };
+      res.status(200).json(trucker);
+  } catch (error) {
+      console.error("Error fetching trucker:", error);
+      res.status(500).json({ error: "Error fetching trucker", details: error });
+  }
+};
+
   
   // 🟠 Update a trucker
   export const updateTrucker = async (req: Request, res: Response) => {
