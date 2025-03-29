@@ -6,7 +6,7 @@ interface ITruck extends Document {
     license_plate: string;
     chassis_number: string;
     capacity: number;
-    assigned_trucker_id?: mongoose.Types.ObjectId;
+    assigned_trucker_id?: number;  // ✅ Change from ObjectId to Number
 }
 
 // Define Mongoose schema
@@ -15,7 +15,7 @@ const TruckSchema = new Schema<ITruck>({
     license_plate: { type: String, required: true },
     chassis_number: { type: String, required: true },
     capacity: { type: Number, required: true },
-    assigned_trucker_id: { type: mongoose.Schema.Types.ObjectId, ref: "Trucker" }
+    assigned_trucker_id: { type: Number, ref: "Trucker" } 
 });
 
 // Export model
