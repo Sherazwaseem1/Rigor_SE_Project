@@ -108,9 +108,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: Math.min(Math.max(screenWidth * 0.035, 14), 15),
-    color: '#666',
+    color: '#202545',
     marginBottom: Math.max(screenHeight * 0.008, 6),
-    fontWeight: '500',
+    fontWeight: '700',
   },
   value: {
     fontSize: Math.min(Math.max(screenWidth * 0.038, 15), 17),
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     marginRight: Math.max(screenWidth * 0.008, 4),
   },
   ridesButton: {
-    backgroundColor: '#B0C4DE',
+    backgroundColor: '#7F9FB4',
     paddingVertical: Math.max(screenHeight * 0.015, 12),
     borderRadius: Math.min(Math.max(screenWidth * 0.02, 8), 12),
     alignItems: 'center',
@@ -140,9 +140,9 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   ridesButtonText: {
-    color: '#000',
+    color: '#202545',
     fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });
 
