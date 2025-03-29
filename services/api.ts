@@ -7,7 +7,6 @@ const API_URL =
     ? "http://localhost:5000/api"
     : "http://10.130.81.166:5000/api"; // Replace with your IPv4 if necessary
 
-// ✅ Define Trucker Interface
 export interface Trucker {
   trucker_id: number;
   name: string;
@@ -19,58 +18,264 @@ export interface Trucker {
   gender: string;
 }
 
-// ✅ Fetch all truckers
-export const getTruckers = async (): Promise<Trucker[]> => {
-  try {
-    const response = await axios.get<Trucker[]>(`${API_URL}/truckers`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching truckers:", error);
-    throw error;
-  }
+// ✅ Trucker APIs
+export const getAllTruckers = async (): Promise<Trucker[]> => {
+  const response = await axios.get<Trucker[]>(`${API_URL}/truckers`);
+  return response.data;
 };
 
-// ✅ Fetch a single trucker by ID
-export const getTruckerById = async (truckerId: number): Promise<Trucker> => {
-  try {
-    const response = await axios.get<Trucker>(`${API_URL}/truckers/${truckerId}`); // ✅ Fix: Correct endpoint
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching trucker with ID ${truckerId}:`, error);
-    throw error;
-  }
+export const getTruckerById = async (id: number): Promise<Trucker> => {
+  const response = await axios.get<Trucker>(`${API_URL}/truckers/${id}`);
+  return response.data;
 };
 
-
-// ✅ Add a new trucker
-export const addTrucker = async (truckerData: Omit<Trucker, "trucker_id">): Promise<Trucker> => {
-  try {
-    const response = await axios.post<Trucker>(`${API_URL}/truckers`, truckerData);
-    return response.data;
-  } catch (error) {
-    console.error("Error adding trucker:", error);
-    throw error;
-  }
+export const getTruckerByEmail = async (email: string): Promise<Trucker> => {
+  const response = await axios.get<Trucker>(
+    `${API_URL}/truckers/email/${email}`
+  );
+  return response.data;
 };
 
-// ✅ Update an existing trucker by ID
-export const updateTrucker = async (truckerId: number, truckerData: Partial<Trucker>): Promise<Trucker> => {
-  try {
-    const response = await axios.put<Trucker>(`${API_URL}/truckers/${truckerId}`, truckerData);
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating trucker with ID ${truckerId}:`, error);
-    throw error;
-  }
+export const createTrucker = async (truckerData: Trucker): Promise<Trucker> => {
+  const response = await axios.post<Trucker>(
+    `${API_URL}/truckers`,
+    truckerData
+  );
+  return response.data;
 };
 
-// ✅ Delete a trucker by ID
-export const deleteTrucker = async (truckerId: number): Promise<{ message: string }> => {
-  try {
-    await axios.delete(`${API_URL}/truckers/${truckerId}`);
-    return { message: "Trucker deleted successfully" };
-  } catch (error) {
-    console.error(`Error deleting trucker with ID ${truckerId}:`, error);
-    throw error;
-  }
+export const updateTrucker = async (
+  id: number,
+  truckerData: Partial<Trucker>
+): Promise<Trucker> => {
+  const response = await axios.put<Trucker>(
+    `${API_URL}/truckers/${id}`,
+    truckerData
+  );
+  return response.data;
+};
+
+export const deleteTrucker = async (
+  id: number
+): Promise<{ message: string }> => {
+  const response = await axios.delete<{ message: string }>(
+    `${API_URL}/truckers/${id}`
+  );
+  return response.data;
+};
+
+// ✅ Define TypeScript interfaces
+export interface Admin {
+  admin_id: number;
+  name: string;
+  email: string;
+  phone: string;
+}
+
+// ✅ Admin APIs
+export const getAllAdmins = async (): Promise<Admin[]> => {
+  const response = await axios.get<Admin[]>(`${API_URL}/admins`);
+  return response.data;
+};
+
+export const getAdminById = async (id: number): Promise<Admin> => {
+  const response = await axios.get<Admin>(`${API_URL}/admins/${id}`);
+  return response.data;
+};
+
+export const createAdmin = async (adminData: Admin): Promise<Admin> => {
+  const response = await axios.post<Admin>(`${API_URL}/admins`, adminData);
+  return response.data;
+};
+
+export const updateAdmin = async (
+  id: number,
+  adminData: Partial<Admin>
+): Promise<Admin> => {
+  const response = await axios.put<Admin>(`${API_URL}/admins/${id}`, adminData);
+  return response.data;
+};
+
+export const deleteAdmin = async (id: number): Promise<{ message: string }> => {
+  const response = await axios.delete<{ message: string }>(
+    `${API_URL}/admins/${id}`
+  );
+  return response.data;
+};
+
+export const getAdminByEmail = async (email: string): Promise<Admin> => {
+  const response = await axios.get<Admin>(`${API_URL}/admins/email/${email}`);
+  return response.data;
+};
+
+// ✅ Define TypeScript Interface for Location
+export interface Location {
+  location_id: number;
+  trip_id: number; // Now a number instead of ObjectId
+  latitude: number;
+  longitude: number;
+  timestamp: Date;
+}
+
+// ✅ Location APIs
+export const getAllLocations = async (): Promise<Location[]> => {
+  const response = await axios.get<Location[]>(`${API_URL}/locations`);
+  return response.data;
+};
+
+export const getLocationById = async (id: number): Promise<Location> => {
+  const response = await axios.get<Location>(`${API_URL}/locations/${id}`);
+  return response.data;
+};
+
+export const createLocation = async (
+  locationData: Location
+): Promise<Location> => {
+  const response = await axios.post<Location>(
+    `${API_URL}/locations`,
+    locationData
+  );
+  return response.data;
+};
+
+export const updateLocation = async (
+  id: number,
+  locationData: Partial<Location>
+): Promise<Location> => {
+  const response = await axios.put<Location>(
+    `${API_URL}/locations/${id}`,
+    locationData
+  );
+  return response.data;
+};
+
+export const deleteLocation = async (
+  id: number
+): Promise<{ message: string }> => {
+  const response = await axios.delete<{ message: string }>(
+    `${API_URL}/locations/${id}`
+  );
+  return response.data;
+};
+
+export interface Reimbursement {
+  reimbursement_id: number;
+  trip_id: number; // Now a number instead of ObjectId
+  amount: string; // Decimal128 is stored as string in JSON
+  receipt_url: string;
+  status: string;
+  comments?: string;
+  admin_id: number; // Now a number instead of ObjectId
+}
+
+// ✅ Reimbursement APIs
+export const getAllReimbursements = async (): Promise<Reimbursement[]> => {
+  const response = await axios.get<Reimbursement[]>(
+    `${API_URL}/reimbursements`
+  );
+  return response.data;
+};
+
+export const createReimbursement = async (
+  reimbursementData: Reimbursement
+): Promise<Reimbursement> => {
+  const response = await axios.post<Reimbursement>(
+    `${API_URL}/reimbursements`,
+    reimbursementData
+  );
+  return response.data;
+};
+
+export const getReimbursementsByTripId = async (
+  trip_id: number
+): Promise<Reimbursement[]> => {
+  const response = await axios.get<Reimbursement[]>(
+    `${API_URL}/reimbursements/trip/${trip_id}`
+  );
+  return response.data;
+};
+
+export const getReimbursementsByAdminId = async (
+  admin_id: number
+): Promise<Reimbursement[]> => {
+  const response = await axios.get<Reimbursement[]>(
+    `${API_URL}/reimbursements/admin/${admin_id}`
+  );
+  return response.data;
+};
+
+export const getReimbursementsByStatus = async (
+  status: string
+): Promise<Reimbursement[]> => {
+  const response = await axios.get<Reimbursement[]>(
+    `${API_URL}/reimbursements/status/${status}`
+  );
+  return response.data;
+};
+
+// ✅ Define TypeScript Interface for Trip
+export interface Trip {
+  trip_id: number;
+  trucker_id: number;
+  truck_id: number;
+  start_location: string;
+  end_location: string;
+  start_time: string; // Date is stored as string in JSON
+  end_time?: string; // Optional Date
+  status: string;
+  distance: number;
+  assigned_by_admin_id: number;
+  trip_rating?: number; // Optional
+}
+
+// ✅ Trip APIs
+export const getAllTrips = async (): Promise<Trip[]> => {
+  const response = await axios.get<Trip[]>(`${API_URL}/trips`);
+  return response.data;
+};
+
+export const getTripsByTruckerId = async (
+  trucker_id: number
+): Promise<Trip[]> => {
+  const response = await axios.get<Trip[]>(
+    `${API_URL}/trips/trucker/${trucker_id}`
+  );
+  return response.data;
+};
+
+export const getTripsByAdminId = async (admin_id: number): Promise<Trip[]> => {
+  const response = await axios.get<Trip[]>(
+    `${API_URL}/trips/admin/${admin_id}`
+  );
+  return response.data;
+};
+
+export const getTripsByStatus = async (status: string): Promise<Trip[]> => {
+  const response = await axios.get<Trip[]>(`${API_URL}/trips/status/${status}`);
+  return response.data;
+};
+
+export const createTrip = async (tripData: Trip): Promise<Trip> => {
+  const response = await axios.post<Trip>(`${API_URL}/trips`, tripData);
+  return response.data;
+};
+
+// ✅ Define TypeScript Interface for Truck
+export interface Truck {
+  truck_id: number;
+  license_plate: string;
+  chassis_number: string;
+  capacity: number;
+  assigned_trucker_id?: number; // Optional
+}
+
+// ✅ Truck APIs
+export const getAllTrucks = async (): Promise<Truck[]> => {
+  const response = await axios.get<Truck[]>(`${API_URL}/trucks`);
+  return response.data;
+};
+
+export const createTruck = async (truckData: Truck): Promise<Truck> => {
+  const response = await axios.post<Truck>(`${API_URL}/trucks`, truckData);
+  return response.data;
 };
