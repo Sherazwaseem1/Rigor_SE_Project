@@ -1,166 +1,149 @@
-import React, { useState } from "react";
-import { 
-  View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert 
-} from "react-native";
-import Icon from "react-native-vector-icons/Feather";
-import { Rating } from "react-native-ratings";
-import { getTruckerById, Trucker } from "../../services/api"; // ✅ Import API function & Interface
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 
-const UserProfileScreen = () => {
-  const [truckerId, setTruckerId] = useState(""); // Input field for ID
-  const [trucker, setTrucker] = useState<Trucker | null>(null); // ✅ Use correct Trucker type
-  const [loading, setLoading] = useState(false);
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+import { Link } from 'expo-router';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { ThemedText } from '@/components/ThemedText';
 
-  // ✅ Fetch trucker details by ID
-  const fetchTrucker = async () => {
-    if (!truckerId.trim()) {
-      Alert.alert("Error", "Please enter a valid Trucker ID");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const data = await getTruckerById(Number(truckerId)); // ✅ Call API function with ID
-      console.log("Fetched Trucker:", data);
-      setTrucker(data);
-    } catch (error) {
-      Alert.alert("Error", "Trucker not found or failed to fetch details");
-      setTrucker(null); // Clear previous data if error occurs
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const UserProfileTest = () => {
   return (
     <View style={styles.container}>
-      {/* Back Button */}
-      <TouchableOpacity style={styles.backButton}>
-        <Icon name="arrow-left" size={24} color="#333" />
-        <Text style={styles.backText}>Back</Text>
-      </TouchableOpacity>
-
-      {/* Enter Trucker ID */}
-      <Text style={styles.label}>Enter Trucker ID</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter ID"
-        keyboardType="numeric"
-        value={truckerId}
-        onChangeText={setTruckerId}
-      />
-      <TouchableOpacity style={styles.fetchButton} onPress={fetchTrucker}>
-        <Text style={styles.buttonText}>Fetch Trucker</Text>
-      </TouchableOpacity>
-
-      {loading && <ActivityIndicator size="large" color="#5c8bcf" />}
-
-      {/* Display Trucker Details Only If Available */}
-      {trucker && (
-        <>
-          {/* Profile Image */}
-          <View style={styles.imageContainer}>
-          <Image
-            source={require("../../assets/images/TruckerTestingImage.jpeg")} 
-            style={styles.profileImage}
-          />
+      <View style={styles.header}>
+        <Link href="../" style={styles.backButton}>
+          <View style={styles.backButtonContent}>
+            <IconSymbol size={24} name="chevron.left" color="#333" />
+            <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
           </View>
+        </Link>
+      </View>
 
-          {/* User Info */}
+      <View style={styles.profileSection}>
+        <Image
+          source={require('../../assets/images/bashira_no_bg.png')}
+          style={styles.profileImage}
+        />
+      </View>
+
+      <View style={styles.infoSection}>
+        <View style={styles.infoField}>
           <Text style={styles.label}>Name</Text>
-          <TextInput style={styles.input} value={trucker.name} editable={false} />
+          <Text style={styles.value}>Muhammad Bashir</Text>
+        </View>
 
+        <View style={styles.infoField}>
           <Text style={styles.label}>Email</Text>
-          <TextInput style={styles.input} value={trucker.email} editable={false} />
+          <Text style={styles.value}>bashiray2003@gmail.com</Text>
+        </View>
 
+        <View style={styles.infoField}>
           <Text style={styles.label}>Phone Number</Text>
-          <TextInput style={styles.input} value={trucker.phone_number} editable={false} />
+          <Text style={styles.value}>+92 333 4916424</Text>
+        </View>
 
-          <Text style={styles.label}>Age</Text>
-          <TextInput style={styles.input} value={trucker.age.toString()} editable={false} />
-
-          <Text style={styles.label}>Gender</Text>
-          <TextInput style={styles.input} value={trucker.gender} editable={false} />
-
-          <Text style={styles.label}>Status</Text>
-          <TextInput style={styles.input} value={trucker.status} editable={false} />
-
-          {/* Rating */}
+        <View style={styles.infoField}>
           <Text style={styles.label}>Rating</Text>
           <View style={styles.ratingContainer}>
-            <Rating type="star" ratingCount={5} imageSize={30} startingValue={trucker.rating} readonly />
+            {'★★★★☆'.split('').map((star, index) => (
+              <Text
+                key={index}
+                style={[styles.star, { color: index < 4 ? '#FFD700' : '#D3D3D3' }]}
+              >
+                {star}
+              </Text>
+            ))}
           </View>
+        </View>
 
-          {/* Rides Button */}
-          <TouchableOpacity style={styles.ridesButton}>
-            <Text style={styles.buttonText}>Rides</Text>
-          </TouchableOpacity>
-        </>
-      )}
+        <TouchableOpacity style={styles.ridesButton}>
+          <Text style={styles.ridesButtonText}>Rides</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    padding: 20,
+    backgroundColor: '#fff',
+    paddingTop: Math.max(screenHeight * 0.05, 40),
+  },
+  header: {
+    paddingHorizontal: Math.max(screenWidth * 0.04, 16),
+    marginBottom: Math.max(screenHeight * 0.02, 16),
   },
   backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 15,
+    paddingVertical: Math.max(screenHeight * 0.01, 8),
   },
-  backText: {
-    fontSize: 16,
-    marginLeft: 5,
-    color: "#333",
+  backButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  imageContainer: {
-    alignItems: "center",
-    marginBottom: 20,
+  backButtonLabel: {
+    fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
+    color: '#333',
+    marginBottom: screenHeight * 0.004,
+  },
+  profileSection: {
+    alignItems: 'center',
+    marginBottom: Math.max(screenHeight * 0.03, 24),
+    paddingHorizontal: Math.max(screenWidth * 0.04, 16),
   },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: Math.min(Math.max(screenWidth * 0.35, 140), 180),
+    height: Math.min(Math.max(screenWidth * 0.35, 140), 180),
+    borderRadius: Math.min(Math.max(screenWidth * 0.175, 70), 90),
+    backgroundColor: '#E8E8E8',
+  },
+  infoSection: {
+    paddingHorizontal: Math.max(screenWidth * 0.04, 16),
+    paddingTop: Math.max(screenHeight * 0.01, 8),
+  },
+  infoField: {
+    marginBottom: Math.max(screenHeight * 0.02, 16),
+    backgroundColor: '#F8F9FA',
+    padding: Math.max(screenWidth * 0.03, 12),
+    borderRadius: Math.min(Math.max(screenWidth * 0.02, 8), 12),
   },
   label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: "#333",
+    fontSize: Math.min(Math.max(screenWidth * 0.035, 14), 15),
+    color: '#202545',
+    marginBottom: Math.max(screenHeight * 0.008, 6),
+    fontWeight: '700',
   },
-  input: {
-    backgroundColor: "#f0f0f0",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 15,
-    color: "#333",
-  },
-  fetchButton: {
-    backgroundColor: "#007bff",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  buttonText: {
-    fontSize: 16,
-    color: "#fff",
-    fontWeight: "bold",
+  value: {
+    fontSize: Math.min(Math.max(screenWidth * 0.038, 15), 17),
+    color: '#000',
+    fontWeight: '400',
   },
   ratingContainer: {
-    alignItems: "center",
-    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: Math.max(screenHeight * 0.004, 4),
+  },
+  star: {
+    fontSize: Math.min(Math.max(screenWidth * 0.05, 20), 24),
+    marginRight: Math.max(screenWidth * 0.008, 4),
   },
   ridesButton: {
-    backgroundColor: "#5c8bcf",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
+    backgroundColor: '#7F9FB4',
+    paddingVertical: Math.max(screenHeight * 0.015, 12),
+    borderRadius: Math.min(Math.max(screenWidth * 0.02, 8), 12),
+    alignItems: 'center',
+    marginTop: Math.max(screenHeight * 0.03, 24),
+    marginHorizontal: Math.max(screenWidth * 0.015, 8),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  ridesButtonText: {
+    color: '#202545',
+    fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
+    fontWeight: '700',
   },
 });
 
-export default UserProfileScreen;
+export default UserProfileTest;
