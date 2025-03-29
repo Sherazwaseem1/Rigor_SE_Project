@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import Trucker  from "../models/trucker";
+import Trucker from "../models/trucker";
 
 // 🟢 Create a new trucker
-export const createTrucker = async (req: Request, res: Response) => {
+export const createTrucker = async (req: Request, res: Response): Promise<void> => {
   try {
     const newTrucker = new Trucker(req.body);
     await newTrucker.save();
@@ -13,7 +13,7 @@ export const createTrucker = async (req: Request, res: Response) => {
 };
 
 // 🔵 Get all truckers
-export const getAllTruckers = async (req: Request, res: Response) => {
+export const getAllTruckers = async (req: Request, res: Response): Promise<void> => {
   try {
     const truckers = await Trucker.find();
     res.status(200).json(truckers);
@@ -23,45 +23,61 @@ export const getAllTruckers = async (req: Request, res: Response) => {
 };
 
 // 🟣 Get a single trucker by ID
-export const getTruckerById = async (req: Request, res: Response) => {
+export const getTruckerById = async (req: Request, res: Response): Promise<void> => {
   try {
-      const trucker = await Trucker.findOne({ trucker_id: Number(req.params.id) }); 
-      if (!trucker) {
-          res.status(404).json({ error: "Trucker not found" });
-      }
-      res.status(200).json(trucker);
+    const trucker = await Trucker.findOne({ trucker_id: Number(req.params.id) });
+    if (!trucker) {
+      res.status(404).json({ error: "Trucker not found" });
+      return; // ✅ Explicit return to stop execution
+    }
+    res.status(200).json(trucker);
   } catch (error) {
-      console.error("Error fetching trucker:", error);
-      res.status(500).json({ error: "Error fetching trucker", details: error });
+    console.error("Error fetching trucker:", error);
+    res.status(500).json({ error: "Error fetching trucker", details: error });
   }
 };
 
-  
-  // 🟠 Update a trucker
-  export const updateTrucker = async (req: Request, res: Response) => {
-    try {
-      const updatedTrucker = await Trucker.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!updatedTrucker) {
-         res.status(404).json({ error: "Trucker not found" });
-      }
-       res.status(200).json(updatedTrucker); // ✅ Explicit return
-    } catch (error) {
-       res.status(400).json({ error: "Failed to update trucker", details: error });
+// 🟡 Get a trucker by email
+export const getTruckerByEmail = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const trucker = await Trucker.findOne({ email: req.params.email });
+
+    if (!trucker) {
+      res.status(404).json({ error: "Trucker not found" });
+      return;
     }
-  };
-  
-  // 🔴 Delete a trucker
-  export const deleteTrucker = async (req: Request, res: Response) => {
-    try {
-      const deletedTrucker = await Trucker.findByIdAndDelete(req.params.id);
-      if (!deletedTrucker) {
-         res.status(404).json({ error: "Trucker not found" });
-      }
-       res.status(200).json({ message: "Trucker deleted successfully" }); // ✅ Explicit return
-    } catch (error) {
-       res.status(500).json({ error: "Failed to delete trucker", details: error });
-    }
-  };
-  
+
+    res.status(200).json(trucker);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch trucker", details: error });
+  }
+};
 
 
+// 🟠 Update a trucker
+export const updateTrucker = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const updatedTrucker = await Trucker.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedTrucker) {
+      res.status(404).json({ error: "Trucker not found" });
+      return;
+    }
+    res.status(200).json(updatedTrucker);
+  } catch (error) {
+    res.status(400).json({ error: "Failed to update trucker", details: error });
+  }
+};
+
+// 🔴 Delete a trucker
+export const deleteTrucker = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const deletedTrucker = await Trucker.findOneAndDelete({ trucker_id: Number(req.params.id) });
+    if (!deletedTrucker) {
+      res.status(404).json({ error: "Trucker not found" });
+      return;
+    }
+    res.status(200).json({ message: "Trucker deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete trucker", details: error });
+  }
+};

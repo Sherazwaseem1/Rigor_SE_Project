@@ -1,11 +1,20 @@
 import express from "express";
-import { createTrucker, getAllTruckers, getTruckerById, updateTrucker, deleteTrucker } from "../controllers/truckerController";
+import { 
+    getAllTruckers, 
+    getTruckerById, 
+    getTruckerByEmail,  // ✅ Import the new function
+    createTrucker, 
+    updateTrucker, 
+    deleteTrucker 
+} from "../controllers/truckerController";
 
-const router = express.Router(); // ✅ Use express.Router()
+const router = express.Router();
 
-router.post("/", createTrucker);  // ✅ Correct usage
+// ✅ Define routes
 router.get("/", getAllTruckers);
 router.get("/:id", getTruckerById);
+router.get("/email/:email", getTruckerByEmail); 
+router.post("/", createTrucker);
 router.put("/:id", updateTrucker);
 router.delete("/:id", deleteTrucker);
 
