@@ -22,14 +22,14 @@ export default function WelcomeScreen() {
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
           style={styles.createAccountButton}
-          onPress={() => router.push('/(tabs)')}
+          onPress={() => router.push('/signupscreen')}
         >
           <ThemedText style={styles.createAccountButtonText}>Create an account</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity 
           style={styles.loginButton}
-          onPress={() => router.push('/(tabs)')}
+          onPress={() => router.push('/signupscreen')}
         >
           <ThemedText style={styles.loginButtonText}>Log in</ThemedText>
         </TouchableOpacity>
@@ -49,7 +49,7 @@ const getScale = () => {
   return Math.min(Math.max(scale, MIN_SCALE), MAX_SCALE);
 };
 
-const normalize = (size) => {
+const normalize = (size:any) => {
   const scale = getScale();
   const newSize = size * scale;
   return Math.round(PixelRatio.roundToNearestPixel(newSize));
