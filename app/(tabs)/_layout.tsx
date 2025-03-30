@@ -48,6 +48,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="signupscreen"
+        options={{
+          title: 'Sign Up',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="signinscreen"
+        options={{
+          title: 'Sign In',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="Truckertest"
         options={{
           title: 'Truckertest',
