@@ -1,175 +1,118 @@
-import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, ScrollView } from 'react-native';
-import { Link } from 'expo-router';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import { ThemedText } from '@/components/ThemedText';
+import React from "react";
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, ScrollView } from "react-native";
+import { Link } from "expo-router";
+import { useForm } from "react-hook-form";
+import { IconSymbol } from "@/components/ui/IconSymbol";
+import { ThemedText } from "@/components/ThemedText";
+import { useThemeColor } from "../../hooks/useThemeColor";
+import { createTruck } from "../../services/api"; // Adjust the path if needed
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-import { useThemeColor } from '../../hooks/useThemeColor';
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 interface TruckFormData {
-  truck_id: string;
   license_plate: string;
   chassis_number: string;
   capacity: string;
   assigned_trucker_id?: string;
 }
 
-interface ValidationErrors {
-  truck_id?: string;
-  license_plate?: string;
-  chassis_number?: string;
-  capacity?: string;
-  assigned_trucker_id?: string;
-}
-
 export default function TruckForm() {
-  const backgroundColor = useThemeColor('background');
-  const textColor = useThemeColor('text');
+  const backgroundColor = useThemeColor({ light: "#fff", dark: "#fff" }, "background");
+  const textColor = useThemeColor({ light: "#000", dark: "#000" }, "text");
 
-  const [formData, setFormData] = useState<TruckFormData>({
-    truck_id: '',
-    license_plate: '',
-    chassis_number: '',
-    capacity: '',
-    assigned_trucker_id: '',
-  });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useForm<TruckFormData>();
 
-  const [errors, setErrors] = useState<ValidationErrors>({});
+  const onSubmit = async (data: TruckFormData) => {
+    const capacityValue = Number(data.capacity);
 
-  const validateForm = (): boolean => {
-    const newErrors: ValidationErrors = {};
-
-    // Validate truck_id (must be a positive integer)
-    if (!formData.truck_id) {
-      newErrors.truck_id = 'Truck ID is required';
-    } else if (!/^\d+$/.test(formData.truck_id)) {
-      newErrors.truck_id = 'Truck ID must be a positive integer';
+    if (isNaN(capacityValue) || capacityValue <= 0) {
+      alert("Capacity must be a number greater than 0");
+      return;
     }
 
-    // Validate license_plate (required, non-empty string)
-    if (!formData.license_plate.trim()) {
-      newErrors.license_plate = 'License plate is required';
-    }
+    const submissionData = {
+      license_plate: data.license_plate,
+      chassis_number: data.chassis_number,
+      capacity: capacityValue,
+      ...(data.assigned_trucker_id ? { assigned_trucker_id: parseInt(data.assigned_trucker_id) } : {}),
+    };
 
-    // Validate chassis_number (required, non-empty string)
-    if (!formData.chassis_number.trim()) {
-      newErrors.chassis_number = 'Chassis number is required';
-    }
+    console.log("Form data to submit:", submissionData);
 
-    // Validate capacity (must be a positive integer)
-    if (!formData.capacity) {
-      newErrors.capacity = 'Capacity is required';
-    } else if (!/^\d+$/.test(formData.capacity)) {
-      newErrors.capacity = 'Capacity must be a positive integer';
-    }
-
-    // Validate assigned_trucker_id (optional, but if provided must be a positive integer)
-    if (formData.assigned_trucker_id && !/^\d*$/.test(formData.assigned_trucker_id)) {
-      newErrors.assigned_trucker_id = 'Assigned trucker ID must be a positive integer';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = () => {
-    if (validateForm()) {
-      // Convert string values to appropriate types for API
-      const submissionData = {
-        truck_id: parseInt(formData.truck_id),
-        license_plate: formData.license_plate,
-        chassis_number: formData.chassis_number,
-        capacity: parseInt(formData.capacity),
-        ...(formData.assigned_trucker_id
-          ? { assigned_trucker_id: parseInt(formData.assigned_trucker_id) }
-          : {}),
-      };
-      console.log('Form data to submit:', submissionData);
-      // TODO: Add API call to submit data
+    try {
+      const response = await createTruck(submissionData);
+      alert("Truck created successfully!");
+    } catch (error) {
+      alert("Failed to create truck. Please try again.");
     }
   };
 
   return (
     <View style={[styles.container, { backgroundColor }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <Link href="../" style={styles.backButton}>
-          <View style={styles.backButtonContent}>
-            <IconSymbol size={24} name="chevron.left" color="#333" />
-            <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
-          </View>
-        </Link>
-      </View>
+        <View style={styles.header}>
+          <Link href="../" style={styles.backButton}>
+            <View style={styles.backButtonContent}>
+              <IconSymbol size={24} name="chevron.left" color="#333" />
+              <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
+            </View>
+          </Link>
+        </View>
 
-      <View style={styles.logoContainer}>
-        <Image
-          source={require('../../assets/images/rigor_no_bg.jpeg')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-      </View>
+        <View style={styles.logoContainer}>
+          <Image source={require("../../assets/images/rigor_no_bg.jpeg")} style={styles.logo} resizeMode="contain" />
+        </View>
 
-      <Text style={[styles.title, { color: '#202545' }]}>Add New Truck</Text>
-      
-      <View style={styles.inputContainer}>
-        <Text style={[styles.label, { color: '#202545' }]}>Truck ID*</Text>
-        <TextInput
-          style={[styles.input, { color: textColor }]}
-          value={formData.truck_id}
-          onChangeText={(text) => setFormData({ ...formData, truck_id: text })}
-          keyboardType="numeric"
-          placeholder="Enter truck ID"
-          placeholderTextColor="#666"
-        />
-        {errors.truck_id && <Text style={styles.errorText}>{errors.truck_id}</Text>}
+        <Text style={[styles.title, { color: "#202545" }]}>Add New Truck</Text>
 
-        <Text style={[styles.label, { color: '#202545' }]}>License Plate*</Text>
-        <TextInput
-          style={[styles.input, { color: textColor }]}
-          value={formData.license_plate}
-          onChangeText={(text) => setFormData({ ...formData, license_plate: text })}
-          placeholder="Enter license plate"
-          placeholderTextColor="#666"
-        />
-        {errors.license_plate && <Text style={styles.errorText}>{errors.license_plate}</Text>}
+        <View style={styles.inputContainer}>
+          <Text style={[styles.label, { color: "#202545" }]}>License Plate</Text>
+          <TextInput
+            style={[styles.input, { color: textColor }]}
+            placeholder="Enter license plate"
+            placeholderTextColor="#666"
+            onChangeText={(text) => setValue("license_plate", text, { shouldValidate: true })}
+          />
+          {errors.license_plate && <Text style={styles.errorText}>License plate is required</Text>}
 
-        <Text style={[styles.label, { color: '#202545' }]}>Chassis Number*</Text>
-        <TextInput
-          style={[styles.input, { color: textColor }]}
-          value={formData.chassis_number}
-          onChangeText={(text) => setFormData({ ...formData, chassis_number: text })}
-          placeholder="Enter chassis number"
-          placeholderTextColor="#666"
-        />
-        {errors.chassis_number && <Text style={styles.errorText}>{errors.chassis_number}</Text>}
+          <Text style={[styles.label, { color: "#202545" }]}>Chassis Number</Text>
+          <TextInput
+            style={[styles.input, { color: textColor }]}
+            placeholder="Enter chassis number"
+            placeholderTextColor="#666"
+            onChangeText={(text) => setValue("chassis_number", text, { shouldValidate: true })}
+          />
+          {errors.chassis_number && <Text style={styles.errorText}>Chassis number is required</Text>}
 
-        <Text style={[styles.label, { color: '#202545' }]}>Capacity*</Text>
-        <TextInput
-          style={[styles.input, { color: textColor }]}
-          value={formData.capacity}
-          onChangeText={(text) => setFormData({ ...formData, capacity: text })}
-          keyboardType="numeric"
-          placeholder="Enter capacity"
-          placeholderTextColor="#666"
-        />
-        {errors.capacity && <Text style={styles.errorText}>{errors.capacity}</Text>}
+          <Text style={[styles.label, { color: "#202545" }]}>Capacity</Text>
+          <TextInput
+            style={[styles.input, { color: textColor }]}
+            keyboardType="numeric"
+            placeholder="Enter capacity"
+            placeholderTextColor="#666"
+            onChangeText={(text) => setValue("capacity", text, { shouldValidate: true })}
+          />
+          {errors.capacity && <Text style={styles.errorText}>Capacity is required and must be greater than 0</Text>}
 
-        <Text style={[styles.label, { color: '#202545' }]}>Assigned Trucker ID</Text>
-        <TextInput
-          style={[styles.input, { color: textColor }]}
-          value={formData.assigned_trucker_id}
-          onChangeText={(text) => setFormData({ ...formData, assigned_trucker_id: text })}
-          keyboardType="numeric"
-          placeholder="Enter assigned trucker ID (optional)"
-          placeholderTextColor="#666"
-        />
-        {errors.assigned_trucker_id && <Text style={styles.errorText}>{errors.assigned_trucker_id}</Text>}
-      </View>
+          <Text style={[styles.label, { color: "#202545" }]}>Assigned Trucker ID</Text>
+          <TextInput
+            style={[styles.input, { color: textColor }]}
+            keyboardType="numeric"
+            placeholder="Enter assigned trucker ID"
+            placeholderTextColor="#666"
+            onChangeText={(text) => setValue("assigned_trucker_id", text)}
+          />
+        </View>
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Submit</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
+          <Text style={styles.submitButtonText}>Submit</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -248,12 +191,6 @@ const styles = StyleSheet.create({
     marginTop: Math.max(screenHeight * 0.02, 16),
     marginBottom: Math.max(screenHeight * 0.02, 16),
     marginHorizontal: Math.max(screenWidth * 0.03, 12),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    padding: Math.max(screenWidth * 0.03, 12),
   },
   submitButtonText: {
     color: '#202545',

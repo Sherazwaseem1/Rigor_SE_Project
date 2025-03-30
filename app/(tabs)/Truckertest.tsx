@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import { getTruckers } from "../../services/api";
+import { getAllTruckers } from "../../services/api";
 
 interface Trucker {
   trucker_id: number;
@@ -22,7 +22,7 @@ const TruckersScreen = () => {
 
   const loadTruckers = async () => {
     try {
-      const data = await getTruckers();
+      const data = await getAllTruckers();
       setTruckers(data);
     } catch (error) {
       console.error("Failed to load truckers:", error);

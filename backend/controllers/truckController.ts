@@ -10,14 +10,13 @@ export const getAllTrucks = async (req: Request, res: Response): Promise<void> =
         res.status(500).json({ error: "Failed to fetch trucks", details: error });
     }
 };
-
-// 🟣 Create a new truck
+// 🟣 Create a new truck with auto-incremented truck_id
 export const createTruck = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { truck_id, license_plate, chassis_number, capacity, assigned_trucker_id } = req.body;
+        const { license_plate, chassis_number, capacity, assigned_trucker_id } = req.body;
 
         // ✅ Ensure required fields are provided
-        if (!truck_id || !license_plate || !chassis_number || !capacity) {
+        if (!license_plate || !chassis_number || !capacity) {
             res.status(400).json({ error: "Missing required fields" });
             return;
         }
@@ -28,13 +27,17 @@ export const createTruck = async (req: Request, res: Response): Promise<void> =>
             return;
         }
 
-        // ✅ Create new truck instance
+        // ✅ Find the current maximum truck_id in the database
+        const maxTruck = await Truck.findOne().sort({ truck_id: -1 }); 
+        const newTruckId = maxTruck ? maxTruck.truck_id + 1 : 1; // If no trucks exist, start from 1
+
+        // ✅ Create new truck instance with the new truck_id
         const newTruck = new Truck({
-            truck_id,
+            truck_id: newTruckId,
             license_plate,
             chassis_number,
             capacity,
-            assigned_trucker_id: assigned_trucker_id || undefined  // ✅ Store only if provided
+            assigned_trucker_id: assigned_trucker_id || undefined, // Store only if provided
         });
 
         await newTruck.save();
