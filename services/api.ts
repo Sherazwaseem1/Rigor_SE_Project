@@ -225,7 +225,7 @@ export interface Trip {
   status: string;
   distance: number;
   assigned_by_admin_id: number;
-  trip_rating?: number; // Optional
+  trip_rating: number; // Optional
 }
 
 // ✅ Trip APIs
