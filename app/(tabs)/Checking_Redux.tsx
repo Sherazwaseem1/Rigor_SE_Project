@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser, resetUser } from "../../redux/slices/userSlice";
 import { RootState } from "../../redux/store";
 
-const CheckingRedux = () => {
+const Checking_Redux = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
   const [name, setName] = useState("");
@@ -38,7 +38,7 @@ const CheckingRedux = () => {
   );
 };
 
-export default CheckingRedux;
+export default Checking_Redux;
 
 const styles = StyleSheet.create({
   container: {

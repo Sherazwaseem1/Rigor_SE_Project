@@ -1,3 +1,7 @@
+// import React, { Component } from 'react'
+// import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button } from 'react-native'
+// import { FIREBASE_AUTH } from '../../firebaseConfig'
+// import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import React from 'react'
 import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView } from 'react-native'
 import { ThemedView } from '@/components/ThemedView'
@@ -10,42 +14,53 @@ import { router } from 'expo-router'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 import { ThemedText } from '@/components/ThemedText'
 
-
 const Login = () => {
+    const [email, setEmail] = React.useState('')
+    const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
-    const { control, handleSubmit, formState: { errors } } = useForm({
-        defaultValues: {
-            email: '',
-            password: ''
-        }
-    })
+    const [passwordError, setPasswordError] = React.useState('')
 
     const auth = FIREBASE_AUTH;
 
-    const signIn = async (data: { email: string, password: string }) => {
+    const validatePassword = (pass: string) => {
+        if (pass.length < 6) {
+            setPasswordError('Password must be at least 6 characters long')
+            return false
+        }
+        // if (!/\d/.test(pass)) {
+        //     setPasswordError('Password must contain at least one number')
+        //     return false
+        // }
+        setPasswordError('')
+        return true
+    }
+
+    const signIn = async () => {
+        if (!validatePassword(password)) return
         setLoading(true)
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-            alert("Signed IN");
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('User signed in:', userCredential.user);
+            alert("SIGNED IN YAYY");
             // Navigate to the next screen or perform any other actions
         } catch (error: any) {
             console.error('Error signing in:', error);
-            alert(error.message);
+            alert("ABEYY SALAY");
         } finally {
             setLoading(false)
         }
     }
 
-    const signUp = async (data: { email: string, password: string }) => {
+    const signUp = async () => {
+        if (!validatePassword(password)) return
         setLoading(true)
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-            console.log('User signed up:', userCredential.user);
-            alert("Signed UP");
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            console.log('User signed in:', userCredential.user);
+            alert("New email registered");
             // Navigate to the next screen or perform any other actions
         } catch (error: any) {
-            console.error('Error signing up:', error);
+            console.error('Error signing UP:', error);
             alert(error.message);
         } finally {
             setLoading(false)
@@ -55,80 +70,53 @@ const Login = () => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <ThemedView style={styles.container}>
-                <TouchableOpacity 
-                    style={styles.backButton}
-                    onPress={() => router.back()}
-                >
+                
+                {/* Back Button */}
+                <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
                     <View style={styles.backButtonContent}>
                         <IconSymbol size={24} name="chevron.left" color="#333" />
                         <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
                     </View>
                 </TouchableOpacity>
+
+                {/* Logo */}
                 <View style={styles.logoContainer}>
-                    <Image
-                        source={require('../../assets/images/truck.png')}
-                    />
+                    <Image source={require('../../assets/images/truck.png')} style={styles.logo} />
                     <Text style={styles.subtitleText}>Have a better trucking experience</Text>
                 </View>
-                <Controller
-                    control={control}
-                    rules={{
-                        required: 'Email is required',
-                        pattern: {
-                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message: 'Invalid email address'
-                        }
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                            style={[styles.input, errors.email && styles.inputError]}
-                            placeholder='Email'
-                            autoCapitalize='none'
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name="email"
-                />
-                {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
 
-                <Controller
-                    control={control}
-                    rules={{
-                        required: 'Password is required',
-                        minLength: {
-                            value: 6,
-                            message: 'Password must be at least 6 characters'
-                        }
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                            style={[styles.input, errors.password && styles.inputError]}
-                            placeholder='Password'
-                            secureTextEntry
-                            autoCapitalize='none'
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name="password"
+                {/* Email Input */}
+                <TextInput
+                    value={email}
+                    style={[styles.input]}
+                    placeholder="Email"
+                    autoCapitalize="none"
+                    onChangeText={setEmail}
                 />
-                {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
 
-                {loading ? <ActivityIndicator size="large" color="#0000ff" /> : (
+                {/* Password Input */}
+                <TextInput
+                    secureTextEntry
+                    value={password}
+                    style={[styles.input, passwordError ? styles.inputError : null]}
+                    placeholder="Password"
+                    autoCapitalize="none"
+                    onChangeText={(text) => {
+                        setPassword(text)
+                        validatePassword(text)
+                    }}
+                />
+                {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+
+                {/* Loading Indicator or Buttons */}
+                {loading ? (
+                    <ActivityIndicator size="large" color="#0000ff" />
+                ) : (
                     <>
-                        <TouchableOpacity 
-                            style={styles.button}
-                            onPress={handleSubmit(signIn)}
-                        >
+                        <TouchableOpacity style={styles.button} onPress={signIn}>
                             <Text style={styles.buttonText}>Login</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={[styles.button, styles.signUpButton]}
-                            onPress={handleSubmit(signUp)}
-                        >
+                        <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={signUp}>
                             <Text style={styles.buttonText}>Create Account</Text>
                         </TouchableOpacity>
                     </>
@@ -143,20 +131,22 @@ export default Login
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#f8f9fa',
     },
     container: {
         flex: 1,
-        paddingHorizontal: screenWidth * 0.05,
-        paddingTop: Math.max(screenHeight * 0.05, 20),
+        padding: Math.max(screenWidth * 0.05, 20),
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#fff',
     },
     backButton: {
         position: 'absolute',
-        top: Math.max(screenHeight * 0.05, 20),
-        left: screenWidth * 0.05,
+        top: Math.max(screenHeight * 0.03, 20),
+        left: Math.max(screenWidth * 0.05, 20),
+        flexDirection: 'row',
+        alignItems: 'center',
         zIndex: 1,
-        padding: Math.min(screenWidth * 0.025, 15),
     },
     backButtonContent: {
         flexDirection: 'row',
@@ -164,59 +154,60 @@ const styles = StyleSheet.create({
     },
     backButtonLabel: {
         fontSize: Math.min(screenWidth * 0.04, 16),
+        marginLeft: Math.max(screenWidth * 0.01, 5),
         color: '#333',
-        marginBottom: screenHeight * 0.004,
     },
     logoContainer: {
         alignItems: 'center',
-        marginTop: Math.min(screenHeight * 0.15, 120),
-        marginBottom: Math.min(screenHeight * 0.1, 80),
+        marginBottom: Math.max(screenHeight * 0.03, 20),
+        marginTop: Math.max(screenHeight * 0.05, 30),
+    },
+    logo: {
+        width: Math.min(screenWidth * 0.6, 200),
+        height: Math.min(screenWidth * 0.6, 200),
+        resizeMode: 'contain',
     },
     subtitleText: {
         fontSize: Math.min(screenWidth * 0.04, 16),
-        color: '#666',
-        marginTop: screenHeight * 0.02,
-    },
-    oldContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        marginHorizontal: screenWidth * 0.05,
+        color: '#555',
+        textAlign: 'center',
+        marginTop: Math.max(screenHeight * 0.015, 10),
     },
     input: {
-        marginVertical: screenHeight * 0.01,
-        height: Math.min(screenHeight * 0.07, 50),
-        borderWidth: 1,
-        borderRadius: Math.min(screenWidth * 0.02, 8),
-        padding: Math.min(screenWidth * 0.03, 12),
-        backgroundColor: '#fff',
-        borderColor: '#ccc',
-        fontSize: Math.min(screenWidth * 0.04, 16),
         width: '100%',
+        height: Math.max(screenHeight * 0.06, 50),
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: Math.min(screenWidth * 0.02, 8),
+        paddingHorizontal: Math.max(screenWidth * 0.03, 15),
+        marginBottom: Math.max(screenHeight * 0.015, 10),
+        fontSize: Math.min(screenWidth * 0.04, 16),
+        backgroundColor: '#f9f9f9',
     },
     inputError: {
-        borderColor: '#ff0000'
+        borderColor: 'red',
     },
     errorText: {
-        color: '#ff0000',
+        color: 'red',
         fontSize: Math.min(screenWidth * 0.035, 14),
-        marginBottom: screenHeight * 0.01,
-        marginLeft: screenWidth * 0.02,
+        alignSelf: 'flex-start',
     },
     button: {
-        backgroundColor: '#202545',
-        padding: Math.min(screenHeight * 0.02, 15),
-        borderRadius: Math.min(screenWidth * 0.02, 8),
-        marginVertical: screenHeight * 0.01,
-        alignItems: 'center',
         width: '100%',
-        minHeight: 48,
+        height: Math.max(screenHeight * 0.06, 50),
+        backgroundColor: '#007bff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: Math.min(screenWidth * 0.02, 8),
+        marginVertical: Math.max(screenHeight * 0.015, 10),
     },
     signUpButton: {
-        backgroundColor: '#7F9FB4'
+        backgroundColor: '#28a745',
     },
     buttonText: {
         color: '#fff',
-        fontSize: Math.min(screenWidth * 0.04, 16),
-        fontWeight: 'bold'
-    }
+        fontSize: Math.min(screenWidth * 0.045, 18),
+        fontWeight: 'bold',
+    },
 });
+
