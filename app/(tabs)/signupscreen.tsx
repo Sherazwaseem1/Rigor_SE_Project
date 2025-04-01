@@ -5,7 +5,6 @@ import { View, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-nat
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { SvgUri } from 'react-native-svg';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 
 export default function SignupScreen() {
@@ -32,7 +31,7 @@ export default function SignupScreen() {
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
           style={styles.gmailButton}
-          onPress={() => router.push('/(tabs)')}
+          onPress={() => router.push('/loginForm')}
         >
           <Image
             source={require('../../assets/images/search.png')}
@@ -43,7 +42,7 @@ export default function SignupScreen() {
 
         <TouchableOpacity 
           style={styles.signInLink}
-          onPress={() => router.push('/(tabs)')}
+          onPress={() => router.push('/loginForm')}
         >
           <View style={styles.signInTextContainer}>
             <ThemedText style={styles.signInQuestion}>Already have an account?</ThemedText>
@@ -156,10 +155,5 @@ const styles = StyleSheet.create({
     color: '#7F9FB4',
     fontSize: Math.min(screenWidth * 0.035, 14),
     textDecorationLine: 'underline',
-  },
-  signInLink: {
-    padding: Math.min(screenWidth * 0.025, 12),
-    minHeight: 44,
-    justifyContent: 'center',
   },
 });
