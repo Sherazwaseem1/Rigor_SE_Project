@@ -1,9 +1,5 @@
-// import React, { Component } from 'react'
-// import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button } from 'react-native'
-// import { FIREBASE_AUTH } from '../../firebaseConfig'
-// import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import React from 'react'
-import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView } from 'react-native'
+import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch } from 'react-native'
 import { ThemedView } from '@/components/ThemedView'
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -16,7 +12,8 @@ import { ThemedText } from '@/components/ThemedText'
 
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice"; // Import setUser action
-import { getTruckerByEmail } from "../../services/api"; // Import API function
+import { getTruckerByEmail } from "../../services/api"; // Import API function for trucker
+import { getAdminByEmail } from "../../services/api"; // Import API function for admin (you need to define this)
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store"; // Import RootState
 import { useEffect } from "react";
@@ -26,15 +23,9 @@ const Login = () => {
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
     const [passwordError, setPasswordError] = React.useState('')
-    // const user = useSelector((state: RootState) => state.user);
-
-    // useEffect(() => {
-    //     console.log("Updated User Store:", user); 
-    // }, [user]); // Runs every time `user` changes
-
+    const [isAdmin, setIsAdmin] = React.useState(false); // New state to track user type (admin or trucker)
 
     const dispatch = useDispatch(); // Get Redux dispatch function
-
 
     const auth = FIREBASE_AUTH;
 
@@ -43,10 +34,6 @@ const Login = () => {
             setPasswordError('Password must be at least 6 characters long')
             return false
         }
-        // if (!/\d/.test(pass)) {
-        //     setPasswordError('Password must contain at least one number')
-        //     return false
-        // }
         setPasswordError('')
         return true
     }
@@ -58,22 +45,39 @@ const Login = () => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('User signed in:', userCredential.user);
             alert("SIGNED IN YAYY");
-            // Navigate to the next screen or perform any other actions
 
-            const truckerData = await getTruckerByEmail(email);
-
-            if (!truckerData) {
-                throw new Error("Trucker data not found");
+            let userData;
+            if (isAdmin) {
+                // Fetch admin data
+                userData = await getAdminByEmail(email); // Define the getAdminByEmail function
+                if (!userData) {
+                    alert("Admin not found");
+                    return;
+                }
+                dispatch(setUser({
+                    name: userData.name,  
+                    email: userData.email,
+                    id: userData.admin_id,  
+                    isAdmin: true,           
+                }));
+                // Navigate to admin dashboard
+                router.push("/AdminDashboard"); // Update route for admin
+            } else {
+                // Fetch trucker data
+                const truckerData = await getTruckerByEmail(email);
+                if (!truckerData) {
+                    alert("Trucker not found");
+                    return
+                }
+                dispatch(setUser({
+                    name: truckerData.name,  
+                    email: truckerData.email,
+                    id: truckerData.trucker_id,   
+                    isAdmin: false,           
+                }));
+                // Navigate to trucker dashboard
+                // router.push("/truckerdashboard"); // Update route for trucker
             }
-
-            dispatch(setUser({
-                name: truckerData.name,  
-                email: truckerData.email,
-                id: truckerData.trucker_id,       
-                isAdmin: false,           
-            }));
-
-            // router.push("/truckerdashboard"); // Navigate to the truckerdashboard
         } catch (error: any) {
             console.error('Error signing in:', error);
             alert("ABEYY SALAY");
@@ -81,8 +85,6 @@ const Login = () => {
             setLoading(false)
         }
     }
-
-    
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -125,6 +127,15 @@ const Login = () => {
                 />
                 {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
+                {/* Admin/Trucker Switch */}
+                <View style={styles.switchContainer}>
+                    <Text style={styles.switchLabel}>Login as {isAdmin ? 'Admin' : 'Trucker'}</Text>
+                    <Switch
+                        value={isAdmin}
+                        onValueChange={(value) => setIsAdmin(value)}
+                    />
+                </View>
+
                 {/* Loading Indicator or Buttons */}
                 {loading ? (
                     <ActivityIndicator size="large" color="#0000ff" />
@@ -133,9 +144,6 @@ const Login = () => {
                         <TouchableOpacity style={styles.button} onPress={signIn}>
                             <Text style={styles.buttonText}>Login</Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={signUp}>
-                            <Text style={styles.buttonText}>Create Account</Text>
-                        </TouchableOpacity> */}
                     </>
                 )}
             </ThemedView>
@@ -224,7 +232,14 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: Math.min(screenWidth * 0.045, 18),
-        fontWeight: 'bold',
     },
-});
-
+    switchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: Math.max(screenHeight * 0.02, 15),
+    },
+    switchLabel: {
+        marginRight: Math.max(screenWidth * 0.02, 10),
+        fontSize: Math.min(screenWidth * 0.04, 16),
+    },
+})
