@@ -160,13 +160,16 @@ export const deleteLocation = async (
 
 export interface Reimbursement {
   reimbursement_id: number;
-  trip_id: number; // Now a number instead of ObjectId
-  amount: string; // Decimal128 is stored as string in JSON
+  trip_id: number;
+  amount: {
+    $numberDecimal: string; // MongoDB stores Decimal128 as an object
+  };
   receipt_url: string;
   status: string;
   comments?: string;
-  admin_id: number; // Now a number instead of ObjectId
+  admin_id: number;
 }
+
 
 // ✅ Reimbursement APIs
 export const getAllReimbursements = async (): Promise<Reimbursement[]> => {

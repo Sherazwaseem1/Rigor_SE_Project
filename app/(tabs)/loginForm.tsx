@@ -66,8 +66,6 @@ const Login = () => {
                 throw new Error("Trucker data not found");
             }
 
-            
-
             dispatch(setUser({
                 name: truckerData.name,  
                 email: truckerData.email,
@@ -84,21 +82,7 @@ const Login = () => {
         }
     }
 
-    const signUp = async () => {
-        if (!validatePassword(password)) return
-        setLoading(true)
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            console.log('User signed in:', userCredential.user);
-            alert("New email registered");
-            // Navigate to the next screen or perform any other actions
-        } catch (error: any) {
-            console.error('Error signing UP:', error);
-            alert(error.message);
-        } finally {
-            setLoading(false)
-        }
-    }
+    
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -149,9 +133,9 @@ const Login = () => {
                         <TouchableOpacity style={styles.button} onPress={signIn}>
                             <Text style={styles.buttonText}>Login</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={signUp}>
+                        {/* <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={signUp}>
                             <Text style={styles.buttonText}>Create Account</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </>
                 )}
             </ThemedView>
