@@ -144,6 +144,11 @@ const Login = () => {
                         <TouchableOpacity style={styles.button} onPress={signIn}>
                             <Text style={styles.buttonText}>Login</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity onPress={() => router.push("/signupForm")}>
+                            <Text style={styles.signUpText}>
+                                Don't have an account? <Text style={styles.signUpLink}>Sign up</Text>
+                            </Text>
+                        </TouchableOpacity>
                     </>
                 )}
             </ThemedView>
@@ -241,5 +246,15 @@ const styles = StyleSheet.create({
     switchLabel: {
         marginRight: Math.max(screenWidth * 0.02, 10),
         fontSize: Math.min(screenWidth * 0.04, 16),
+    },
+    signUpText: {
+        fontSize: Math.min(screenWidth * 0.04, 16),
+        color: "#555",
+        marginTop: Math.max(screenHeight * 0.01, 8),
+        textAlign: "center",
+    },
+    signUpLink: {
+        color: "#007bff",
+        fontWeight: "bold",
     },
 })
