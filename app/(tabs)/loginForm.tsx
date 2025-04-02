@@ -17,13 +17,21 @@ import { ThemedText } from '@/components/ThemedText'
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice"; // Import setUser action
 import { getTruckerByEmail } from "../../services/api"; // Import API function
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store"; // Import RootState
+import { useEffect } from "react";
 
 const Login = () => {
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
     const [passwordError, setPasswordError] = React.useState('')
+    // const user = useSelector((state: RootState) => state.user);
+
+    // useEffect(() => {
+    //     console.log("Updated User Store:", user); 
+    // }, [user]); // Runs every time `user` changes
+
 
     const dispatch = useDispatch(); // Get Redux dispatch function
 
@@ -57,6 +65,8 @@ const Login = () => {
             if (!truckerData) {
                 throw new Error("Trucker data not found");
             }
+
+            
 
             dispatch(setUser({
                 name: truckerData.name,  
