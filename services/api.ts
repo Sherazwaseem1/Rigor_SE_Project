@@ -69,7 +69,7 @@ export interface Admin {
   admin_id: number;
   name: string;
   email: string;
-  phone: string;
+  phone_number: string;
 }
 
 // ✅ Admin APIs

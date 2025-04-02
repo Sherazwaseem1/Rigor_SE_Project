@@ -37,7 +37,6 @@ const AdminDashboard = () => {
         setTruckers(truckersData);
         setPendingReimbursements(reimbursementsData.filter(r => r.status === "Pending"));
           
-        console.log(reimbursementsData)
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {

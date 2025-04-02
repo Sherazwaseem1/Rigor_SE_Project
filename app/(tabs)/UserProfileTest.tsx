@@ -1,12 +1,53 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
-
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 import { Link } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedText } from '@/components/ThemedText';
+import { RootState } from '@/redux/store'; // Adjust path based on your Redux setup
+import { getAdminById, getTruckerById, Trucker, Admin } from '../../services/api'; // Adjust path based on your API setup
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const UserProfileTest = () => {
+  const { isAdmin, id } = useSelector((state: RootState) => state.user);
+  const [userData, setUserData] = useState<Admin | Trucker | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = isAdmin 
+          ? await getAdminById(id) 
+          : await getTruckerById(id);
+        setUserData(data);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchUserData();
+  }, [isAdmin, id]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#7F9FB4" />
+      </View>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Failed to load user data.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -28,36 +69,40 @@ const UserProfileTest = () => {
       <View style={styles.infoSection}>
         <View style={styles.infoField}>
           <Text style={styles.label}>Name</Text>
-          <Text style={styles.value}>Muhammad Bashir</Text>
+          <Text style={styles.value}>{userData.name}</Text>
         </View>
 
         <View style={styles.infoField}>
           <Text style={styles.label}>Email</Text>
-          <Text style={styles.value}>bashiray2003@gmail.com</Text>
+          <Text style={styles.value}>{userData.email}</Text>
         </View>
 
         <View style={styles.infoField}>
           <Text style={styles.label}>Phone Number</Text>
-          <Text style={styles.value}>+92 333 4916424</Text>
+          <Text style={styles.value}>{userData.phone_number || 'N/A'}</Text>
         </View>
 
-        <View style={styles.infoField}>
-          <Text style={styles.label}>Rating</Text>
-          <View style={styles.ratingContainer}>
-            {'★★★★☆'.split('').map((star, index) => (
-              <Text
-                key={index}
-                style={[styles.star, { color: index < 4 ? '#FFD700' : '#D3D3D3' }]}
-              >
-                {star}
-              </Text>
-            ))}
+        {!isAdmin && (
+          <View style={styles.infoField}>
+            <Text style={styles.label}>Rating</Text>
+            <View style={styles.ratingContainer}>
+              {'★★★★★'.split('').map((star, index) => (
+                <Text
+                  key={index}
+                  style={[styles.star, { color: index < (userData as Trucker).rating ? '#FFD700' : '#D3D3D3' }]}
+                >
+                  {star}
+                </Text>
+              ))}
+            </View>
           </View>
-        </View>
+        )}
 
-        <TouchableOpacity style={styles.ridesButton}>
-          <Text style={styles.ridesButtonText}>Rides</Text>
-        </TouchableOpacity>
+        {!isAdmin && (
+          <TouchableOpacity style={styles.ridesButton}>
+            <Text style={styles.ridesButtonText}>Rides</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -143,6 +188,20 @@ const styles = StyleSheet.create({
     color: '#202545',
     fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
     fontWeight: '700',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
   },
 });
 
