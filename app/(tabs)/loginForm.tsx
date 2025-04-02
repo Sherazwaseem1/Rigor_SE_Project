@@ -14,11 +14,19 @@ import { router } from 'expo-router'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 import { ThemedText } from '@/components/ThemedText'
 
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/slices/userSlice"; // Import setUser action
+import { getTruckerByEmail } from "../../services/api"; // Import API function
+
+
 const Login = () => {
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
     const [passwordError, setPasswordError] = React.useState('')
+
+    const dispatch = useDispatch(); // Get Redux dispatch function
+
 
     const auth = FIREBASE_AUTH;
 
@@ -43,6 +51,21 @@ const Login = () => {
             console.log('User signed in:', userCredential.user);
             alert("SIGNED IN YAYY");
             // Navigate to the next screen or perform any other actions
+
+            const truckerData = await getTruckerByEmail(email);
+
+            if (!truckerData) {
+                throw new Error("Trucker data not found");
+            }
+
+            dispatch(setUser({
+                name: truckerData.name,  
+                email: truckerData.email,
+                id: truckerData.trucker_id,       
+                isAdmin: false,           
+            }));
+
+            // router.push("/truckerdashboard"); // Navigate to the truckerdashboard
         } catch (error: any) {
             console.error('Error signing in:', error);
             alert("ABEYY SALAY");
