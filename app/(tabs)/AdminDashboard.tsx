@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -36,8 +37,8 @@ const AdminDashboard = () => {
         setActiveTrips(tripsData);
         setTruckers(truckersData);
         setPendingReimbursements(reimbursementsData.filter(r => r.status === "Pending"));
-          
-        console.log(reimbursementsData)
+
+        console.log(reimbursementsData);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -50,71 +51,77 @@ const AdminDashboard = () => {
   if (loading) return <ActivityIndicator size="large" color="#007bff" />;
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Welcome Section */}
-      <View style={styles.welcomeContainer}>
-        <Text style={styles.header}>Welcome, {admin.name} 👋</Text>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        {/* Welcome Section */}
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.header}>Welcome, {admin.name} 👋</Text>
+        </View>
 
-      {/* Active Trips Section */}
-      <Text style={styles.sectionTitle}>🚛 Active Trips</Text>
-      <FlatList
-        data={activeTrips}
-        keyExtractor={(trip) => trip.trip_id.toString()}
-        renderItem={({ item }) => (
-          <View style={[styles.card, styles.tripCard]}>
-            <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
-            <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
-            <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
-            <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
-          </View>
-        )}
-      />
+        {/* Active Trips Section */}
+        <Text style={styles.sectionTitle}>🚛 Active Trips</Text>
+        <FlatList
+          data={activeTrips}
+          keyExtractor={(trip) => trip.trip_id.toString()}
+          renderItem={({ item }) => (
+            <View style={[styles.card, styles.tripCard]}>
+              <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
+              <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
+              <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
+              <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+            </View>
+          )}
+        />
 
-      {/* Live Truck Locations Placeholder */}
-      <Text style={styles.sectionTitle}>📍 Live Truck Locations</Text>
-      <View style={[styles.card, styles.placeholderCard]}>
-        <Text style={styles.cardText}>Live Truck Locations will be implemented soon...</Text>
-      </View>
+        {/* Live Truck Locations Placeholder */}
+        <Text style={styles.sectionTitle}>📍 Live Truck Locations</Text>
+        <View style={[styles.card, styles.placeholderCard]}>
+          <Text style={styles.cardText}>Live Truck Locations will be implemented soon...</Text>
+        </View>
 
-      {/* Pending Reimbursements */}
-      <Text style={styles.sectionTitle}>💰 Pending Reimbursements</Text>
-      <FlatList
-        data={pendingReimbursements}
-        keyExtractor={(item) => item.reimbursement_id.toString()}
-        renderItem={({ item }) => (
-          <View style={[styles.card, styles.reimbursementCard]}>
-            <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
-            <Text style={styles.cardText}>
-              💵 Amount: ${parseFloat(item.amount.$numberDecimal).toFixed(2)} {/* Fixing NaN issue */}
-            </Text>
-            <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
-          </View>
-        )}
-      />
+        {/* Pending Reimbursements */}
+        <Text style={styles.sectionTitle}>💰 Pending Reimbursements</Text>
+        <FlatList
+          data={pendingReimbursements}
+          keyExtractor={(item) => item.reimbursement_id.toString()}
+          renderItem={({ item }) => (
+            <View style={[styles.card, styles.reimbursementCard]}>
+              <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
+              <Text style={styles.cardText}>
+                💵 Amount: ${parseFloat(item.amount.$numberDecimal).toFixed(2)}
+              </Text>
+              <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+            </View>
+          )}
+        />
 
-      {/* Truckers List */}
-      <Text style={styles.sectionTitle}>🚚 Registered Truckers</Text>
-      <FlatList
-        data={truckers}
-        keyExtractor={(trucker) => trucker.trucker_id.toString()}
-        renderItem={({ item }) => (
-          <View style={[styles.card, styles.truckerCard]}>
-            <Text style={styles.cardText}>👤 Name: {item.name}</Text>
-            <Text style={styles.cardText}>📞 Phone: {item.phone_number}</Text>
-            <Text style={styles.cardText}>✉️ Email: {item.email}</Text>
-            <Text style={[styles.cardText, styles.ratingText]}>⭐ Rating: {item.rating}</Text>
-          </View>
-        )}
-      />
-    </ScrollView>
+        {/* Truckers List */}
+        <Text style={styles.sectionTitle}>🚚 Registered Truckers</Text>
+        <FlatList
+          data={truckers}
+          keyExtractor={(trucker) => trucker.trucker_id.toString()}
+          renderItem={({ item }) => (
+            <View style={[styles.card, styles.truckerCard]}>
+              <Text style={styles.cardText}>👤 Name: {item.name}</Text>
+              <Text style={styles.cardText}>📞 Phone: {item.phone_number}</Text>
+              <Text style={styles.cardText}>✉️ Email: {item.email}</Text>
+              <Text style={[styles.cardText, styles.ratingText]}>⭐ Rating: {item.rating}</Text>
+            </View>
+          )}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: "#e3f2fd", // Light blue background
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#e3f2fd",
     padding: 15,
   },
   welcomeContainer: {
@@ -135,7 +142,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     color: "#0d47a1", // Dark blue
-    textAlign: 'center', // Center the headings
+    textAlign: "center",
   },
   card: {
     backgroundColor: "#ffffff",
