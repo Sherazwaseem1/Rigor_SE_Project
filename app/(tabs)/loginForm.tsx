@@ -76,7 +76,8 @@ const Login = () => {
                     isAdmin: false,           
                 }));
                 // Navigate to trucker dashboard
-                // router.push("/truckerdashboard"); // Update route for trucker
+                alert("Trucker INCOMING");
+                router.push("/TruckerDashboard"); // Update route for trucker
             }
         } catch (error: any) {
             console.error('Error signing in:', error);
