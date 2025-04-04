@@ -4,7 +4,18 @@ import Trucker from "../models/trucker";
 // 🟢 Create a new trucker
 export const createTrucker = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newTrucker = new Trucker(req.body);
+    // Step 1: Find the max trucker_id
+    const lastTrucker = await Trucker.findOne().sort({ trucker_id: -1 });
+
+    // Step 2: Determine the new trucker_id
+    const newId = lastTrucker ? lastTrucker.trucker_id + 1 : 1;
+
+    // Step 3: Create and save the new trucker with the new ID
+    const newTrucker = new Trucker({
+      ...req.body,
+      trucker_id: newId,
+    });
+
     await newTrucker.save();
     res.status(201).json(newTrucker);
   } catch (error) {

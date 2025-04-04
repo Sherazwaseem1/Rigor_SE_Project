@@ -45,13 +45,22 @@ export const getAdminByEmail = async (req: Request, res: Response): Promise<void
 // 🟢 Create a new admin
 export const createAdmin = async (req: Request, res: Response): Promise<void> => {
     try {
-        const newAdmin = new Admin(req.body);
-        await newAdmin.save();
-        res.status(201).json(newAdmin);
+      // Get the highest current admin_id
+      const latestAdmin = await Admin.findOne().sort({ admin_id: -1 });
+  
+      const nextId = latestAdmin ? latestAdmin.admin_id + 1 : 1;
+  
+      const newAdmin = new Admin({
+        ...req.body,
+        admin_id: nextId
+      });
+  
+      await newAdmin.save();
+      res.status(201).json(newAdmin);
     } catch (error) {
-        res.status(400).json({ error: "Failed to create admin", details: error });
+      res.status(400).json({ error: "Failed to create admin", details: error });
     }
-};
+  };
 
 // 🟠 Update an admin by admin_id
 export const updateAdmin = async (req: Request, res: Response): Promise<void> => {

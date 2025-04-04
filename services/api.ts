@@ -18,6 +18,16 @@ export interface Trucker {
   gender: string;
 }
 
+export interface NewTrucker {
+  name: string;
+  phone_number: string;
+  email: string;
+  rating: number;
+  status: string;
+  age: number;
+  gender: string;
+}
+
 // ✅ Trucker APIs
 export const getAllTruckers = async (): Promise<Trucker[]> => {
   const response = await axios.get<Trucker[]>(`${API_URL}/truckers`);
@@ -36,11 +46,8 @@ export const getTruckerByEmail = async (email: string): Promise<Trucker> => {
   return response.data;
 };
 
-export const createTrucker = async (truckerData: Trucker): Promise<Trucker> => {
-  const response = await axios.post<Trucker>(
-    `${API_URL}/truckers`,
-    truckerData
-  );
+export const createTrucker = async (truckerData: NewTrucker): Promise<Trucker> => {
+  const response = await axios.post<Trucker>(`${API_URL}/truckers`, truckerData);
   return response.data;
 };
 
@@ -83,7 +90,10 @@ export const getAdminById = async (id: number): Promise<Admin> => {
   return response.data;
 };
 
-export const createAdmin = async (adminData: Admin): Promise<Admin> => {
+// ✅ Exclude admin_id when creating a new admin
+export const createAdmin = async (
+  adminData: Omit<Admin, "admin_id">
+): Promise<Admin> => {
   const response = await axios.post<Admin>(`${API_URL}/admins`, adminData);
   return response.data;
 };
