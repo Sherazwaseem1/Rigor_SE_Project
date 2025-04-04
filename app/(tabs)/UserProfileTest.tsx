@@ -7,13 +7,16 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedText } from '@/components/ThemedText';
 import { RootState } from '@/redux/store'; // Adjust path based on your Redux setup
 import { getAdminById, getTruckerById, Trucker, Admin } from '../../services/api'; // Adjust path based on your API setup
-
+import { useRouter } from 'expo-router';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+import { StarRatingDisplay } from 'react-native-star-rating-widget';
 
 const UserProfileTest = () => {
   const { isAdmin, id } = useSelector((state: RootState) => state.user);
   const [userData, setUserData] = useState<Admin | Trucker | null>(null);
+  const [ratingData, setRatingData] = useState<number | null>(null); // Add state for rating
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -22,6 +25,11 @@ const UserProfileTest = () => {
           ? await getAdminById(id) 
           : await getTruckerById(id);
         setUserData(data);
+
+        // Set rating data if it's a Trucker
+        if (!isAdmin && data && 'rating' in data) {
+          setRatingData((data as Trucker).rating);
+        }
       } catch (error) {
         console.error('Error fetching user data:', error);
       } finally {
@@ -51,12 +59,21 @@ const UserProfileTest = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Link href="../" style={styles.backButton}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            if (isAdmin) {
+              router.push('/AdminDashboard');
+            } else {
+              router.push('/TruckerDashboard');
+            }
+          }}
+        >
           <View style={styles.backButtonContent}>
             <IconSymbol size={24} name="chevron.left" color="#333" />
             <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
           </View>
-        </Link>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.profileSection}>
@@ -82,20 +99,13 @@ const UserProfileTest = () => {
           <Text style={styles.value}>{userData.phone_number || 'N/A'}</Text>
         </View>
 
-        {!isAdmin && (
+        {/* Render the rating only if user is a Trucker */}
+        {!isAdmin && ratingData !== null && (
           <View style={styles.infoField}>
-            <Text style={styles.label}>Rating</Text>
-            <View style={styles.ratingContainer}>
-              {'★★★★★'.split('').map((star, index) => (
-                <Text
-                  key={index}
-                  style={[styles.star, { color: index < (userData as Trucker).rating ? '#FFD700' : '#D3D3D3' }]}
-                >
-                  {star}
-                </Text>
-              ))}
-            </View>
+              <StarRatingDisplay rating={ratingData} />
           </View>
+
+          
         )}
 
         {!isAdmin && (
@@ -167,9 +177,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: Math.max(screenHeight * 0.004, 4),
   },
+  starContainer: {
+    position: 'relative',
+    height: 24, // Adjust based on your star size
+    width: 24,  // Adjust based on your star size
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  partialStarOverlay: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    height: '100%',
+    overflow: 'hidden',
+  },
   star: {
     fontSize: Math.min(Math.max(screenWidth * 0.05, 20), 24),
     marginRight: Math.max(screenWidth * 0.008, 4),
+  },
+  filledStarClip: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    overflow: 'hidden',
+  },
+  ratingText: {
+    marginLeft: 5,
+    fontSize: 14,
+    color: '#666',
   },
   ridesButton: {
     backgroundColor: '#7F9FB4',
