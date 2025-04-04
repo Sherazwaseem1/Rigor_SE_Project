@@ -1,6 +1,7 @@
 import React from 'react'
 import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch } from 'react-native'
 import { ThemedView } from '@/components/ThemedView'
+import { Ionicons } from '@expo/vector-icons';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import { FIREBASE_AUTH } from '../../firebaseConfig'
@@ -14,9 +15,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice"; // Import setUser action
 import { getTruckerByEmail } from "../../services/api"; // Import API function for trucker
 import { getAdminByEmail } from "../../services/api"; // Import API function for admin (you need to define this)
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store"; // Import RootState
-import { useEffect } from "react";
+
 
 const Login = () => {
     const [email, setEmail] = React.useState('')
@@ -24,6 +23,7 @@ const Login = () => {
     const [loading, setLoading] = React.useState(false)
     const [passwordError, setPasswordError] = React.useState('')
     const [isAdmin, setIsAdmin] = React.useState(false); // New state to track user type (admin or trucker)
+    const [isPasswordVisible, setIsPasswordVisible] = React.useState(false); // Password visibility state
 
     const dispatch = useDispatch(); // Get Redux dispatch function
 
@@ -114,18 +114,30 @@ const Login = () => {
                     onChangeText={setEmail}
                 />
 
-                {/* Password Input */}
-                <TextInput
-                    secureTextEntry
-                    value={password}
-                    style={[styles.input, passwordError ? styles.inputError : null]}
-                    placeholder="Password"
-                    autoCapitalize="none"
-                    onChangeText={(text) => {
-                        setPassword(text)
-                        validatePassword(text)
-                    }}
-                />
+                {/* Password Input with Show/Hide Toggle */}
+                <View style={styles.passwordContainer}>
+                    <TextInput
+                        secureTextEntry={!isPasswordVisible}
+                        value={password}
+                        style={[styles.input, styles.passwordInput, passwordError ? styles.inputError : null]}
+                        placeholder="Password"
+                        autoCapitalize="none"
+                        onChangeText={(text) => {
+                            setPassword(text);
+                            validatePassword(text);
+                        }}
+                    />
+                    <TouchableOpacity 
+                        style={styles.eyeIcon} 
+                        onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                    >
+                        <Ionicons 
+                            name={isPasswordVisible ? "eye" : "eye-off"} 
+                            size={24}  
+                            color="black" 
+                        />
+                    </TouchableOpacity>
+                </View>
                 {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
                 {/* Admin/Trucker Switch */}
@@ -214,6 +226,23 @@ const styles = StyleSheet.create({
         marginBottom: Math.max(screenHeight * 0.015, 10),
         fontSize: Math.min(screenWidth * 0.04, 16),
         backgroundColor: '#f9f9f9',
+    },
+    passwordContainer: {
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'relative', // Ensure the child absolute positioning works
+    },
+    passwordInput: {
+        flex: 1,
+        paddingRight: 50, // Increase right padding so text doesn’t overlap with the icon
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 10,  // Adjust position inside the input field
+        zIndex: 1,  // Ensure it appears on top of the input field
+        padding: 10, // Add padding to make it easier to tap
+        bottom: 13, // Adjust position inside the input field
     },
     inputError: {
         borderColor: 'red',
