@@ -6,7 +6,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedText } from '@/components/ThemedText';
-import { createTrucker } from "../../services/api"; // Import API function for admin (you need to define this)
+import { createTrucker, NewTrucker } from "../../services/api"; // Import API function for admin (you need to define this)
 import { Picker } from '@react-native-picker/picker'; // Import Picker
 import { Ionicons } from '@expo/vector-icons';
 
@@ -40,17 +40,29 @@ const SignUp = () => {
         return true;
     };
 
-    const validatePasswordMatch = () => {
+    const onPasswordChange = (text: string) => {
+        setPassword(text);
+        validatePassword(text);  // This ensures the password is validated on change
+    };
+    
+    const onRepeatPasswordChange = (text: string) => {
+        setRepeatPassword(text);
+        validatePasswordMatch(text);  // Validate match every time the repeat password changes
+    };
+
+    const validatePasswordMatch = (repeatPassword: string) => {
         if (password !== repeatPassword) {
             setPasswordMatchError('Passwords do not match');
             return false;
+        } else {
+            setPasswordMatchError('');
+            return true;
         }
-        setPasswordMatchError('');
-        return true;
     };
+    
 
     const signUp = async () => {
-        if (!validatePassword(password) || !validatePasswordMatch()) return;
+        if (!validatePassword(password) || !validatePasswordMatch(password)) return;
 
         if (!gender) {
             alert('Please select a gender');
@@ -58,13 +70,13 @@ const SignUp = () => {
         }
         setLoading(true);
         try {
+            
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             console.log('User signed up:', userCredential.user);
             alert('Check your emails');
 
             //TODO: MAKE SURE TRUCKER_ID IS MAX + 1
-            const newTrucker = {
-                trucker_id: Date.now(), // Generate a temporary ID (MongoDB will generate its own)
+            const newTrucker:NewTrucker = {
                 name,
                 phone_number: phoneNumber,
                 email,
@@ -111,16 +123,13 @@ const SignUp = () => {
                     <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail} />
                     
                     <View style={styles.inputContainer}>
-                        <TextInput
-                            secureTextEntry={!isPasswordVisible} // Toggle visibility based on state
+                    <TextInput
+                            secureTextEntry={!isPasswordVisible}
                             value={password}
                             style={[styles.input, passwordError ? styles.inputError : null, { paddingRight: 50 }]}
                             placeholder="Password"
                             autoCapitalize="none"
-                            onChangeText={(text) => {
-                                setPassword(text);
-                                validatePassword(text);
-                            }}
+                            onChangeText={onPasswordChange}
                         />
                         <TouchableOpacity 
                             style={styles.eyeIcon} 
@@ -136,29 +145,26 @@ const SignUp = () => {
                     {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
                     <View style={styles.inputContainer}>
-                        <TextInput
-                            secureTextEntry={!isRepeatPasswordVisible} // Toggle visibility based on state
-                            value={repeatPassword}
-                            style={[styles.input, passwordMatchError ? styles.inputError : null, { paddingRight: 50 }]} // Applying error style
-                            placeholder="Repeat Password"
-                            autoCapitalize="none"
-                            onChangeText={(text) => {
-                                setRepeatPassword(text);
-                                validatePasswordMatch();
-                            }}
+                    <TextInput
+                        secureTextEntry={!isRepeatPasswordVisible}
+                        value={repeatPassword}
+                        style={[styles.input, passwordMatchError ? styles.inputError : null, { paddingRight: 50 }]}
+                        placeholder="Repeat Password"
+                        autoCapitalize="none"
+                        onChangeText={onRepeatPasswordChange}  // Trigger validation on each change
+                    />
+                    <TouchableOpacity 
+                        style={styles.eyeIcon} 
+                        onPress={() => setIsRepeatPasswordVisible(!isRepeatPasswordVisible)}
+                    >
+                        <Ionicons 
+                            name={isRepeatPasswordVisible ? "eye" : "eye-off"} 
+                            size={24}  
+                            color="black" 
                         />
-                        <TouchableOpacity 
-                            style={styles.eyeIcon} 
-                            onPress={() => setIsRepeatPasswordVisible(!isRepeatPasswordVisible)}
-                        >
-                            <Ionicons 
-                                name={isRepeatPasswordVisible ? "eye" : "eye-off"} 
-                                size={24}  
-                                color="black" 
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    {passwordMatchError ? <Text style={styles.errorText}>{passwordMatchError}</Text> : null}
+                    </TouchableOpacity>
+                </View>
+                {passwordMatchError ? <Text style={styles.errorText}>{passwordMatchError}</Text> : null}
 
                     <TextInput value={phoneNumber} style={styles.input} placeholder="Phone Number" keyboardType="numeric" onChangeText={setPhoneNumber} />
                     

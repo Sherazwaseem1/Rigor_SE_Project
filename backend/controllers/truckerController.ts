@@ -6,7 +6,6 @@ export const createTrucker = async (req: Request, res: Response): Promise<void> 
   try {
     // Step 1: Find the max trucker_id
     const lastTrucker = await Trucker.findOne().sort({ trucker_id: -1 });
-
     // Step 2: Determine the new trucker_id
     const newId = lastTrucker ? lastTrucker.trucker_id + 1 : 1;
 

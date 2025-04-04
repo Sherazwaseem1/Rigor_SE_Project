@@ -4,7 +4,6 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  ScrollView,
   ActivityIndicator,
   SafeAreaView,
   Button,
@@ -19,8 +18,7 @@ import {
   Reimbursement,
 } from "../../services/api";
 
-import { router } from 'expo-router'
-
+import { router } from 'expo-router';
 
 const TruckerDashboard = () => {
   const trucker = useSelector((state: RootState) => state.user);
@@ -38,7 +36,6 @@ const TruckerDashboard = () => {
         const completedTrips = tripsData.filter(trip => trip.status === "Completed");
         const activeTrip = tripsData.find(trip => trip.status === "Ongoing");
         
-        //TODO: ADDING THIS
         const truckerData = await getTruckerByEmail(trucker.email);
         setRating(truckerData.rating || 0);
 
@@ -62,73 +59,77 @@ const TruckerDashboard = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.container}>
-        {/* Welcome Section */}
-        <View style={styles.welcomeContainer}>
-          <Text style={styles.header}>Welcome, {trucker.name} 👋</Text>
-        </View>
+      <FlatList
+        data={pastTrips}
+        keyExtractor={(trip) => trip.trip_id.toString()}
+        ListHeaderComponent={() => (
+          <View style={styles.container}>
+            {/* Welcome Section */}
+            <View style={styles.welcomeContainer}>
+              <Text style={styles.header}>Welcome, {trucker.name} 👋</Text>
+            </View>
 
-        {/* Ongoing Trip Section */}
-        <Text style={styles.sectionTitle}>🚛 Ongoing Trip</Text>
-        {ongoingTrip ? (
-          <View style={[styles.card, styles.tripCard]}>
-            <Text style={styles.cardText}>Trip ID: {ongoingTrip.trip_id}</Text>
-            <Text style={styles.cardText}>📍 Start: {ongoingTrip.start_location}</Text>
-            <Text style={styles.cardText}>🏁 End: {ongoingTrip.end_location}</Text>
-            <Text style={[styles.cardText, styles.statusText]}>Status: {ongoingTrip.status}</Text>
-          </View>
-        ) : (
-          <View style={[styles.card, styles.placeholderCard]}>
-            <Text style={styles.cardText}>No ongoing trips.</Text>
+            {/* Ongoing Trip Section */}
+            <Text style={styles.sectionTitle}>🚛 Ongoing Trip</Text>
+            {ongoingTrip ? (
+              <View style={[styles.card, styles.tripCard]}>
+                <Text style={styles.cardText}>Trip ID: {ongoingTrip.trip_id}</Text>
+                <Text style={styles.cardText}>📍 Start: {ongoingTrip.start_location}</Text>
+                <Text style={styles.cardText}>🏁 End: {ongoingTrip.end_location}</Text>
+                <Text style={[styles.cardText, styles.statusText]}>Status: {ongoingTrip.status}</Text>
+              </View>
+            ) : (
+              <View style={[styles.card, styles.placeholderCard]}>
+                <Text style={styles.cardText}>No ongoing trips.</Text>
+              </View>
+            )}
+
+            {/* Current Location Section (Placeholder) */}
+            <Text style={styles.sectionTitle}>📍 Current Location</Text>
+            <View style={[styles.card, styles.locationCard]} />
+
+            {/* Pending Reimbursements */}
+            <Text style={styles.sectionTitle}>💰 Pending Reimbursements</Text>
+            {pendingReimbursements.length === 0 ? (
+              <Text style={styles.cardText}>No pending reimbursements.</Text>
+            ) : (
+              <View>
+                {pendingReimbursements.map((item) => (
+                  <View style={[styles.card, styles.reimbursementCard]} key={item.reimbursement_id}>
+                    <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
+                    <Text style={styles.cardText}>
+                      💵 Amount: ${parseFloat(item.amount.$numberDecimal).toFixed(2)}
+                    </Text>
+                    <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Trucker Rating Section */}
+            <Text style={styles.sectionTitle}>⭐ Your Rating</Text>
+            <View style={[styles.card, styles.ratingCard]}>
+              <Text style={styles.ratingText}>{rating.toFixed(1)} / 5</Text>
+            </View>
+
+            {/* Profile Navigation Button */}
+            <View style={styles.buttonContainer}>
+              <Button title="Go to Profile" onPress={() => router.push("/UserProfileTest")} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button title="Signout" onPress={() => router.push("/")} />
+            </View>
           </View>
         )}
-
-        {/* Current Location Section (Placeholder) */}
-        <Text style={styles.sectionTitle}>📍 Current Location</Text>
-        <View style={[styles.card, styles.locationCard]} />
-
-        {/* Past Trips Section */}
-        <Text style={styles.sectionTitle}>🛣️ Past Trips</Text>
-        <FlatList
-          data={pastTrips}
-          keyExtractor={(trip) => trip.trip_id.toString()}
-          renderItem={({ item }) => (
-            <View style={[styles.card, styles.tripCard]}>
-              <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
-              <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
-              <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
-              <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
-            </View>
-          )}
-        />
-
-        {/* Pending Reimbursements */}
-        <Text style={styles.sectionTitle}>💰 Pending Reimbursements</Text>
-        <FlatList
-          data={pendingReimbursements}
-          keyExtractor={(item) => item.reimbursement_id.toString()}
-          renderItem={({ item }) => (
-            <View style={[styles.card, styles.reimbursementCard]}>
-              <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
-              <Text style={styles.cardText}>
-                💵 Amount: ${parseFloat(item.amount.$numberDecimal).toFixed(2)}
-              </Text>
-              <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
-            </View>
-          )}
-        />
-
-        {/* Trucker Rating Section */}
-        <Text style={styles.sectionTitle}>⭐ Your Rating</Text>
-        <View style={[styles.card, styles.ratingCard]}>
-          <Text style={styles.ratingText}>{rating.toFixed(1)} / 5</Text>
-        </View>
-
-        {/* Profile Navigation Button */}
-        <View style={styles.buttonContainer}>
-          <Button title="Go to Profile" onPress={() => router.push("/UserProfileTest")} />
-        </View>
-      </ScrollView>
+        renderItem={({ item }) => (
+          <View style={[styles.card, styles.tripCard]}>
+            <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
+            <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
+            <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
+            <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+          </View>
+        )}
+      />
     </SafeAreaView>
   );
 };

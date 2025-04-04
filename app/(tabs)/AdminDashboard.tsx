@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Button,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -17,6 +18,7 @@ import {
   Trucker,
   Reimbursement,
 } from "../../services/api";
+import { router } from 'expo-router'
 
 const AdminDashboard = () => {
   const admin = useSelector((state: RootState) => state.user);
@@ -106,6 +108,14 @@ const AdminDashboard = () => {
           </View>
         )}
       />
+
+      {/* Profile Navigation Button */}
+       <View style={styles.buttonContainer}>
+          <Button title="Go to Profile" onPress={() => router.push("/UserProfileTest")} />
+        </View>
+       <View style={styles.buttonContainer}>
+          <Button title="Signout" onPress={() => router.push("/")} />
+        </View>
     </ScrollView>
   );
 };
@@ -177,6 +187,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#ff9800", // Orange for rating
   },
+  buttonContainer: {
+    marginTop: 20,
+    alignSelf: "center",
+  }
 });
 
 export default AdminDashboard;
