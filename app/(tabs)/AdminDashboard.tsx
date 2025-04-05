@@ -19,6 +19,7 @@ import {
   Reimbursement,
 } from "../../services/api";
 import { router } from 'expo-router'
+import { TouchableOpacity } from "react-native";
 
 const AdminDashboard = () => {
   const admin = useSelector((state: RootState) => state.user);
@@ -118,14 +119,14 @@ const AdminDashboard = () => {
       />
 
       {/* Profile Navigation Button */}
-       <View style={styles.buttonContainer}>
-          <View style={styles.button}>
-            <Button title="Go to Profile" color="#7F9FB4" onPress={() => router.push("/UserProfileTest")} />
-          </View>
-          <View style={[styles.button, styles.signoutButton]}>
-            <Button title="Sign Out" color="#7F9FB4" onPress={() => router.push("/")} />
-          </View>
-        </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push("/UserProfileTest")}>
+          <Text style={styles.buttonText}>Go to Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.signoutButton]} onPress={() => router.push("/")}>
+          <Text style={styles.buttonText}>Sign Out</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
@@ -245,16 +246,25 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '90%',
     gap: 12,
+    padding: 10,
+    borderRadius: 10,
   },
   button: {
     backgroundColor: '#7F9FB4',
     borderRadius: 10,
-    overflow: 'hidden',
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
+  },
+  buttonText: {
+    color: '#202545',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   signoutButton: {
     backgroundColor: '#7F9FB4',
