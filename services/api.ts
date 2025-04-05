@@ -190,7 +190,7 @@ export const getAllReimbursements = async (): Promise<Reimbursement[]> => {
 };
 
 export const createReimbursement = async (
-  reimbursementData: Reimbursement
+  reimbursementData: Omit<Reimbursement, 'reimbursement_id'> // Exclude reimbursement_id for creation
 ): Promise<Reimbursement> => {
   const response = await axios.post<Reimbursement>(
     `${API_URL}/reimbursements`,

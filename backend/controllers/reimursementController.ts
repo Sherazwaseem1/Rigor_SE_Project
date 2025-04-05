@@ -14,16 +14,22 @@ export const getAllReimbursements = async (req: Request, res: Response): Promise
 // 🟣 Create a new reimbursement
 export const createReimbursement = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { reimbursement_id, trip_id, amount, receipt_url, status, comments, admin_id } = req.body;
+        const { trip_id, amount, receipt_url, status, comments, admin_id } = req.body;
 
         // ✅ Ensure required fields are provided
-        if (!reimbursement_id || !trip_id || !amount || !receipt_url || !status || !admin_id) {
+        if (!trip_id || !amount || !receipt_url || !status || !admin_id) {
             res.status(400).json({ error: "Missing required fields" });
             return;
         }
 
+        // Find the highest existing reimbursement_id
+        const maxReimbursement = await Reimbursement.findOne().sort({ reimbursement_id: -1 });
+
+        // Set the new reimbursement_id to max(currendid) + 1 or 1 if no records exist
+        const newReimbursementId = maxReimbursement ? maxReimbursement.reimbursement_id + 1 : 1;
+
         const newReimbursement = new Reimbursement({
-            reimbursement_id,
+            reimbursement_id: newReimbursementId, // Use the generated ID
             trip_id: Number(trip_id),  // ✅ Ensure numeric type
             amount,
             receipt_url,
