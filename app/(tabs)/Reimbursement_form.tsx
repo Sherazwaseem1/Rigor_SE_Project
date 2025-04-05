@@ -11,33 +11,40 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { createReimbursement } from "../../services/api";
-import { router } from "expo-router"; 
+import { createReimbursement, Reimbursement } from "../../services/api";
+import { router } from "expo-router";
 
 const ReimbursementFormScreen: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const [form, setForm] = useState({
     trip_id: 1001,
     amount: 0,
-    receipt_url: "",
+    receipt_url: "https://example.com/receipt.pdf",
     status: "Pending",
     comments: "",
     admin_id: user.id,
   });
 
   const handleInputChange = (key: keyof typeof form, value: any) => {
+    if (key === "amount") {
+      // Convert value to number for the amount field
+      value = parseFloat(value) || 0; // Ensure it's a valid number or fallback to 0
+    }
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = async () => {
     const { trip_id, amount, status, comments, admin_id, receipt_url } = form;
 
-    if (!amount) {
-      Alert.alert("Missing Info", "Please fill the required fields.");
+    // Check if amount is valid
+    if (amount <= 0) {
+      Alert.alert("Missing Info", "Please enter a valid amount.");
       return;
     }
 
-    const reimbursementData = {
+    // Format amount for MongoDB Decimal128
+    const reimbursementData: Reimbursement = {
+      reimbursement_id: 1,
       trip_id,
       amount: { $numberDecimal: amount.toString() }, // MongoDB Decimal128 format
       receipt_url, // Can be empty string for now
@@ -46,13 +53,16 @@ const ReimbursementFormScreen: React.FC = () => {
       admin_id,
     };
 
+    console.log("Submitting reimbursement:", reimbursementData); // Log the data before sending t
+
     try {
       const response = await createReimbursement(reimbursementData);
       Alert.alert("Success", "Reimbursement request submitted successfully!");
-      router.push("/TruckerDashboard"); 
-    } catch (error) {
+      router.push("/TruckerDashboard");
+    } catch (error: any) {
       console.error("Error submitting reimbursement:", error);
-      Alert.alert("Error", "Failed to submit reimbursement.");
+      const errorMessage = error?.response?.data?.error || "Failed to submit reimbursement.";
+      Alert.alert("Error", errorMessage);
     }
   };
 
@@ -65,13 +75,15 @@ const ReimbursementFormScreen: React.FC = () => {
         <TextInput
           style={styles.input}
           keyboardType="numeric"
-          onChangeText={(text) => handleInputChange("amount", parseFloat(text))}
+          value={form.amount.toString()} // Convert to string only for display
+          onChangeText={(text) => handleInputChange("amount", text)} // Keep input as string, convert in function
         />
 
         <Text style={styles.label}>Comments (Optional):</Text>
         <TextInput
           style={[styles.input, { height: 100 }]}
           multiline
+          value={form.comments}
           onChangeText={(text) => handleInputChange("comments", text)}
         />
 
