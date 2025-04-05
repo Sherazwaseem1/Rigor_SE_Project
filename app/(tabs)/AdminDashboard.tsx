@@ -124,7 +124,7 @@ const AdminDashboard = () => {
           <Text style={styles.buttonText}>Go to Profile</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.button, styles.signoutButton]} onPress={() => router.push("/")}>
-          <Text style={styles.buttonText}>Sign Out</Text>
+          <Text style={styles.signoutButtonText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -282,12 +282,17 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   buttonText: {
-    color: '#202545',
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#202545'
   },
   signoutButton: {
-    backgroundColor: '#7F9FB4',
+    backgroundColor: '#9B403D',
+  },
+  signoutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
