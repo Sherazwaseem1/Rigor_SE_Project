@@ -55,7 +55,7 @@ const AdminDashboard = () => {
     <ScrollView style={styles.container}>
       {/* Welcome Section */}
       <View style={styles.welcomeContainer}>
-        <Text style={styles.header}>Welcome, {admin.name} 👋</Text>
+        <Text style={styles.header}>Welcome, {admin.name}!</Text>
       </View>
 
       {/* Active Trips Section */}
