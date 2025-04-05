@@ -77,7 +77,7 @@ const TruckerDashboard = () => {
                 <Text style={styles.cardText}>Trip ID: {ongoingTrip.trip_id}</Text>
                 <Text style={styles.cardText}>📍 Start: {ongoingTrip.start_location}</Text>
                 <Text style={styles.cardText}>🏁 End: {ongoingTrip.end_location}</Text>
-                <Text style={[styles.cardText, styles.statusText]}>Status: {ongoingTrip.status}</Text>
+                <Text style={[styles.cardText, styles.statusText, { color: ongoingTrip.status === 'Completed' ? '#4CAF50' : '#202545' }]}>Status: {ongoingTrip.status}</Text>
               </View>
             ) : (
               <View style={[styles.card, styles.placeholderCard]}>
@@ -101,7 +101,7 @@ const TruckerDashboard = () => {
                     <Text style={styles.cardText}>
                       💵 Amount: ${parseFloat(item.amount.$numberDecimal).toFixed(2)}
                     </Text>
-                    <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+                    <Text style={[styles.cardText, styles.statusText, { color: item.status === 'Completed' ? '#4CAF50' : '#202545' }]}>Status: {item.status}</Text>
                   </View>
                 ))}
               </View>
@@ -129,7 +129,7 @@ const TruckerDashboard = () => {
             <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
             <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
             <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
-            <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+            <Text style={[styles.cardText, styles.statusText, { color: item.status === 'Completed' ? '#4CAF50' : '#202545' }]}>Status: {item.status}</Text>
           </View>
         )}
       />
