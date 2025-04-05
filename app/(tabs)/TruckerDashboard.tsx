@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#202545',
-    fontWeight: '600',
+    fontWeight: 'bold',
     fontSize: 16,
   },
   signoutButton: {
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   },
   signoutButtonText: {
     color: 'white',
-    fontWeight: '600',
+    fontWeight: 'bold',
     fontSize: 16,
   },
   cardText: {

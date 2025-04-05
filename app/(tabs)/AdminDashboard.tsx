@@ -59,7 +59,7 @@ const AdminDashboard = () => {
       </View>
 
       {/* Active Trips Section */}
-      <Text style={styles.sectionTitle}>Ongoing Trips</Text>
+      <Text style={styles.sectionTitle}>🚛 Ongoing Trips</Text>
       <FlatList
         data={activeTrips}
         keyExtractor={(trip) => trip.trip_id.toString()}
