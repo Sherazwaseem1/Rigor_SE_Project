@@ -66,7 +66,6 @@ export const getTripsByStatus = async (req: Request, res: Response): Promise<voi
 export const createTrip = async (req: Request, res: Response): Promise<void> => {
     try {
         const {
-            trip_id,
             trucker_id,
             truck_id,
             start_location,
@@ -79,14 +78,18 @@ export const createTrip = async (req: Request, res: Response): Promise<void> => 
             trip_rating
         } = req.body;
 
-        // ✅ Ensure required fields are provided
-        if (!trip_id || !trucker_id || !truck_id || !start_location || !end_location || !start_time || !status || !distance || !assigned_by_admin_id) {
+        // ✅ Ensure required fields are provided (excluding trip_id now)
+        if (!trucker_id || !truck_id || !start_location || !end_location || !start_time || !status || !distance || !assigned_by_admin_id) {
             res.status(400).json({ error: "Missing required fields" });
             return;
         }
 
+        // ✅ Get the max existing trip_id
+        const latestTrip = await Trip.findOne().sort({ trip_id: -1 }).exec();
+        const newTripId = latestTrip ? latestTrip.trip_id + 1 : 1;
+
         const newTrip = new Trip({
-            trip_id: Number(trip_id),
+            trip_id: newTripId,
             trucker_id: Number(trucker_id),
             truck_id: Number(truck_id),
             start_location,

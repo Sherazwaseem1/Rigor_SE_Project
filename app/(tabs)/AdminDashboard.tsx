@@ -35,7 +35,7 @@ const AdminDashboard = () => {
         const truckersData = await getAllTruckers();
         const reimbursementsData = await getAllReimbursements();
 
-        setActiveTrips(tripsData);
+        setActiveTrips(tripsData.filter(trip => trip.status === "Scheduled"));
         setTruckers(truckersData);
         setPendingReimbursements(reimbursementsData.filter(r => r.status === "Pending"));
           
@@ -115,7 +115,10 @@ const AdminDashboard = () => {
         </View>
        <View style={styles.buttonContainer}>
           <Button title="Signout" onPress={() => router.push("/")} />
-        </View>
+      </View>
+      <View style={styles.buttonContainer}>
+              <Button title="TripAssignment" onPress={() => router.push("/TripAssignmentFrom")} />
+      </View>
     </ScrollView>
   );
 };

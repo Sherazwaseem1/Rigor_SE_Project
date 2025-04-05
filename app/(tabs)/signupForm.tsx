@@ -81,7 +81,7 @@ const SignUp = () => {
                 phone_number: phoneNumber,
                 email,
                 rating: 0, // Default rating
-                status: "active", // Default status
+                status: "Inactive", // Default status
                 age: parseInt(age, 10),
                 gender
             };

@@ -46,3 +46,20 @@ export const createTruck = async (req: Request, res: Response): Promise<void> =>
         res.status(400).json({ error: "Failed to create truck", details: error });
     }
 };
+
+// 🟢 Get truck by assigned_trucker_id
+export const getTruckByTruckerId = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { truckerId } = req.params;
+        const truck = await Truck.findOne({ assigned_trucker_id: Number(truckerId) });
+
+        if (!truck) {
+            res.status(404).json({ error: "Truck not found for this trucker ID" });
+            return;
+        }
+
+        res.status(200).json(truck);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch truck", details: error });
+    }
+};

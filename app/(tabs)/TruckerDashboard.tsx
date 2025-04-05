@@ -119,6 +119,7 @@ const TruckerDashboard = () => {
             <View style={styles.buttonContainer}>
               <Button title="Signout" onPress={() => router.push("/")} />
             </View>
+
           </View>
         )}
         renderItem={({ item }) => (

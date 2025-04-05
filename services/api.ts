@@ -268,8 +268,8 @@ export const getTripsByStatus = async (status: string): Promise<Trip[]> => {
   return response.data;
 };
 
-export const createTrip = async (tripData: Trip): Promise<Trip> => {
-  const response = await axios.post<Trip>(`${API_URL}/trips`, tripData);
+export const createTrip = async (trip: Omit<Trip, 'trip_id'>): Promise<Trip> => {
+  const response = await axios.post(`${API_URL}/trips`, trip);
   return response.data;
 };
 
@@ -288,15 +288,6 @@ export const getAllTrucks = async (): Promise<Truck[]> => {
   return response.data;
 };
 
-// ✅ Define TypeScript Interface for Truck (excluding truck_id in request)
-export interface Truck {
-  truck_id: number; // This is returned from the backend, no need to send it
-  license_plate: string;
-  chassis_number: string;
-  capacity: number;
-  assigned_trucker_id?: number;
-}
-
 // ✅ Define the type for truck creation request (without truck_id)
 export interface CreateTruckRequest {
   license_plate: string;
@@ -309,4 +300,10 @@ export interface CreateTruckRequest {
 export const createTruck = async (truckData: CreateTruckRequest): Promise<Truck> => {
   const response = await axios.post<Truck>(`${API_URL}/trucks`, truckData);
   return response.data;
+};
+
+export const getTruckByTruckerId = async (truckerId: number) => {
+  const res = await fetch(`${API_URL}/trucks/by-trucker/${truckerId}`);
+  if (!res.ok) throw new Error("Failed to fetch truck for trucker");
+  return res.json();
 };
