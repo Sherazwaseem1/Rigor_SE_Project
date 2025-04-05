@@ -74,7 +74,7 @@ const AdminDashboard = () => {
               <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
               <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
               <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
-              <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+              <Text style={[styles.cardText, styles.statusText, { color: item.status === 'Completed' ? '#4CAF50' : item.status === 'Pending' ? '#9B403D' : '#202545' }]}>Status: {item.status}</Text>
             </View>
           </View>
         )}
@@ -98,7 +98,7 @@ const AdminDashboard = () => {
             <Text style={styles.cardText}>
               💵 Amount: ${parseFloat(item.amount.$numberDecimal).toFixed(2)} {/* Fixing NaN issue */}
             </Text>
-            <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+            <Text style={[styles.cardText, styles.statusText, { color: item.status === 'Completed' ? '#4CAF50' : item.status === 'Pending' ? '#9B403D' : '#202545' }]}>Status: {item.status}</Text>
           </View>
         )}
       />
@@ -156,13 +156,23 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: '600',
+    fontSize: 28,
+    fontWeight: 'bold',
     marginTop: 25,
     marginBottom: 15,
-    color: '#202545',
+    color: '#ffffff',
     textAlign: 'left',
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: '#202545',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
   },
   card: {
     backgroundColor: '#ffffff',
@@ -232,7 +242,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontWeight: '600',
-    color: '#1a237e',
+    color: '#202545',
     fontSize: 15,
   },
   ratingText: {
