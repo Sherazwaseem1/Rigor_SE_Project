@@ -58,18 +58,26 @@ const AdminDashboard = () => {
       </View>
 
       {/* Active Trips Section */}
-      <Text style={styles.sectionTitle}>🚛 Active Trips</Text>
+      <Text style={styles.sectionTitle}>Ongoing Trips</Text>
       <FlatList
         data={activeTrips}
         keyExtractor={(trip) => trip.trip_id.toString()}
         renderItem={({ item }) => (
           <View style={[styles.card, styles.tripCard]}>
-            <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
-            <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
-            <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
-            <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+            <View style={styles.tripHeader}>
+              <Text style={styles.tripRoute}>{item.start_location} → {item.end_location}</Text>
+              <Text style={styles.tripTime}>12:00</Text>
+            </View>
+            <View>
+              <Text style={styles.tripDriver}>{item.trucker_name || 'Driver Name'}</Text>
+              <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
+              <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
+              <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
+              <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+            </View>
           </View>
         )}
+        style={styles.tripList}
       />
 
       {/* Live Truck Locations Placeholder */}
@@ -111,10 +119,12 @@ const AdminDashboard = () => {
 
       {/* Profile Navigation Button */}
        <View style={styles.buttonContainer}>
-          <Button title="Go to Profile" onPress={() => router.push("/UserProfileTest")} />
-        </View>
-       <View style={styles.buttonContainer}>
-          <Button title="Signout" onPress={() => router.push("/")} />
+          <View style={styles.button}>
+            <Button title="Go to Profile" color="#7F9FB4" onPress={() => router.push("/UserProfileTest")} />
+          </View>
+          <View style={[styles.button, styles.signoutButton]}>
+            <Button title="Sign Out" color="#7F9FB4" onPress={() => router.push("/")} />
+          </View>
         </View>
     </ScrollView>
   );
@@ -123,74 +133,132 @@ const AdminDashboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#e3f2fd", // Light blue background
+    backgroundColor: '#fff',
     padding: 15,
   },
   welcomeContainer: {
-    backgroundColor: "#0d47a1", // Dark blue
+    backgroundColor: '#202545',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 15,
     marginBottom: 20,
-    alignItems: "center",
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#fff',
+    letterSpacing: 0.5,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 20,
-    marginBottom: 10,
-    color: "#0d47a1", // Dark blue
-    textAlign: 'center', // Center the headings
+    fontSize: 22,
+    fontWeight: '600',
+    marginTop: 25,
+    marginBottom: 15,
+    color: '#202545',
+    textAlign: 'left',
+    paddingHorizontal: 10,
   },
   card: {
-    backgroundColor: "#ffffff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 3 },
+    backgroundColor: '#ffffff',
+    padding: 18,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
-    elevation: 3,
-    marginHorizontal: 10, // Ensures the cards don't extend too far right
+    elevation: 4,
+    marginHorizontal: 10,
+  },
+  tripList: {
+    paddingHorizontal: 5,
   },
   tripCard: {
-    borderLeftWidth: 5,
-    borderLeftColor: "#ff9800", // Orange for trips
+    backgroundColor: '#ffffff',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  tripHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  tripRoute: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#1a237e',
+    letterSpacing: 0.2,
+  },
+  tripTime: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#d32f2f',
+  },
+  tripDriver: {
+    fontSize: 13,
+    color: '#757575',
+    marginTop: 2,
   },
   reimbursementCard: {
-    borderLeftWidth: 5,
-    borderLeftColor: "#4caf50", // Green for reimbursements
+    borderLeftWidth: 0,
+    borderRadius: 12,
   },
   truckerCard: {
-    borderLeftWidth: 5,
-    borderLeftColor: "#2196f3", // Blue for truckers
+    borderLeftWidth: 0,
+    borderRadius: 12,
   },
   placeholderCard: {
-    backgroundColor: "#cfd8dc", // Grey for placeholder
-    alignItems: "center",
+    backgroundColor: '#f8f9fa',
+    alignItems: 'center',
   },
   cardText: {
     fontSize: 16,
-    marginBottom: 5,
-    color: "#333",
+    marginBottom: 8,
+    color: '#202545',
+    fontWeight: '500',
   },
   statusText: {
-    fontWeight: "bold",
-    color: "#d32f2f", // Red for status
+    fontWeight: '600',
+    color: '#1a237e',
+    fontSize: 15,
   },
   ratingText: {
-    fontWeight: "bold",
-    color: "#ff9800", // Orange for rating
+    fontWeight: '600',
+    color: '#ffa000',
+    fontSize: 15,
   },
   buttonContainer: {
-    marginTop: 20,
-    alignSelf: "center",
-  }
+    marginTop: 25,
+    marginBottom: 15,
+    alignSelf: 'center',
+    width: '90%',
+    gap: 12,
+  },
+  button: {
+    backgroundColor: '#7F9FB4',
+    borderRadius: 10,
+    overflow: 'hidden',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  signoutButton: {
+    backgroundColor: '#7F9FB4',
+  },
 });
 
 export default AdminDashboard;
