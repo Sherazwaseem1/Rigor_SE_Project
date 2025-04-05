@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch } from 'react-native'
+import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch, ScrollView } from 'react-native'
 import { ThemedView } from '@/components/ThemedView'
 import { Ionicons } from '@expo/vector-icons';
 
@@ -89,7 +89,11 @@ const Login = () => {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ThemedView style={styles.container}>
+            <ScrollView 
+                contentContainerStyle={styles.scrollContainer}
+                keyboardShouldPersistTaps="handled"
+            >
+                <ThemedView style={styles.container}>
                 
                 {/* Back Button */}
                 <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
@@ -102,8 +106,6 @@ const Login = () => {
                 {/* Logo */}
                 <View style={styles.logoContainer}>
                     <Image source={require('../../assets/images/truck.png')} style={styles.logo} />
-                </View>
-                <View style={styles.subtitleContainer}>
                     <Text style={styles.subtitleText}>Have a better trucking experience</Text>
                 </View>
 
@@ -167,6 +169,7 @@ const Login = () => {
                     </>
                 )}
             </ThemedView>
+            </ScrollView>
         </SafeAreaView>
     )
 }
@@ -177,6 +180,9 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: '#f8f9fa',
+    },
+    scrollContainer: {
+        flexGrow: 1,
     },
     container: {
         flex: 1,
@@ -206,23 +212,19 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         alignItems: 'center',
-        marginBottom: Math.max(screenHeight * 0.005, 5),
-        marginTop: Math.max(screenHeight * 0.03, 30),
+        marginBottom: Math.max(screenHeight * 0.002, 6),
+        marginTop: Math.max(screenHeight * 0.02, 15),
     },
     logo: {
-        width: Math.min(screenWidth * 0.7, 240),
-        height: Math.min(screenWidth * 0.7, 240),
+        width: Math.min(screenWidth * 0.6, 200),
+        height: Math.min(screenWidth * 0.6, 200),
         resizeMode: 'contain',
-    },
-    subtitleContainer: {
-        alignItems: 'center',
-        marginTop: Math.max(screenHeight * -0.08, -50),
-        marginBottom: Math.max(screenHeight * 0.02, 20),
     },
     subtitleText: {
         fontSize: Math.min(screenWidth * 0.04, 16),
         color: '#202545',
         textAlign: 'center',
+        marginTop: Math.max(screenHeight * 0.001, 1),
     },
     input: {
         width: '100%',
@@ -267,7 +269,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: Math.min(screenWidth * 0.02, 8),
-        marginTop: Math.max(screenHeight * 0.05, 40),
+        marginTop: Math.max(screenHeight * 0.03, 24),
         marginBottom: Math.max(screenHeight * 0.02, 16),
     },
     signUpButton: {
@@ -281,8 +283,8 @@ const styles = StyleSheet.create({
     switchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: Math.max(screenHeight * 0.04, 32),
-        marginTop: Math.max(screenHeight * 0.02, 16),
+        marginBottom: Math.max(screenHeight * 0.03, 24),
+        marginTop: Math.max(screenHeight * 0.01, 8),
     },
     switchLabel: {
         marginRight: Math.max(screenWidth * 0.02, 10),
@@ -292,8 +294,7 @@ const styles = StyleSheet.create({
     signUpText: {
         fontSize: Math.min(screenWidth * 0.04, 16),
         color: "#202545",
-        marginTop: Math.max(screenHeight * 0.03, 24),
-        marginBottom: Math.max(screenHeight * 0.02, 16),
+        marginTop: Math.max(screenHeight * 0.015, 12),
         textAlign: "center",
     },
     signUpLink: {
