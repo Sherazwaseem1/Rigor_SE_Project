@@ -35,7 +35,7 @@ const TruckerDashboard = () => {
       try {
         const tripsData = await getTripsByTruckerId(trucker.id);
         const completedTrips = tripsData.filter(trip => trip.status === "Completed");
-        const activeTrip = tripsData.find(trip => trip.status === "Ongoing");
+        const activeTrip = tripsData.find(trip => trip.status === "Scheduled");
         
         const truckerData = await getTruckerByEmail(trucker.email);
         setRating(truckerData.rating || 0);
