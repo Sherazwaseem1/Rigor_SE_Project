@@ -205,6 +205,11 @@ const SignUp = () => {
                             <Text style={styles.buttonText}>Create Account</Text>
                         </TouchableOpacity>
                     )}
+                    <TouchableOpacity onPress={() => router.push('/loginForm')}>
+                        <Text style={styles.signUpText}>
+                            Already have an account? <Text style={styles.signUpLink}>Log in</Text>
+                        </Text>
+                    </TouchableOpacity>
                 </ThemedView>
             </ScrollView>
         </SafeAreaView>
@@ -320,5 +325,15 @@ const styles = StyleSheet.create({
     picker: {
         width: '100%',
         height: '110%',
+    },
+    signUpText: {
+        fontSize: Math.min(screenWidth * 0.04, 16),
+        color: '#202545',
+        textAlign: 'center',
+        marginTop: Math.max(screenHeight * 0.015, 10),
+    },
+    signUpLink: {
+        color: '#7F9FB4',
+        fontWeight: 'bold',
     },
 });
