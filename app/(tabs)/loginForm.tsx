@@ -2,6 +2,7 @@ import React from 'react'
 import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch, ScrollView } from 'react-native'
 import { ThemedView } from '@/components/ThemedView'
 import { Ionicons } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 import { FIREBASE_AUTH } from '../../firebaseConfig'
@@ -22,7 +23,7 @@ const Login = () => {
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
     const [passwordError, setPasswordError] = React.useState('')
-    const [isAdmin, setIsAdmin] = React.useState(false); // New state to track user type (admin or trucker)
+    const [userType, setUserType] = React.useState('trucker'); // New state for dropdown
     const [isPasswordVisible, setIsPasswordVisible] = React.useState(false); // Password visibility state
 
     const dispatch = useDispatch(); // Get Redux dispatch function
@@ -47,7 +48,7 @@ const Login = () => {
             alert("SIGNED IN YAYY");
 
             let userData;
-            if (isAdmin) {
+            if (userType === 'admin') {
                 // Fetch admin data
                 userData = await getAdminByEmail(email); // Define the getAdminByEmail function
                 if (!userData) {
@@ -144,13 +145,17 @@ const Login = () => {
                 </View>
                 {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
-                {/* Admin/Trucker Switch */}
-                <View style={styles.switchContainer}>
-                    <Text style={styles.switchLabel}>Login as {isAdmin ? 'Admin' : 'Trucker'}</Text>
-                    <Switch
-                        value={isAdmin}
-                        onValueChange={(value) => setIsAdmin(value)}
-                    />
+                {/* Admin/Trucker Dropdown */}
+                <View style={styles.dropdownContainer}>
+                    <Text style={styles.dropdownLabel}>Login as:</Text>
+                    <Picker
+                        selectedValue={userType}
+                        onValueChange={(itemValue) => setUserType(itemValue)}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label="Trucker" value="trucker" />
+                        <Picker.Item label="Admin" value="admin" />
+                    </Picker>
                 </View>
 
                 {/* Loading Indicator or Buttons */}
@@ -300,5 +305,21 @@ const styles = StyleSheet.create({
     signUpLink: {
         color: "#7F9FB4",
         fontWeight: "bold",
+    },
+    dropdownContainer: {
+        width: '100%',
+        marginBottom: Math.max(screenHeight * 0.03, 24),
+    },
+    dropdownLabel: {
+        fontSize: Math.min(screenWidth * 0.04, 16),
+        color: '#202545',
+        marginBottom: Math.max(screenHeight * 0.01, 8),
+    },
+    picker: {
+        height: Math.max(screenHeight * 0.065, 52),
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: Math.min(screenWidth * 0.02, 8),
+        backgroundColor: '#f9f9f9',
     },
 })
