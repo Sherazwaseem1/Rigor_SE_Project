@@ -53,7 +53,7 @@ const TruckerDashboard = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [trucker.name]);
 
   if (loading) return <ActivityIndicator size="large" color="#007bff" />;
 
