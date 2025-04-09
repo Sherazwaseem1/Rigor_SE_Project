@@ -46,8 +46,13 @@ export const getTruckerByEmail = async (email: string): Promise<Trucker> => {
   return response.data;
 };
 
-export const createTrucker = async (truckerData: NewTrucker): Promise<Trucker> => {
-  const response = await axios.post<Trucker>(`${API_URL}/truckers`, truckerData);
+export const createTrucker = async (
+  truckerData: NewTrucker
+): Promise<Trucker> => {
+  const response = await axios.post<Trucker>(
+    `${API_URL}/truckers`,
+    truckerData
+  );
   return response.data;
 };
 
@@ -71,10 +76,16 @@ export const deleteTrucker = async (
   return response.data;
 };
 
-export const updateTruckerStatus = async (truckerId: number, status: string) => {
-  const response = await axios.patch(`${API_URL}/truckers/status/${truckerId}`, {
-    status,
-  });
+export const updateTruckerStatus = async (
+  truckerId: number,
+  status: string
+) => {
+  const response = await axios.patch(
+    `${API_URL}/truckers/status/${truckerId}`,
+    {
+      status,
+    }
+  );
   return response.data;
 };
 
@@ -187,7 +198,6 @@ export interface Reimbursement {
   admin_id: number;
 }
 
-
 // ✅ Reimbursement APIs
 export const getAllReimbursements = async (): Promise<Reimbursement[]> => {
   const response = await axios.get<Reimbursement[]>(
@@ -197,7 +207,7 @@ export const getAllReimbursements = async (): Promise<Reimbursement[]> => {
 };
 
 export const createReimbursement = async (
-  reimbursementData: Omit<Reimbursement, 'reimbursement_id'> // Exclude reimbursement_id for creation
+  reimbursementData: Omit<Reimbursement, "reimbursement_id"> // Exclude reimbursement_id for creation
 ): Promise<Reimbursement> => {
   const response = await axios.post<Reimbursement>(
     `${API_URL}/reimbursements`,
@@ -246,6 +256,7 @@ export interface Trip {
   distance: number;
   assigned_by_admin_id: number;
   trip_rating: number; // Optional
+  trucker_name?: string; // Optional field for trucker name
 }
 
 // ✅ Trip APIs
@@ -275,7 +286,9 @@ export const getTripsByStatus = async (status: string): Promise<Trip[]> => {
   return response.data;
 };
 
-export const createTrip = async (trip: Omit<Trip, 'trip_id'>): Promise<Trip> => {
+export const createTrip = async (
+  trip: Omit<Trip, "trip_id">
+): Promise<Trip> => {
   const response = await axios.post(`${API_URL}/trips`, trip);
   return response.data;
 };
@@ -304,7 +317,9 @@ export interface CreateTruckRequest {
 }
 
 // ✅ Update API function to exclude `truck_id` from request
-export const createTruck = async (truckData: CreateTruckRequest): Promise<Truck> => {
+export const createTruck = async (
+  truckData: CreateTruckRequest
+): Promise<Truck> => {
   const response = await axios.post<Truck>(`${API_URL}/trucks`, truckData);
   return response.data;
 };
