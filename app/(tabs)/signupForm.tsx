@@ -6,8 +6,8 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedText } from '@/components/ThemedText';
-import { createTrucker, NewTrucker } from "../../services/api"; // Import API function for admin (you need to define this)
-import { Picker } from '@react-native-picker/picker'; // Import Picker
+import { createTrucker, NewTrucker } from "../../services/api"; 
+import { Picker } from '@react-native-picker/picker'; 
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -39,6 +39,18 @@ const SignUp = () => {
         setPasswordError('');
         return true;
     };
+
+    const handleClear = () => {
+        setName('');
+        setEmail('');
+        setPassword('');
+        setRepeatPassword('');
+        setPhoneNumber('');
+        setAge('');
+        setGender('');
+        setPasswordError('');
+        setPasswordMatchError('');
+      };
 
     const onPasswordChange = (text: string) => {
         setPassword(text);
@@ -88,7 +100,7 @@ const SignUp = () => {
     
             await createTrucker(newTrucker);
             console.log('Trucker entry created:', newTrucker);
-
+            handleClear(); // Clear the input fields after successful sign-up
             router.push("/loginForm");
         } catch (error: any) {
             console.error('Error signing up:', error);
@@ -107,7 +119,10 @@ const SignUp = () => {
                 <ThemedView style={styles.container}>
                     
                     {/* Back Button */}
-                    <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+                    <TouchableOpacity style={styles.backButton} onPress={() => { 
+                        handleClear();
+                        router.back(); // Navigate back to the previous screen
+                    } }>
                         <View style={styles.backButtonContent}>
                             <IconSymbol size={24} name="chevron.left" color="#333" />
                             <ThemedText style={styles.backButtonLabel}>Back</ThemedText>

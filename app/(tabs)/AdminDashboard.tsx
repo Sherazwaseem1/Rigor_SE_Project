@@ -136,7 +136,6 @@ const AdminDashboard = () => {
             <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
             <Text style={styles.cardText}>
               💵 Amount: ${parseFloat(item.amount.$numberDecimal).toFixed(2)}{" "}
-              {/* Fixing NaN issue */}
             </Text>
             <Text
               style={[

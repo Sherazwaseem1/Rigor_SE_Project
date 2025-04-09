@@ -28,7 +28,7 @@ const ReimbursementFormScreen: React.FC = () => {
   const handleInputChange = (key: keyof typeof form, value: any) => {
     if (key === "amount") {
       // Convert value to number for the amount field
-      value = parseFloat(value) || 0; // Ensure it's a valid number or fallback to 0
+      value = parseFloat(value) || 0; 
     }
     setForm((prev) => ({ ...prev, [key]: value }));
   };
@@ -46,7 +46,7 @@ const ReimbursementFormScreen: React.FC = () => {
     const reimbursementData: Reimbursement = {
       reimbursement_id: 1,
       trip_id,
-      amount: { $numberDecimal: amount.toString() }, // MongoDB Decimal128 format
+      amount: { $numberDecimal: amount.toString() }, 
       receipt_url, // Can be empty string for now
       status,
       comments,
