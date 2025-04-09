@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch } from 'react-native'
+import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch, ScrollView } from 'react-native'
 import { ThemedView } from '@/components/ThemedView'
 import { Ionicons } from '@expo/vector-icons';
 
@@ -89,7 +89,11 @@ const Login = () => {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ThemedView style={styles.container}>
+            <ScrollView 
+                contentContainerStyle={styles.scrollContainer}
+                keyboardShouldPersistTaps="handled"
+            >
+                <ThemedView style={styles.container}>
                 
                 {/* Back Button */}
                 <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
@@ -165,6 +169,7 @@ const Login = () => {
                     </>
                 )}
             </ThemedView>
+            </ScrollView>
         </SafeAreaView>
     )
 }
@@ -176,12 +181,17 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f8f9fa',
     },
+    scrollContainer: {
+        flexGrow: 1,
+    },
     container: {
         flex: 1,
-        padding: Math.max(screenWidth * 0.05, 20),
-        justifyContent: 'center',
+        padding: Math.max(screenWidth * 0.06, 24),
+        justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#fff',
+        paddingTop: Math.max(screenHeight * 0.08, 60),
+        paddingBottom: Math.max(screenHeight * 0.05, 40),
     },
     backButton: {
         position: 'absolute',
@@ -202,8 +212,8 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         alignItems: 'center',
-        marginBottom: Math.max(screenHeight * 0.03, 20),
-        marginTop: Math.max(screenHeight * 0.05, 30),
+        marginBottom: Math.max(screenHeight * 0.002, 6),
+        marginTop: Math.max(screenHeight * 0.02, 15),
     },
     logo: {
         width: Math.min(screenWidth * 0.6, 200),
@@ -212,18 +222,18 @@ const styles = StyleSheet.create({
     },
     subtitleText: {
         fontSize: Math.min(screenWidth * 0.04, 16),
-        color: '#555',
+        color: '#202545',
         textAlign: 'center',
-        marginTop: Math.max(screenHeight * 0.015, 10),
+        marginTop: Math.max(screenHeight * 0.001, 1),
     },
     input: {
         width: '100%',
-        height: Math.max(screenHeight * 0.06, 50),
+        height: Math.max(screenHeight * 0.065, 52),
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: Math.min(screenWidth * 0.02, 8),
-        paddingHorizontal: Math.max(screenWidth * 0.03, 15),
-        marginBottom: Math.max(screenHeight * 0.015, 10),
+        paddingHorizontal: Math.max(screenWidth * 0.04, 16),
+        marginBottom: Math.max(screenHeight * 0.02, 16),
         fontSize: Math.min(screenWidth * 0.04, 16),
         backgroundColor: '#f9f9f9',
     },
@@ -254,37 +264,41 @@ const styles = StyleSheet.create({
     },
     button: {
         width: '100%',
-        height: Math.max(screenHeight * 0.06, 50),
-        backgroundColor: '#007bff',
+        height: Math.max(screenHeight * 0.065, 52),
+        backgroundColor: '#7F9FB4',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: Math.min(screenWidth * 0.02, 8),
-        marginVertical: Math.max(screenHeight * 0.015, 10),
+        marginTop: Math.max(screenHeight * 0.03, 24),
+        marginBottom: Math.max(screenHeight * 0.02, 16),
     },
     signUpButton: {
         backgroundColor: '#28a745',
     },
     buttonText: {
-        color: '#fff',
+        color: '#202545',
         fontSize: Math.min(screenWidth * 0.045, 18),
+        fontWeight: 'bold'
     },
     switchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: Math.max(screenHeight * 0.02, 15),
+        marginBottom: Math.max(screenHeight * 0.03, 24),
+        marginTop: Math.max(screenHeight * 0.01, 8),
     },
     switchLabel: {
         marginRight: Math.max(screenWidth * 0.02, 10),
         fontSize: Math.min(screenWidth * 0.04, 16),
+        color: '#202545',
     },
     signUpText: {
         fontSize: Math.min(screenWidth * 0.04, 16),
-        color: "#555",
-        marginTop: Math.max(screenHeight * 0.01, 8),
+        color: "#202545",
+        marginTop: Math.max(screenHeight * 0.015, 12),
         textAlign: "center",
     },
     signUpLink: {
-        color: "#007bff",
+        color: "#7F9FB4",
         fontWeight: "bold",
     },
 })

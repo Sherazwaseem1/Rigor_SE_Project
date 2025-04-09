@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   SafeAreaView,
   Button,
+  TouchableOpacity,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -66,7 +67,7 @@ const TruckerDashboard = () => {
           <View style={styles.container}>
             {/* Welcome Section */}
             <View style={styles.welcomeContainer}>
-              <Text style={styles.header}>Welcome, {trucker.name} 👋</Text>
+              <Text style={styles.header}>Welcome, {trucker.name}</Text>
             </View>
 
             {/* Ongoing Trip Section */}
@@ -76,7 +77,7 @@ const TruckerDashboard = () => {
                 <Text style={styles.cardText}>Trip ID: {ongoingTrip.trip_id}</Text>
                 <Text style={styles.cardText}>📍 Start: {ongoingTrip.start_location}</Text>
                 <Text style={styles.cardText}>🏁 End: {ongoingTrip.end_location}</Text>
-                <Text style={[styles.cardText, styles.statusText]}>Status: {ongoingTrip.status}</Text>
+                <Text style={[styles.cardText, styles.statusText, { color: ongoingTrip.status === 'Completed' ? '#4CAF50' : '#202545' }]}>Status: {ongoingTrip.status}</Text>
               </View>
             ) : (
               <View style={[styles.card, styles.placeholderCard]}>
@@ -100,7 +101,7 @@ const TruckerDashboard = () => {
                     <Text style={styles.cardText}>
                       💵 Amount: ${parseFloat(item.amount.$numberDecimal).toFixed(2)}
                     </Text>
-                    <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+                    <Text style={[styles.cardText, styles.statusText, { color: item.status === 'Completed' ? '#4CAF50' : '#202545' }]}>Status: {item.status}</Text>
                   </View>
                 ))}
               </View>
@@ -114,10 +115,12 @@ const TruckerDashboard = () => {
 
             {/* Profile Navigation Button */}
             <View style={styles.buttonContainer}>
-              <Button title="Go to Profile" onPress={() => router.push("/UserProfileTest")} />
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button title="Signout" onPress={() => router.push("/")} />
+              <TouchableOpacity style={styles.button} onPress={() => router.push("/UserProfileTest")}>
+                <Text style={styles.buttonText}>Go to Profile</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, styles.signoutButton]} onPress={() => router.push("/")}>
+                <Text style={styles.signoutButtonText}>Sign Out</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
               <Button title="Reimbursement Form" onPress={() => router.push("/Reimbursement_form")} />
@@ -130,7 +133,7 @@ const TruckerDashboard = () => {
             <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
             <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
             <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
-            <Text style={[styles.cardText, styles.statusText]}>Status: {item.status}</Text>
+            <Text style={[styles.cardText, styles.statusText, { color: item.status === 'Completed' ? '#4CAF50' : '#202545' }]}>Status: {item.status}</Text>
           </View>
         )}
       />
@@ -141,83 +144,131 @@ const TruckerDashboard = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#e3f2fd",
+    backgroundColor: '#fff',
   },
   container: {
     flex: 1,
-    backgroundColor: "#e3f2fd",
+    backgroundColor: '#fff',
     padding: 15,
   },
   welcomeContainer: {
-    backgroundColor: "#0d47a1",
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
-    alignItems: "center",
+    backgroundColor: '#F5F7FA',
+    padding: 35,
+    borderRadius: 28,
+    marginVertical: 35,
+    marginHorizontal: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderStyle: 'solid',
   },
   header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#2D3748',
+    letterSpacing: 1.5,
+    textShadowColor: 'rgba(0, 0, 0, 0.12)',
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 4,
+    marginBottom: 8,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 22,
+    fontWeight: '600',
     marginTop: 20,
-    marginBottom: 10,
-    color: "#0d47a1",
-    textAlign: "center",
+    marginBottom: 12,
+    color: '#ffffff',
+    textAlign: 'left',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: '#202545',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 2,
+    textTransform: 'capitalize',
+    letterSpacing: 0.8,
   },
   card: {
-    backgroundColor: "#ffffff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 3 },
+    backgroundColor: '#ffffff',
+    padding: 18,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 4,
     marginHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   tripCard: {
     borderLeftWidth: 5,
-    borderLeftColor: "#ff9800",
+    borderLeftColor: '#ff9800',
   },
   reimbursementCard: {
     borderLeftWidth: 5,
-    borderLeftColor: "#4caf50",
+    borderLeftColor: '#4caf50',
   },
   ratingCard: {
-    alignItems: "center",
+    alignItems: 'center',
     padding: 20,
   },
   locationCard: {
-    backgroundColor: "#000",
+    backgroundColor: '#000',
     height: 150,
     borderRadius: 10,
   },
   placeholderCard: {
-    backgroundColor: "#cfd8dc",
-    alignItems: "center",
+    backgroundColor: '#cfd8dc',
+    alignItems: 'center',
   },
   buttonContainer: {
     marginTop: 20,
-    alignSelf: "center",
+    alignSelf: 'center',
+    gap: 12,
+  },
+  button: {
+    backgroundColor: '#7F9FB4',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    minWidth: 200,
+  },
+  buttonText: {
+    color: '#202545',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  signoutButton: {
+    backgroundColor: '#9B403D',
+  },
+  signoutButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   cardText: {
     fontSize: 16,
     marginBottom: 5,
-    color: "#333",
+    color: '#333',
   },
   statusText: {
-    fontWeight: "bold",
-    color: "#d32f2f",
+    fontWeight: 'bold',
+    color: '#d32f2f',
   },
   ratingText: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#ff9800",
+    fontWeight: 'bold',
+    color: '#ff9800',
   },
 });
 

@@ -100,7 +100,10 @@ const SignUp = () => {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <ScrollView 
+                contentContainerStyle={styles.scrollContainer}
+                keyboardShouldPersistTaps="handled"
+            >
                 <ThemedView style={styles.container}>
                     
                     {/* Back Button */}
@@ -114,7 +117,7 @@ const SignUp = () => {
                     {/* Logo */}
                     <View style={styles.logoContainer}>
                         <Image source={require('../../assets/images/truck.png')} style={styles.logo} />
-                        <Text style={styles.subtitleText}>Create your account</Text>
+                        <Text style={styles.subtitleText}>Have a better trucking experience</Text>
                     </View>
 
                     {/* Input Fields */}
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
     },
     subtitleText: {
         fontSize: Math.min(screenWidth * 0.04, 16),
-        color: '#555',
+        color: '#202545',
         textAlign: 'center',
         marginTop: Math.max(screenHeight * 0.015, 10),
     },
@@ -264,6 +267,8 @@ const styles = StyleSheet.create({
         marginBottom: Math.max(screenHeight * 0.015, 10),
         fontSize: Math.min(screenWidth * 0.04, 16),
         backgroundColor: '#f9f9f9',
+        color: '#202545',
+        placeholderTextColor: '#202545',
     },
     eyeIcon: {
         position: 'absolute',
@@ -282,15 +287,16 @@ const styles = StyleSheet.create({
     button: {
         width: '100%',
         height: Math.max(screenHeight * 0.06, 50),
-        backgroundColor: '#007bff',
+        backgroundColor: '#7F9FB4',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: Math.min(screenWidth * 0.02, 8),
         marginVertical: Math.max(screenHeight * 0.015, 10),
     },
     buttonText: {
-        color: '#fff',
+        color: '#202545',
         fontSize: Math.min(screenWidth * 0.045, 18),
+        fontWeight: 'bold',
     },
     pickerContainer: {
         width: '100%',

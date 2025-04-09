@@ -1,12 +1,13 @@
 import { router } from 'expo-router';
 import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet, Dimensions, PixelRatio, Platform, SafeAreaView } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet, Dimensions, PixelRatio, Platform, SafeAreaView, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function WelcomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
     <ThemedView style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
@@ -35,6 +36,7 @@ export default function WelcomeScreen() {
         </TouchableOpacity>
       </View>
     </ThemedView>
+    </ScrollView>
     </SafeAreaView>
   );
 }
@@ -59,6 +61,9 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   container: {
     flex: 1,
@@ -116,12 +121,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   loginButton: {
-    backgroundColor: '#fff',
+    backgroundColor: '#7F9FB4',
     padding: Math.min(SCREEN_HEIGHT * 0.02, 16),
     borderRadius: 8,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#1a237e',
     width: '100%',
     marginTop: Math.min(SCREEN_HEIGHT * 0.04, 20),
     marginBottom: Math.min(SCREEN_HEIGHT * 0.2, 70),
@@ -131,6 +134,6 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: '#202545',
     fontSize: normalize(16),
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
 });
