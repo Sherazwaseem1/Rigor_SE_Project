@@ -67,7 +67,7 @@ const AdminDashboard = () => {
           <View style={[styles.card, styles.tripCard]}>
             <View style={styles.tripHeader}>
               <Text style={styles.tripRoute}>{item.start_location} → {item.end_location}</Text>
-              <Text style={styles.tripTime}>12:00</Text>
+              {/* <Text style={styles.tripTime}>12:00</Text> */}
             </View>
             <View>
               <Text style={styles.tripDriver}>{item.trucker_name || 'Driver Name'}</Text>
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
           <View style={[styles.card, styles.tripCard]}>
             <View style={styles.tripHeader}>
               <Text style={styles.tripRoute}>{item.start_location} → {item.end_location}</Text>
-              <Text style={styles.tripTime}>12:00</Text>
+              {/* <Text style={styles.tripTime}>12:00</Text> */}
             </View>
             <View>
               <Text style={styles.tripDriver}>{item.trucker_name || 'Driver Name'}</Text>
