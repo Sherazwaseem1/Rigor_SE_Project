@@ -17,6 +17,7 @@ import {
   Trip,
   Trucker,
   Reimbursement,
+  getTruckerById
 } from "../../services/api";
 import { router } from 'expo-router'
 import { TouchableOpacity } from "react-native";
@@ -36,7 +37,18 @@ const AdminDashboard = () => {
         const truckersData = await getAllTruckers();
         const reimbursementsData = await getAllReimbursements();
 
-        setActiveTrips(tripsData);
+          // Fetch trucker names for trips
+        const tripsWithTruckerNames = await Promise.all(
+          tripsData.map(async (trip) => {
+            const trucker = await getTruckerById(trip.trucker_id);
+            return { ...trip, trucker_name: trucker.name };
+          })
+        );
+
+        setActiveTrips(tripsWithTruckerNames);
+        
+
+        // setActiveTrips(tripsData);
         setTruckers(truckersData);
         setPendingReimbursements(reimbursementsData.filter(r => r.status === "Pending"));
           

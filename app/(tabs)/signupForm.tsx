@@ -220,7 +220,10 @@ const SignUp = () => {
                             <Text style={styles.buttonText}>Create Account</Text>
                         </TouchableOpacity>
                     )}
-                    <TouchableOpacity onPress={() => router.push('/loginForm')}>
+                    <TouchableOpacity onPress={() => { 
+                        handleClear();
+                        router.push('/loginForm'); // Navigate to the login form
+                    }}>
                         <Text style={styles.signUpText}>
                             Already have an account? <Text style={styles.signUpLink}>Log in</Text>
                         </Text>

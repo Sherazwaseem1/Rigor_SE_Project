@@ -43,7 +43,7 @@ const Login = () => {
         setEmail("");
         setPassword("");
         setPasswordError("");
-        setIsAdmin(false); 
+        setUserType(""); 
       };
 
     const signIn = async () => {
