@@ -53,14 +53,14 @@ const Login = () => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('User signed in:', userCredential.user);
-            alert("SIGNED IN YAYY");
+            // alert("SIGNED IN YAYY");
 
             let userData;
             if (userType === 'admin') {
                 // Fetch admin data
                 userData = await getAdminByEmail(email); // Define the getAdminByEmail function
                 if (!userData) {
-                    alert("Admin not found");
+                    // alert("Admin not found");
                     return;
                 }
                 dispatch(setUser({
@@ -76,7 +76,7 @@ const Login = () => {
                 // Fetch trucker data
                 const truckerData = await getTruckerByEmail(email);
                 if (!truckerData) {
-                    alert("Trucker not found");
+                    // alert("Trucker not found");
                     return
                 }
                 dispatch(setUser({
@@ -87,12 +87,12 @@ const Login = () => {
                 }));
                 // Navigate to trucker dashboard
                 handleClear();
-                alert("Trucker INCOMING");
+                // alert("Trucker INCOMING");
                 router.push("/TruckerDashboard"); // Update route for trucker
             }
         } catch (error: any) {
             console.error('Error signing in:', error);
-            alert("ABEYY SALAY");
+            // alert("ABEYY SALAY");
         } finally {
             setLoading(false)
         }

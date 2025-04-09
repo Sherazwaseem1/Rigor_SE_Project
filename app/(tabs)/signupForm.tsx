@@ -95,7 +95,7 @@ const SignUp = () => {
             
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             console.log('User signed up:', userCredential.user);
-            alert('Check your emails');
+            // alert('Check your emails');
 
             //TODO: MAKE SURE TRUCKER_ID IS MAX + 1
             const newTrucker:NewTrucker = {
@@ -114,7 +114,7 @@ const SignUp = () => {
             router.push("/loginForm");
         } catch (error: any) {
             console.error('Error signing up:', error);
-            alert(error.message);
+            // alert(error.message);
         } finally {
             setLoading(false);
         }
