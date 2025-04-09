@@ -17,6 +17,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store"; // Import RootState from your store
 import { router } from 'expo-router'
 import IconSymbol from "react-native-vector-icons/FontAwesome"; // Make sure you import the icon library you're using.
+import { useIsFocused } from "@react-navigation/native";
+
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -33,6 +35,7 @@ const TripAssignmentScreen: React.FC = () => {
     assigned_by_admin_id: 0,
   });
   const user = useSelector((state: RootState) => state.user);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchTruckers = async () => {
@@ -46,7 +49,7 @@ const TripAssignmentScreen: React.FC = () => {
       }
     };
     fetchTruckers();
-  }, []);
+  }, [isFocused]);
 
   const handleInputChange = (key: keyof Trip, value: any) => {
     setForm(prev => ({ ...prev, [key]: value }));
