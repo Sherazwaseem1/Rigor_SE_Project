@@ -71,6 +71,13 @@ export const deleteTrucker = async (
   return response.data;
 };
 
+export const updateTruckerStatus = async (truckerId: number, status: string) => {
+  const response = await axios.patch(`${API_URL}/truckers/status/${truckerId}`, {
+    status,
+  });
+  return response.data;
+};
+
 // ✅ Define TypeScript interfaces
 export interface Admin {
   admin_id: number;

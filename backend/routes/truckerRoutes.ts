@@ -5,7 +5,8 @@ import {
     getTruckerByEmail,  // ✅ Import the new function
     createTrucker, 
     updateTrucker, 
-    deleteTrucker 
+    deleteTrucker,
+    updateTruckerStatus
 } from "../controllers/truckerController";
 
 const router = express.Router();
@@ -17,5 +18,7 @@ router.get("/email/:email", getTruckerByEmail);
 router.post("/", createTrucker);
 router.put("/:id", updateTrucker);
 router.delete("/:id", deleteTrucker);
+router.patch("/status/:id", updateTruckerStatus);
+
 
 export default router;

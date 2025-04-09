@@ -91,3 +91,32 @@ export const deleteTrucker = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ error: "Failed to delete trucker", details: error });
   }
 };
+
+
+// 🟩 Update trucker status by trucker_id
+export const updateTruckerStatus = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { status } = req.body;
+    const truckerId = Number(req.params.id);
+
+    if (!status) {
+      res.status(400).json({ error: "Status is required" });
+      return;
+    }
+
+    const updatedTrucker = await Trucker.findOneAndUpdate(
+      { trucker_id: truckerId },
+      { status },
+      { new: true }
+    );
+
+    if (!updatedTrucker) {
+      res.status(404).json({ error: "Trucker not found" });
+      return;
+    }
+
+    res.status(200).json(updatedTrucker);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update status", details: error });
+  }
+};

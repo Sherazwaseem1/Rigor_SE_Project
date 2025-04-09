@@ -12,7 +12,7 @@ import {
   Dimensions
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { Trip, Trucker, getAllTruckers, createTrip, getTruckByTruckerId } from "../../services/api";
+import { Trip, Trucker, getAllTruckers, createTrip, getTruckByTruckerId, updateTruckerStatus } from "../../services/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store"; // Import RootState from your store
 import { router } from 'expo-router'
@@ -38,7 +38,7 @@ const TripAssignmentScreen: React.FC = () => {
     const fetchTruckers = async () => {
       try {
         const truckerData = await getAllTruckers();
-        const activeTruckers = truckerData.filter(t => t.status === "Active");
+        const activeTruckers = truckerData.filter(t => t.status === "Inactive");
         setTruckers(activeTruckers);
       } catch (error) {
         console.error("Error fetching truckers", error);
@@ -76,6 +76,7 @@ const TripAssignmentScreen: React.FC = () => {
       } as Omit<Trip, "trip_id">;
 
       await createTrip(newTrip);
+      await updateTruckerStatus(selectedTruckerId, "Active");
       Alert.alert("Success", "Trip assigned successfully!");
       router.push('/AdminDashboard');
     } catch (error) {
