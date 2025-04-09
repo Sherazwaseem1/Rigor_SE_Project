@@ -5,7 +5,7 @@ import { Platform } from "react-native";
 const API_URL =
   Platform.OS === "web"
     ? "http://localhost:5000/api"
-    : "http://192.168.90.204:5000/api"; // Replace with your IPv4 if necessary
+    : "http://10.130.111.148:5000/api"; // Replace with your IPv4 if necessary
 
 export interface Trucker {
   trucker_id: number;
@@ -68,6 +68,13 @@ export const deleteTrucker = async (
   const response = await axios.delete<{ message: string }>(
     `${API_URL}/truckers/${id}`
   );
+  return response.data;
+};
+
+export const updateTruckerStatus = async (truckerId: number, status: string) => {
+  const response = await axios.patch(`${API_URL}/truckers/status/${truckerId}`, {
+    status,
+  });
   return response.data;
 };
 

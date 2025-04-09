@@ -12,7 +12,7 @@ import {
   Dimensions
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { Trip, Trucker, getAllTruckers, createTrip, getTruckByTruckerId } from "../../services/api";
+import { Trip, Trucker, getAllTruckers, createTrip, getTruckByTruckerId, updateTruckerStatus } from "../../services/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store"; // Import RootState from your store
 import { router } from 'expo-router'
@@ -38,7 +38,7 @@ const TripAssignmentScreen: React.FC = () => {
     const fetchTruckers = async () => {
       try {
         const truckerData = await getAllTruckers();
-        const activeTruckers = truckerData.filter(t => t.status === "Active");
+        const activeTruckers = truckerData.filter(t => t.status === "Inactive");
         setTruckers(activeTruckers);
       } catch (error) {
         console.error("Error fetching truckers", error);
@@ -61,11 +61,6 @@ const TripAssignmentScreen: React.FC = () => {
     try {
       const truck = await getTruckByTruckerId(selectedTruckerId);
 
-      if (!truck) {
-        Alert.alert("Error", "Selected trucker does not have a truck.");
-        return;
-      }
-
       const newTrip = {
         ...form,
         truck_id: truck.truck_id,
@@ -76,11 +71,12 @@ const TripAssignmentScreen: React.FC = () => {
       } as Omit<Trip, "trip_id">;
 
       await createTrip(newTrip);
+      await updateTruckerStatus(selectedTruckerId, "Active");
       Alert.alert("Success", "Trip assigned successfully!");
       router.push('/AdminDashboard');
     } catch (error) {
       console.error("Trip creation error:", error);
-      Alert.alert("Error", "Failed to assign trip.");
+      Alert.alert("Unable to Process your request", "Selected trucker does not have a truck");
     }
   };
 
@@ -104,7 +100,7 @@ const TripAssignmentScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.heading}>🚚 Assign New Trip</Text>
 
-        <Text style={styles.label}>Select Active Trucker:</Text>
+        <Text style={styles.label}>Select InActive Trucker:</Text>
         <View style={styles.pickerWrapper}>
           <Picker
             selectedValue={selectedTruckerId}

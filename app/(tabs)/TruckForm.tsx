@@ -6,6 +6,9 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "../../hooks/useThemeColor";
 import { createTruck } from "../../services/api"; // Adjust the path if needed
+import { router } from 'expo-router'
+
+
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -44,6 +47,8 @@ export default function TruckForm() {
     };
 
     console.log("Form data to submit:", submissionData);
+
+    router.push("/AdminDashboard"); // Navigate to AdminDashboard after submission  
 
     try {
       const response = await createTruck(submissionData);
@@ -90,7 +95,7 @@ export default function TruckForm() {
           />
           {errors.chassis_number && <Text style={styles.errorText}>Chassis number is required</Text>}
 
-          <Text style={[styles.label, { color: "#202545" }]}>Capacity</Text>
+          <Text style={[styles.label, { color: "#202545" }]}>Capacity (kg)</Text>
           <TextInput
             style={[styles.input, { color: textColor }]}
             keyboardType="numeric"

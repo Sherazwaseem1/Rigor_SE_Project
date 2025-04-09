@@ -123,6 +123,12 @@ const AdminDashboard = () => {
         <TouchableOpacity style={styles.button} onPress={() => router.push("/UserProfileTest")}>
           <Text style={styles.buttonText}>Go to Profile</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={[styles.button]} onPress={() => router.push("/TripAssignmentFrom")}>
+          <Text style={styles.signoutButtonText}>Assign Trip</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button]} onPress={() => router.push("/TruckForm")}>
+          <Text style={styles.signoutButtonText}>Add Truck</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={[styles.button, styles.signoutButton]} onPress={() => router.push("/")}>
           <Text style={styles.signoutButtonText}>Sign Out</Text>
         </TouchableOpacity>
