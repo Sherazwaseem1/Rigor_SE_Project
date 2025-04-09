@@ -61,11 +61,6 @@ const TripAssignmentScreen: React.FC = () => {
     try {
       const truck = await getTruckByTruckerId(selectedTruckerId);
 
-      if (!truck) {
-        Alert.alert("Error", "Selected trucker does not have a truck.");
-        return;
-      }
-
       const newTrip = {
         ...form,
         truck_id: truck.truck_id,
@@ -81,7 +76,7 @@ const TripAssignmentScreen: React.FC = () => {
       router.push('/AdminDashboard');
     } catch (error) {
       console.error("Trip creation error:", error);
-      Alert.alert("Error", "Failed to assign trip.");
+      Alert.alert("Unable to Process your request", "Selected trucker does not have a truck");
     }
   };
 
@@ -105,7 +100,7 @@ const TripAssignmentScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.heading}>🚚 Assign New Trip</Text>
 
-        <Text style={styles.label}>Select Active Trucker:</Text>
+        <Text style={styles.label}>Select InActive Trucker:</Text>
         <View style={styles.pickerWrapper}>
           <Picker
             selectedValue={selectedTruckerId}
