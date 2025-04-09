@@ -59,14 +59,13 @@ const TruckerDashboard = () => {
           reimbursements.flat().filter((r) => r.status === "Pending")
         );
       } catch (error) {
-        console.error("Error fetching trucker dashboard data:", error);
+        // console.error("Error fetching trucker dashboard data:", error);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
   }, [isFocused]);
-
 
   if (loading) return <ActivityIndicator size="large" color="#007bff" />;
 
@@ -75,6 +74,7 @@ const TruckerDashboard = () => {
       <FlatList
         data={pastTrips}
         keyExtractor={(trip) => trip.trip_id.toString()}
+        renderItem={() => null} // ✅ Fix: required prop, dummy renderer
         ListHeaderComponent={() => (
           <View style={styles.container}>
             {/* Welcome Section */}
@@ -113,6 +113,31 @@ const TruckerDashboard = () => {
             ) : (
               <View style={[styles.card, styles.placeholderCard]}>
                 <Text style={styles.cardText}>No ongoing trips.</Text>
+              </View>
+            )}
+
+            {/* Recent Trips Section */}
+            <Text style={styles.sectionTitle}>Recent Trips</Text>
+            {pastTrips.length > 0 ? (
+              pastTrips.map((item) => (
+                <View style={[styles.card, styles.tripCard]} key={item.trip_id}>
+                  <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
+                  <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
+                  <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
+                  <Text
+                    style={[
+                      styles.cardText,
+                      styles.statusText,
+                      { color: item.status === "Completed" ? "#4CAF50" : "#202545" },
+                    ]}
+                  >
+                    Status: {item.status}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <View style={[styles.card, styles.placeholderCard]}>
+                <Text style={styles.cardText}>No recent trips available.</Text>
               </View>
             )}
 
@@ -180,22 +205,6 @@ const TruckerDashboard = () => {
                 onPress={() => router.push("/Reimbursement_form")}
               />
             </View>
-          </View>
-        )}
-        renderItem={({ item }) => (
-          <View style={[styles.card, styles.tripCard]}>
-            <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
-            <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
-            <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
-            <Text
-              style={[
-                styles.cardText,
-                styles.statusText,
-                { color: item.status === "Completed" ? "#4CAF50" : "#202545" },
-              ]}
-            >
-              Status: {item.status}
-            </Text>
           </View>
         )}
       />

@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
         right: 10,  // Adjust position inside the input field
         zIndex: 1,  // Ensure it appears on top of the input field
         padding: 10, // Add padding to make it easier to tap
-        bottom: 13, // Adjust position inside the input field
+        bottom: 20, // Adjust position inside the input field
     },
     inputError: {
         borderColor: 'red',
