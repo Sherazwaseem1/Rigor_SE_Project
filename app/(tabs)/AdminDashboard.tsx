@@ -47,7 +47,7 @@ const AdminDashboard = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [admin.name]);
 
   if (loading) return <ActivityIndicator size="large" color="#007bff" />;
 
