@@ -77,12 +77,17 @@ export default function TruckForm() {
     <View style={[styles.container, { backgroundColor }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Link href="../" style={styles.backButton}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+                router.push('/AdminDashboard');
+            }}
+          >
             <View style={styles.backButtonContent}>
               <IconSymbol size={24} name="chevron.left" color="#333" />
-              <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
+              <Text style={styles.backButtonLabel}>Back</Text>
             </View>
-          </Link>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.logoContainer}>
