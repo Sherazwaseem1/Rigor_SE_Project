@@ -1,14 +1,22 @@
-import React from "react";
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Dimensions, ScrollView } from "react-native";
+import React, { useEffect } from "react";
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import { Link } from "expo-router";
 import { useForm } from "react-hook-form";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "../../hooks/useThemeColor";
 import { createTruck } from "../../services/api"; // Adjust the path if needed
-import { router } from 'expo-router'
-
-
+import { router } from "expo-router";
+import { useIsFocused } from "@react-navigation/native";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -20,7 +28,10 @@ interface TruckFormData {
 }
 
 export default function TruckForm() {
-  const backgroundColor = useThemeColor({ light: "#fff", dark: "#fff" }, "background");
+  const backgroundColor = useThemeColor(
+    { light: "#fff", dark: "#fff" },
+    "background"
+  );
   const textColor = useThemeColor({ light: "#000", dark: "#000" }, "text");
 
   const {
@@ -30,6 +41,8 @@ export default function TruckForm() {
     getValues,
     formState: { errors },
   } = useForm<TruckFormData>();
+
+  const isFocused = useIsFocused();
 
   const onSubmit = async (data: TruckFormData) => {
     const capacityValue = Number(data.capacity);
@@ -43,12 +56,14 @@ export default function TruckForm() {
       license_plate: data.license_plate,
       chassis_number: data.chassis_number,
       capacity: capacityValue,
-      ...(data.assigned_trucker_id ? { assigned_trucker_id: parseInt(data.assigned_trucker_id) } : {}),
+      ...(data.assigned_trucker_id
+        ? { assigned_trucker_id: parseInt(data.assigned_trucker_id) }
+        : {}),
     };
 
     console.log("Form data to submit:", submissionData);
 
-    router.push("/AdminDashboard"); // Navigate to AdminDashboard after submission  
+    router.push("/AdminDashboard"); // Navigate to AdminDashboard after submission
 
     try {
       const response = await createTruck(submissionData);
@@ -71,41 +86,67 @@ export default function TruckForm() {
         </View>
 
         <View style={styles.logoContainer}>
-          <Image source={require("../../assets/images/rigor_no_bg.jpeg")} style={styles.logo} resizeMode="contain" />
+          <Image
+            source={require("../../assets/images/rigor_no_bg.jpeg")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
 
         <Text style={[styles.title, { color: "#202545" }]}>Add New Truck</Text>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, { color: "#202545" }]}>License Plate</Text>
+          <Text style={[styles.label, { color: "#202545" }]}>
+            License Plate
+          </Text>
           <TextInput
             style={[styles.input, { color: textColor }]}
             placeholder="Enter license plate"
             placeholderTextColor="#666"
-            onChangeText={(text) => setValue("license_plate", text, { shouldValidate: true })}
+            onChangeText={(text) =>
+              setValue("license_plate", text, { shouldValidate: true })
+            }
           />
-          {errors.license_plate && <Text style={styles.errorText}>License plate is required</Text>}
+          {errors.license_plate && (
+            <Text style={styles.errorText}>License plate is required</Text>
+          )}
 
-          <Text style={[styles.label, { color: "#202545" }]}>Chassis Number</Text>
+          <Text style={[styles.label, { color: "#202545" }]}>
+            Chassis Number
+          </Text>
           <TextInput
             style={[styles.input, { color: textColor }]}
             placeholder="Enter chassis number"
             placeholderTextColor="#666"
-            onChangeText={(text) => setValue("chassis_number", text, { shouldValidate: true })}
+            onChangeText={(text) =>
+              setValue("chassis_number", text, { shouldValidate: true })
+            }
           />
-          {errors.chassis_number && <Text style={styles.errorText}>Chassis number is required</Text>}
+          {errors.chassis_number && (
+            <Text style={styles.errorText}>Chassis number is required</Text>
+          )}
 
-          <Text style={[styles.label, { color: "#202545" }]}>Capacity (kg)</Text>
+          <Text style={[styles.label, { color: "#202545" }]}>
+            Capacity (kg)
+          </Text>
           <TextInput
             style={[styles.input, { color: textColor }]}
             keyboardType="numeric"
             placeholder="Enter capacity"
             placeholderTextColor="#666"
-            onChangeText={(text) => setValue("capacity", text, { shouldValidate: true })}
+            onChangeText={(text) =>
+              setValue("capacity", text, { shouldValidate: true })
+            }
           />
-          {errors.capacity && <Text style={styles.errorText}>Capacity is required and must be greater than 0</Text>}
+          {errors.capacity && (
+            <Text style={styles.errorText}>
+              Capacity is required and must be greater than 0
+            </Text>
+          )}
 
-          <Text style={[styles.label, { color: "#202545" }]}>Assigned Trucker ID</Text>
+          <Text style={[styles.label, { color: "#202545" }]}>
+            Assigned Trucker ID
+          </Text>
           <TextInput
             style={[styles.input, { color: textColor }]}
             keyboardType="numeric"
@@ -115,7 +156,10 @@ export default function TruckForm() {
           />
         </View>
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleSubmit(onSubmit)}
+        >
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -126,7 +170,7 @@ export default function TruckForm() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingTop: Math.max(screenHeight * 0.03, 24),
     paddingHorizontal: Math.max(screenWidth * 0.03, 12),
   },
@@ -138,30 +182,30 @@ const styles = StyleSheet.create({
     paddingVertical: Math.max(screenHeight * 0.01, 8),
   },
   backButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   backButtonLabel: {
     fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
-    color: '#333',
+    color: "#333",
     marginBottom: screenHeight * 0.004,
   },
   logoContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: Math.max(screenHeight * 0.02, 16),
     paddingHorizontal: Math.max(screenWidth * 0.03, 12),
   },
   logo: {
     width: Math.min(Math.max(screenWidth * 0.25, 100), 140),
     height: Math.min(Math.max(screenWidth * 0.25, 100), 140),
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   title: {
     fontSize: Math.min(Math.max(screenWidth * 0.06, 20), 24),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: Math.max(screenHeight * 0.02, 16),
-    textAlign: 'center',
-    color: '#202545',
+    textAlign: "center",
+    color: "#202545",
   },
   inputContainer: {
     flex: 1,
@@ -171,35 +215,35 @@ const styles = StyleSheet.create({
   label: {
     fontSize: Math.min(Math.max(screenWidth * 0.038, 14), 16),
     marginBottom: Math.max(screenHeight * 0.008, 6),
-    color: '#202545',
-    fontWeight: '500',
+    color: "#202545",
+    fontWeight: "500",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: Math.min(Math.max(screenWidth * 0.02, 8), 12),
     padding: Math.max(screenWidth * 0.025, 10),
     marginBottom: Math.max(screenHeight * 0.012, 10),
     fontSize: Math.min(Math.max(screenWidth * 0.038, 14), 16),
-    width: '100%',
+    width: "100%",
   },
   errorText: {
-    color: '#ff0000',
+    color: "#ff0000",
     fontSize: Math.min(Math.max(screenWidth * 0.035, 12), 14),
     marginBottom: Math.max(screenHeight * 0.01, 8),
   },
   submitButton: {
-    backgroundColor: '#7F9FB4',
+    backgroundColor: "#7F9FB4",
     paddingVertical: Math.max(screenHeight * 0.012, 10),
     borderRadius: Math.min(Math.max(screenWidth * 0.02, 8), 12),
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: Math.max(screenHeight * 0.02, 16),
     marginBottom: Math.max(screenHeight * 0.02, 16),
     marginHorizontal: Math.max(screenWidth * 0.03, 12),
   },
   submitButtonText: {
-    color: '#202545',
+    color: "#202545",
     fontSize: Math.min(Math.max(screenWidth * 0.045, 16), 18),
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

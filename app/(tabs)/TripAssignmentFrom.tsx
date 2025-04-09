@@ -17,6 +17,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store"; // Import RootState from your store
 import { router } from 'expo-router'
 import IconSymbol from "react-native-vector-icons/FontAwesome"; // Make sure you import the icon library you're using.
+import { useIsFocused } from "@react-navigation/native";
+
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -33,6 +35,7 @@ const TripAssignmentScreen: React.FC = () => {
     assigned_by_admin_id: 0,
   });
   const user = useSelector((state: RootState) => state.user);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchTruckers = async () => {
@@ -46,7 +49,7 @@ const TripAssignmentScreen: React.FC = () => {
       }
     };
     fetchTruckers();
-  }, []);
+  }, [isFocused]);
 
   const handleInputChange = (key: keyof Trip, value: any) => {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -57,6 +60,9 @@ const TripAssignmentScreen: React.FC = () => {
       Alert.alert("Missing Info", "Please select trucker.");
       return;
     }
+
+        // Clear the input fields after successful trip creation
+
 
     try {
       const truck = await getTruckByTruckerId(selectedTruckerId);
@@ -73,12 +79,31 @@ const TripAssignmentScreen: React.FC = () => {
       await createTrip(newTrip);
       await updateTruckerStatus(selectedTruckerId, "Active");
       Alert.alert("Success", "Trip assigned successfully!");
+
+      handleClear()
+      
       router.push('/AdminDashboard');
+
     } catch (error) {
       console.error("Trip creation error:", error);
       Alert.alert("Unable to Process your request", "Selected trucker does not have a truck");
     }
   };
+
+    // Function to clear the form inputs on the screen
+    const handleClear = () => {
+      setForm({
+        truck_id: 0,
+        start_location: "",
+        end_location: "",
+        start_time: new Date().toISOString(),
+        status: "Scheduled",
+        distance: 0,
+        assigned_by_admin_id: 0,
+      });
+    
+      setSelectedTruckerId(null); // Clear the selected trucker picker
+    };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -121,12 +146,14 @@ const TripAssignmentScreen: React.FC = () => {
         <Text style={styles.label}>Start Location:</Text>
         <TextInput
           style={styles.input}
+          value={form.start_location}
           onChangeText={(text) => handleInputChange("start_location", text)}
         />
 
         <Text style={styles.label}>End Location:</Text>
         <TextInput
           style={styles.input}
+          value={form.end_location}
           onChangeText={(text) => handleInputChange("end_location", text)}
         />
 
@@ -140,12 +167,17 @@ const TripAssignmentScreen: React.FC = () => {
         <Text style={styles.label}>Distance (in km):</Text>
         <TextInput
           style={styles.input}
+          value={form.distance ? form.distance.toString() : ""}
           keyboardType="numeric"
-          onChangeText={(text) => handleInputChange("distance", parseFloat(text))}
+          onChangeText={(text) => handleInputChange("distance", parseFloat(text) || 0)}
         />
 
         <View style={styles.buttonContainer}>
           <Button title="Assign Trip" onPress={handleSubmit} color="#007AFF" />
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <Button title="Clear Form" onPress={handleClear} color="#FF3B30" />
         </View>
       </ScrollView>
     </SafeAreaView>

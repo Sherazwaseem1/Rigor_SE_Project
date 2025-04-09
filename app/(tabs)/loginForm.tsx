@@ -13,9 +13,9 @@ import { IconSymbol } from '@/components/ui/IconSymbol'
 import { ThemedText } from '@/components/ThemedText'
 
 import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/slices/userSlice"; // Import setUser action
-import { getTruckerByEmail } from "../../services/api"; // Import API function for trucker
-import { getAdminByEmail } from "../../services/api"; // Import API function for admin (you need to define this)
+import { setUser } from "@/redux/slices/userSlice"; 
+import { getTruckerByEmail } from "../../services/api"; 
+import { getAdminByEmail } from "../../services/api"; 
 
 
 const Login = () => {
@@ -39,8 +39,16 @@ const Login = () => {
         return true
     }
 
+    const handleClear = () => {
+        setEmail("");
+        setPassword("");
+        setPasswordError("");
+        setIsAdmin(false); 
+      };
+
     const signIn = async () => {
-        if (!validatePassword(password)) return
+        // if (!validatePassword(password)) return
+
         setLoading(true)
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -62,6 +70,7 @@ const Login = () => {
                     isAdmin: true,           
                 }));
                 // Navigate to admin dashboard
+                handleClear(); // Clear the form after successful login
                 router.push("/AdminDashboard"); // Update route for admin
             } else {
                 // Fetch trucker data
@@ -77,6 +86,7 @@ const Login = () => {
                     isAdmin: false,           
                 }));
                 // Navigate to trucker dashboard
+                handleClear();
                 alert("Trucker INCOMING");
                 router.push("/TruckerDashboard"); // Update route for trucker
             }
@@ -166,7 +176,10 @@ const Login = () => {
                         <TouchableOpacity style={styles.button} onPress={signIn}>
                             <Text style={styles.buttonText}>Login</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => router.push("/signupForm")}>
+                                <TouchableOpacity onPress={() => {
+                                    handleClear();
+                                    router.push("/signupForm")
+                                }}>
                             <Text style={styles.signUpText}>
                                 Don't have an account? <Text style={styles.signUpLink}>Sign up</Text>
                             </Text>
