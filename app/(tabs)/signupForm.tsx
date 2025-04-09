@@ -32,10 +32,20 @@ const SignUp = () => {
     const auth = FIREBASE_AUTH;
 
     const validatePassword = (pass: string) => {
+        const hasNumber = /\d/.test(pass);
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(pass);
+
         if (pass.length < 6) {
             setPasswordError('Password must be at least 6 characters long');
             return false;
+        } else if (!hasNumber) {
+            setPasswordError('Password must contain at least one number');
+            return false;
+        } else if (!hasSpecialChar) {
+            setPasswordError('Password must contain at least one special character');
+            return false;
         }
+
         setPasswordError('');
         return true;
     };
