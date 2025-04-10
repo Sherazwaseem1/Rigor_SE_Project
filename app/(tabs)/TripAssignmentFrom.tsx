@@ -14,7 +14,15 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Trip, Trucker, getAllTruckers, createTrip, getTruckByTruckerId, updateTruckerStatus } from "../../services/api";
+import { 
+  Trip, 
+  Trucker, 
+  getAllTruckers, 
+  createTrip, 
+  getTruckByTruckerId, 
+  updateTruckerStatus,
+  estimateTripCost 
+} from "../../services/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { router } from 'expo-router';
@@ -84,6 +92,10 @@ const TripAssignmentScreen: React.FC = () => {
   const [startLocationOpen, setStartLocationOpen] = useState(false);
   const [endLocationOpen, setEndLocationOpen] = useState(false);
   
+  // State for cost estimation
+  const [estimatedCost, setEstimatedCost] = useState<string | null>(null);
+  const [isLoadingCost, setIsLoadingCost] = useState(false);
+  
   const user = useSelector((state: RootState) => state.user);
   const isFocused = useIsFocused();
 
@@ -101,8 +113,40 @@ const TripAssignmentScreen: React.FC = () => {
     fetchTruckers();
   }, [isFocused]);
 
+  // Reset estimated cost when any inputs change
+  useEffect(() => {
+    setEstimatedCost(null);
+  }, [form.start_location, form.end_location, form.distance]);
+
   const handleInputChange = (key: keyof Trip, value: any) => {
     setForm(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleGetCostEstimate = async () => {
+    // Validate required fields
+    if (!form.start_location || !form.end_location || !form.distance) {
+      Alert.alert(
+        "Missing Information", 
+        "Please select both start and end locations, and enter a distance to get a cost estimate."
+      );
+      return;
+    }
+    
+    setIsLoadingCost(true);
+    try {
+      const costEstimate = await estimateTripCost(
+        form.start_location as string,
+        form.end_location as string,
+        form.distance
+      );
+      
+      setEstimatedCost(costEstimate.estimated_cost);
+    } catch (error) {
+      console.error("Error getting cost estimate:", error);
+      Alert.alert("Error", "Could not get cost estimate. Please try again.");
+    } finally {
+      setIsLoadingCost(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -159,6 +203,7 @@ const TripAssignmentScreen: React.FC = () => {
     });
   
     setSelectedTruckerId(null);
+    setEstimatedCost(null);
   };
 
   return (
@@ -268,6 +313,29 @@ const TripAssignmentScreen: React.FC = () => {
           onChangeText={(text) => handleInputChange("distance", parseFloat(text) || 0)}
         />
 
+        {/* Cost Estimation Section */}
+        <View style={styles.costEstimationSection}>
+          <TouchableOpacity
+            style={styles.estimateButton}
+            onPress={handleGetCostEstimate}
+            disabled={isLoadingCost}
+          >
+            <Text style={styles.estimateButtonText}>
+              {isLoadingCost ? "Calculating..." : "Get Cost Estimate"}
+            </Text>
+            {isLoadingCost && (
+              <ActivityIndicator size="small" color="#fff" style={styles.estimateLoader} />
+            )}
+          </TouchableOpacity>
+
+          {estimatedCost && (
+            <View style={styles.estimatedCostContainer}>
+              <Text style={styles.estimatedCostLabel}>Estimated Trip Cost (PKR):</Text>
+              <Text style={styles.estimatedCostValue}>{estimatedCost}</Text>
+            </View>
+          )}
+        </View>
+
         <View style={styles.buttonContainer}>
           <Button title="Assign Trip" onPress={handleSubmit} color="#007AFF" />
         </View>
@@ -343,7 +411,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   buttonContainer: {
-    marginTop: 30,
+    marginTop: 10,
     borderRadius: 8,
     overflow: "hidden",
   },
@@ -355,6 +423,52 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     backgroundColor: "#fff",
     maxHeight: 200,
+  },
+  costEstimationSection: {
+    marginTop: 20,
+    marginBottom: 10,
+    padding: 15,
+    backgroundColor: "#f0f8ff",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#d1e9ff",
+  },
+  estimateButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  estimateButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  estimateLoader: {
+    marginLeft: 10,
+  },
+  estimatedCostContainer: {
+    marginTop: 15,
+    padding: 10,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#eee",
+  },
+  estimatedCostLabel: {
+    fontSize: 16,
+    color: "#555",
+    marginBottom: 5,
+  },
+  estimatedCostValue: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
   },
 });
 
