@@ -9,18 +9,63 @@ import {
   Alert,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  ActivityIndicator, 
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from 'react-native-dropdown-picker';
 import { Trip, Trucker, getAllTruckers, createTrip, getTruckByTruckerId, updateTruckerStatus } from "../../services/api";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store"; // Import RootState from your store
-import { router } from 'expo-router'
-import IconSymbol from "react-native-vector-icons/FontAwesome"; // Make sure you import the icon library you're using.
+import { RootState } from "../../redux/store";
+import { router } from 'expo-router';
+import IconSymbol from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from "@react-navigation/native";
 
-
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+
+// List of major Pakistani cities
+const pakistaniCities = [
+  { label: 'Karachi', value: 'Karachi' },
+  { label: 'Lahore', value: 'Lahore' },
+  { label: 'Islamabad', value: 'Islamabad' },
+  { label: 'Rawalpindi', value: 'Rawalpindi' },
+  { label: 'Faisalabad', value: 'Faisalabad' },
+  { label: 'Multan', value: 'Multan' },
+  { label: 'Hyderabad', value: 'Hyderabad' },
+  { label: 'Peshawar', value: 'Peshawar' },
+  { label: 'Quetta', value: 'Quetta' },
+  { label: 'Sialkot', value: 'Sialkot' },
+  { label: 'Gujranwala', value: 'Gujranwala' },
+  { label: 'Sargodha', value: 'Sargodha' },
+  { label: 'Bahawalpur', value: 'Bahawalpur' },
+  { label: 'Sukkur', value: 'Sukkur' },
+  { label: 'Larkana', value: 'Larkana' },
+  { label: 'Sheikhupura', value: 'Sheikhupura' },
+  { label: 'Rahim Yar Khan', value: 'Rahim Yar Khan' },
+  { label: 'Jhang', value: 'Jhang' },
+  { label: 'Dera Ghazi Khan', value: 'Dera Ghazi Khan' },
+  { label: 'Gujrat', value: 'Gujrat' },
+  { label: 'Sahiwal', value: 'Sahiwal' },
+  { label: 'Wah Cantonment', value: 'Wah Cantonment' },
+  { label: 'Kasur', value: 'Kasur' },
+  { label: 'Okara', value: 'Okara' },
+  { label: 'Chiniot', value: 'Chiniot' },
+  { label: 'Kamoke', value: 'Kamoke' },
+  { label: 'Nawabshah', value: 'Nawabshah' },
+  { label: 'Burewala', value: 'Burewala' },
+  { label: 'Jhelum', value: 'Jhelum' },
+  { label: 'Sadiqabad', value: 'Sadiqabad' },
+  { label: 'Khanewal', value: 'Khanewal' },
+  { label: 'Hafizabad', value: 'Hafizabad' },
+  { label: 'Mirpur Khas', value: 'Mirpur Khas' },
+  { label: 'Attock', value: 'Attock' },
+  { label: 'Muzaffarabad', value: 'Muzaffarabad' },
+  { label: 'Abbottabad', value: 'Abbottabad' },
+  { label: 'Mardan', value: 'Mardan' },
+  { label: 'Swat', value: 'Swat' },
+  { label: 'Gilgit', value: 'Gilgit' },
+  { label: 'Skardu', value: 'Skardu' }
+].sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically
 
 const TripAssignmentScreen: React.FC = () => {
   const [truckers, setTruckers] = useState<Trucker[]>([]);
@@ -34,6 +79,11 @@ const TripAssignmentScreen: React.FC = () => {
     distance: 0,
     assigned_by_admin_id: 0,
   });
+  
+  // State for dropdown pickers
+  const [startLocationOpen, setStartLocationOpen] = useState(false);
+  const [endLocationOpen, setEndLocationOpen] = useState(false);
+  
   const user = useSelector((state: RootState) => state.user);
   const isFocused = useIsFocused();
 
@@ -60,9 +110,16 @@ const TripAssignmentScreen: React.FC = () => {
       Alert.alert("Missing Info", "Please select trucker.");
       return;
     }
-
-        // Clear the input fields after successful trip creation
-
+    
+    if (!form.start_location) {
+      Alert.alert("Missing Info", "Please select a start location.");
+      return;
+    }
+    
+    if (!form.end_location) {
+      Alert.alert("Missing Info", "Please select an end location.");
+      return;
+    }
 
     try {
       const truck = await getTruckByTruckerId(selectedTruckerId);
@@ -71,7 +128,7 @@ const TripAssignmentScreen: React.FC = () => {
         ...form,
         truck_id: truck.truck_id,
         trucker_id: selectedTruckerId,
-        assigned_by_admin_id: user.id, // Use the admin ID from Redux state
+        assigned_by_admin_id: user.id,
         end_time: undefined,
         trip_rating: 0,
       } as Omit<Trip, "trip_id">;
@@ -80,7 +137,7 @@ const TripAssignmentScreen: React.FC = () => {
       await updateTruckerStatus(selectedTruckerId, "Active");
       Alert.alert("Success", "Trip assigned successfully!");
 
-      handleClear()
+      handleClear();
       
       router.push('/AdminDashboard');
 
@@ -90,20 +147,19 @@ const TripAssignmentScreen: React.FC = () => {
     }
   };
 
-    // Function to clear the form inputs on the screen
-    const handleClear = () => {
-      setForm({
-        truck_id: 0,
-        start_location: "",
-        end_location: "",
-        start_time: new Date().toISOString(),
-        status: "Scheduled",
-        distance: 0,
-        assigned_by_admin_id: 0,
-      });
-    
-      setSelectedTruckerId(null); // Clear the selected trucker picker
-    };
+  const handleClear = () => {
+    setForm({
+      truck_id: 0,
+      start_location: "",
+      end_location: "",
+      start_time: new Date().toISOString(),
+      status: "Scheduled",
+      distance: 0,
+      assigned_by_admin_id: 0,
+    });
+  
+    setSelectedTruckerId(null);
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -144,20 +200,60 @@ const TripAssignmentScreen: React.FC = () => {
         </View>
 
         <Text style={styles.label}>Start Location:</Text>
-        <TextInput
-          style={styles.input}
-          value={form.start_location}
-          onChangeText={(text) => handleInputChange("start_location", text)}
+        <DropDownPicker
+          open={startLocationOpen}
+          value={form.start_location as string}
+          items={pakistaniCities}
+          setOpen={setStartLocationOpen}
+          setValue={(callback) => {
+            if (typeof callback === 'function') {
+              const newValue = callback(form.start_location as string);
+              handleInputChange('start_location', newValue);
+            } else {
+              handleInputChange('start_location', callback);
+            }
+          }}
+          searchable={true}
+          searchPlaceholder="Search for a city..."
+          placeholder="Select start location"
+          style={styles.dropdownPicker}
+          dropDownContainerStyle={styles.dropdownContainer}
+          listMode="SCROLLVIEW"
+          scrollViewProps={{
+            nestedScrollEnabled: true,
+          }}
+          zIndex={3000}
+          zIndexInverse={1000}
         />
 
-        <Text style={styles.label}>End Location:</Text>
-        <TextInput
-          style={styles.input}
-          value={form.end_location}
-          onChangeText={(text) => handleInputChange("end_location", text)}
+        <Text style={[styles.label, { marginTop: startLocationOpen ? 200 : 15 }]}>End Location:</Text>
+        <DropDownPicker
+          open={endLocationOpen}
+          value={form.end_location as string}
+          items={pakistaniCities}
+          setOpen={setEndLocationOpen}
+          setValue={(callback) => {
+            if (typeof callback === 'function') {
+              const newValue = callback(form.end_location as string);
+              handleInputChange('end_location', newValue);
+            } else {
+              handleInputChange('end_location', callback);
+            }
+          }}
+          searchable={true}
+          searchPlaceholder="Search for a city..."
+          placeholder="Select destination"
+          style={styles.dropdownPicker}
+          dropDownContainerStyle={styles.dropdownContainer}
+          listMode="SCROLLVIEW"
+          scrollViewProps={{
+            nestedScrollEnabled: true,
+          }}
+          zIndex={2000}
+          zIndexInverse={2000}
         />
 
-        <Text style={styles.label}>Start Time (ISO):</Text>
+        <Text style={[styles.label, { marginTop: endLocationOpen ? 200 : 15 }]}>Start Time (ISO):</Text>
         <TextInput
           style={styles.input}
           value={form.start_time}
@@ -204,7 +300,7 @@ const styles = StyleSheet.create({
     fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
     color: '#333',
     marginBottom: screenHeight * 0.004,
-    marginLeft: 5, // Add some space between the icon and the text
+    marginLeft: 5,
   },
   container: {
     padding: 20,
@@ -250,6 +346,15 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderRadius: 8,
     overflow: "hidden",
+  },
+  dropdownPicker: {
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
+  },
+  dropdownContainer: {
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
+    maxHeight: 200,
   },
 });
 

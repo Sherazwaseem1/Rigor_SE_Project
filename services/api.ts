@@ -4,8 +4,8 @@ import { Platform } from "react-native";
 // ✅ Set API URL based on platform (change IP if needed)
 const API_URL =
   Platform.OS === "web"
-    ? "http://localhost:5001/api"
-    : "http://10.130.110.12:5001/api"; // Replace with your IPv4 if necessary
+    ? "http://localhost:5000/api"
+    : "http://192.168.1.9:5000/api"; // Replace with your IPv4 if necessary
 
 export interface Trucker {
   trucker_id: number;
@@ -328,4 +328,22 @@ export const getTruckByTruckerId = async (truckerId: number) => {
   const res = await fetch(`${API_URL}/trucks/by-trucker/${truckerId}`);
   if (!res.ok) throw new Error("Failed to fetch truck for trucker");
   return res.json();
+};
+
+// ✅ Update LLM API call
+export interface TripCostEstimate {
+  estimated_cost: string;
+}
+
+export const estimateTripCost = async (
+  start_location: string,
+  end_location: string,
+  distance: number
+): Promise<TripCostEstimate> => {
+  const response = await axios.post<TripCostEstimate>(`${API_URL}/llm/estimate`, {
+    start_location,
+    end_location,
+    distance,
+  });
+  return response.data;
 };
