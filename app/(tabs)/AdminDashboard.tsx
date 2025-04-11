@@ -163,6 +163,9 @@ const AdminDashboard = () => {
         <TouchableOpacity style={[styles.button]} onPress={() => router.push("/TruckForm")}>
           <Text style={styles.signoutButtonText}>Add Truck</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={[styles.button]} onPress={() => router.push("/Maps")}>
+          <Text style={styles.signoutButtonText}>View Maps</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={[styles.button, styles.signoutButton]} onPress={() => router.push("/")}>
           <Text style={styles.signoutButtonText}>Sign Out</Text>
         </TouchableOpacity>
