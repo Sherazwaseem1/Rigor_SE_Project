@@ -202,7 +202,7 @@ const TruckerDashboard = () => {
             <View style={styles.buttonContainer}>
               <Button
                 title="Reimbursement Form"
-                onPress={() => router.push("/Reimbursement_form")}
+                onPress={() => router.push("/Check_image")}
               />
             </View>
           </View>
