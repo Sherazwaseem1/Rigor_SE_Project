@@ -142,7 +142,7 @@ const SignUp = () => {
                     {/* Logo */}
                     <View style={styles.logoContainer}>
                         <Image source={require('../../assets/images/truck.png')} style={styles.logo} />
-                        <Text style={styles.subtitleText}>Have a better trucking experience</Text>
+                        <Text style={styles.subtitleText}>Where Every Mile Matters</Text>
                     </View>
 
                     {/* Input Fields */}
@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
     },
     backButton: {
         paddingVertical: Math.max(screenHeight * 0.01, 8),
+        marginTop: Math.max(screenHeight * 0.04, 24),
     },
     backButtonContent: {
         flexDirection: 'row',
