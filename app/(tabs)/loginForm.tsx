@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch, ScrollView, Platform } from 'react-native'
 import { ThemedView } from '@/components/ThemedView'
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
@@ -116,8 +116,8 @@ const Login = () => {
 
                 {/* Logo */}
                 <View style={styles.logoContainer}>
-                    <Image source={require('../../assets/images/truck.png')} style={styles.logo} />
-                    <Text style={styles.subtitleText}>Have a better trucking experience</Text>
+                    <Image source={require('../../assets/images/truck_rm.png')} style={styles.logo} />
+                    <Text style={styles.subtitleText}>Where Every Mile Matters</Text>
                 </View>
 
                 {/* Email Input */}
@@ -197,7 +197,8 @@ export default Login
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#EBF4F6',
+        paddingTop: Platform.OS === 'ios' ? 0 : Math.min(screenHeight * 0.02, 16),
     },
     scrollContainer: {
         flexGrow: 1,
@@ -205,134 +206,174 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: Math.max(screenWidth * 0.06, 24),
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#FFFFFF',
         paddingTop: Math.max(screenHeight * 0.08, 60),
         paddingBottom: Math.max(screenHeight * 0.05, 40),
+        borderRadius: 20,
     },
     backButton: {
+        paddingVertical: Math.max(screenHeight * 0.015, 12),
+        backgroundColor: '#FFFFFF',
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+        elevation: 2,
         position: 'absolute',
         top: Math.max(screenHeight * 0.03, 20),
         left: Math.max(screenWidth * 0.05, 20),
-        flexDirection: 'row',
-        alignItems: 'center',
         zIndex: 1,
+        borderWidth: 1,
+        borderColor: '#E5E9F0',
     },
     backButtonContent: {
         flexDirection: 'row',
         alignItems: 'center',
     },
     backButtonLabel: {
-        fontSize: Math.min(screenWidth * 0.04, 16),
-        marginLeft: Math.max(screenWidth * 0.01, 5),
-        color: '#333',
+        fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
+        color: '#071952',
+        marginLeft: 8,
+        fontWeight: '700',
     },
     logoContainer: {
         alignItems: 'center',
-        marginBottom: Math.max(screenHeight * 0.002, 6),
+        marginBottom: Math.max(screenHeight * 0.04, 32),
         marginTop: Math.max(screenHeight * 0.02, 15),
+        marginHorizontal: Math.max(screenWidth * 0.1, 40),
+        backgroundColor: '#FFFFFF',
+        padding: 25,
+        borderRadius: 30,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 8,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 15,
+        elevation: 8,
+        borderWidth: 1,
+        borderColor: '#E5E9F0',
+        overflow: 'hidden',
+        width: '85%',
+        alignSelf: 'center',
     },
     logo: {
-        width: Math.min(screenWidth * 0.6, 200),
-        height: Math.min(screenWidth * 0.6, 200),
+        width: Math.min(screenWidth * 0.7, 300),
+        height: Math.min(screenHeight * 0.2, 160),
         resizeMode: 'contain',
+        transform: [{ scale: 0.95 }],
+        opacity: 0.95,
     },
     subtitleText: {
-        fontSize: Math.min(screenWidth * 0.04, 16),
-        color: '#202545',
+        fontSize: 18,
+        color: '#071952',
         textAlign: 'center',
-        marginTop: Math.max(screenHeight * 0.001, 1),
+        marginTop: 10,
+        fontWeight: '500',
     },
     input: {
         width: '100%',
         height: Math.max(screenHeight * 0.065, 52),
         borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: Math.min(screenWidth * 0.02, 8),
+        borderColor: '#E5E9F0',
+        borderRadius: 12,
         paddingHorizontal: Math.max(screenWidth * 0.04, 16),
         marginBottom: Math.max(screenHeight * 0.02, 16),
         fontSize: Math.min(screenWidth * 0.04, 16),
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#FFFFFF',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
     },
     passwordContainer: {
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        position: 'relative', // Ensure the child absolute positioning works
+        position: 'relative',
     },
     passwordInput: {
         flex: 1,
-        paddingRight: 50, // Increase right padding so text doesn’t overlap with the icon
+        paddingRight: 50,
     },
     eyeIcon: {
         position: 'absolute',
-        right: 10,  // Adjust position inside the input field
-        zIndex: 1,  // Ensure it appears on top of the input field
-        padding: 10, // Add padding to make it easier to tap
-        bottom: 20, // Adjust position inside the input field
+        right: 15,
+        padding: 10,
+        zIndex: 1,
     },
     inputError: {
-        borderColor: 'red',
+        borderColor: '#FF3B30',
     },
     errorText: {
-        color: 'red',
+        color: '#FF3B30',
         fontSize: Math.min(screenWidth * 0.035, 14),
         alignSelf: 'flex-start',
+        marginBottom: 8,
     },
     button: {
         width: '100%',
         height: Math.max(screenHeight * 0.065, 52),
-        backgroundColor: '#7F9FB4',
+        backgroundColor: '#088395',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: Math.min(screenWidth * 0.02, 8),
+        borderRadius: 12,
         marginTop: Math.max(screenHeight * 0.03, 24),
         marginBottom: Math.max(screenHeight * 0.02, 16),
-    },
-    signUpButton: {
-        backgroundColor: '#28a745',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     buttonText: {
-        color: '#202545',
-        fontSize: Math.min(screenWidth * 0.045, 18),
-        fontWeight: 'bold'
-    },
-    switchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: Math.max(screenHeight * 0.03, 24),
-        marginTop: Math.max(screenHeight * 0.01, 8),
-    },
-    switchLabel: {
-        marginRight: Math.max(screenWidth * 0.02, 10),
-        fontSize: Math.min(screenWidth * 0.04, 16),
-        color: '#202545',
+        color: '#FFFFFF',
+        fontSize: 18,
+        fontWeight: '700',
     },
     signUpText: {
-        fontSize: Math.min(screenWidth * 0.04, 16),
-        color: "#202545",
+        fontSize: 16,
+        color: "#071952",
         marginTop: Math.max(screenHeight * 0.015, 12),
         textAlign: "center",
     },
     signUpLink: {
-        color: "#7F9FB4",
-        fontWeight: "bold",
+        color: "#088395",
+        fontWeight: "700",
     },
     dropdownContainer: {
         width: '100%',
         marginBottom: Math.max(screenHeight * 0.03, 24),
+        backgroundColor: '#FFFFFF',
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: '#E5E9F0',
+        overflow: 'hidden',
+        paddingHorizontal: 16,
+        paddingTop: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
     },
     dropdownLabel: {
         fontSize: Math.min(screenWidth * 0.04, 16),
-        color: '#202545',
-        marginBottom: Math.max(screenHeight * 0.01, 8),
+        color: '#071952',
+        marginBottom: 8,
     },
     picker: {
-        height: Math.max(screenHeight * 0.065, 52),
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: Math.min(screenWidth * 0.02, 8),
-        backgroundColor: '#f9f9f9',
+        width: '100%',
+        height: 50,
+        backgroundColor: '#FFFFFF',
+        color: '#202545',
+        marginTop: -8,
+        marginBottom: 8,
     },
 })

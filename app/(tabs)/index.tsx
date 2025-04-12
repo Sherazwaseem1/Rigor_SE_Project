@@ -11,14 +11,14 @@ export default function WelcomeScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
-          source={require('../../assets/images/RigorLogo.jpg')}
+          source={require('../../assets/images/rigor_no_bg.jpeg')}
           style={styles.logo}
           resizeMode="contain"
         />
       </View>
       
       <ThemedText style={styles.welcomeText} type="title">Welcome</ThemedText>
-      <ThemedText style={styles.subtitleText}>Have a better trucking experience</ThemedText>
+      <ThemedText style={styles.subtitleText}>Where Every Mile Matters</ThemedText>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
@@ -60,41 +60,56 @@ const normalize = (size:any) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#EBF4F6',
   },
   scrollContainer: {
     flexGrow: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#EBF4F6',
     paddingHorizontal: Math.min(SCREEN_WIDTH * 0.05, 24),
     paddingTop: Platform.OS === 'ios' ? 0 : Math.min(SCREEN_HEIGHT * 0.02, 16),
     paddingBottom: Math.min(SCREEN_HEIGHT * 0.02, 16),
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: Math.min(SCREEN_HEIGHT * 0.1, 100),
-    marginBottom: Math.min(SCREEN_HEIGHT * 0.04, 32),
+    marginTop: Math.min(SCREEN_HEIGHT * 0.08, 80),
+    marginBottom: Math.min(SCREEN_HEIGHT * 0.05, 40),
+    backgroundColor: '#FFF',
+    padding: 20,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   logo: {
-    width: Math.min(SCREEN_WIDTH * 0.85, 400),
-    height: Math.min(SCREEN_HEIGHT * 0.25, 200),
-    maxWidth: '85%',
+    width: Math.min(SCREEN_WIDTH * 0.9, 420),
+    height: Math.min(SCREEN_HEIGHT * 0.28, 220),
+    maxWidth: '90%',
   },
   welcomeText: {
-    fontSize: normalize(24),
-    fontWeight: '600',
+    fontSize: normalize(32),
+    fontWeight: '700',
     textAlign: 'center',
     marginTop: Math.min(SCREEN_HEIGHT * 0.05, 20),
-    marginBottom: Math.min(SCREEN_HEIGHT * 0.01, 8),
-    color: '#202545',
+    marginBottom: Math.min(SCREEN_HEIGHT * 0.02, 12),
+    color: '#071952',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   subtitleText: {
-    fontSize: normalize(16),
-    color: '#7F9FB4',
+    fontSize: normalize(18),
+    color: '#088395',
     textAlign: 'center',
     marginBottom: Math.min(SCREEN_HEIGHT * 0.04, 32),
+    fontWeight: '500',
   },
   buttonContainer: {
     width: '100%',
@@ -102,38 +117,48 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     display:'flex',
     justifyContent: 'center',
-    gap: Math.min(SCREEN_HEIGHT * 0.015, 15),
-    marginTop: Math.min(SCREEN_HEIGHT * 0.4, 200),
+    gap: Math.min(SCREEN_HEIGHT * 0.02, 20),
+    marginTop: Math.min(SCREEN_HEIGHT * 0.35, 180),
   },
   createAccountButton: {
-    backgroundColor: '#202545',
-    padding: Math.min(SCREEN_HEIGHT * 0.02, 16),
-    borderRadius: 8,
+    backgroundColor: '#071952',
+    padding: Math.min(SCREEN_HEIGHT * 0.022, 18),
+    borderRadius: 12,
     alignItems: 'center',
     width: '100%',
-    minHeight: 48,
+    minHeight: 52,
     display:'flex',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.84,
+    elevation: 4,
   },
   createAccountButtonText: {
-    color: '#fff',
-    fontSize: normalize(16),
-    fontWeight: '600',
+    color: '#EBF4F6',
+    fontSize: normalize(18),
+    fontWeight: '700',
   },
   loginButton: {
-    backgroundColor: '#7F9FB4',
-    padding: Math.min(SCREEN_HEIGHT * 0.02, 16),
-    borderRadius: 8,
+    backgroundColor: '#088395',
+    padding: Math.min(SCREEN_HEIGHT * 0.022, 18),
+    borderRadius: 12,
     alignItems: 'center',
     width: '100%',
-    marginTop: Math.min(SCREEN_HEIGHT * 0.04, 20),
-    marginBottom: Math.min(SCREEN_HEIGHT * 0.2, 70),
-    minHeight: 48,
+    marginTop: Math.min(SCREEN_HEIGHT * 0.02, 15),
+    marginBottom: Math.min(SCREEN_HEIGHT * 0.15, 60),
+    minHeight: 52,
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.84,
+    elevation: 4,
   },
   loginButtonText: {
-    color: '#202545',
-    fontSize: normalize(16),
-    fontWeight: 'bold',
+    color: '#EBF4F6',
+    fontSize: normalize(18),
+    fontWeight: '700',
   },
 });
