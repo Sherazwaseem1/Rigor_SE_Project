@@ -71,7 +71,7 @@ const Login = () => {
                 }));
                 // Navigate to admin dashboard
                 handleClear(); // Clear the form after successful login
-                router.push("/AdminDashboard"); // Update route for admin
+                router.push("/AdminDashboardNew"); // Update route for admin
             } else {
                 // Fetch trucker data
                 const truckerData = await getTruckerByEmail(email);
@@ -88,7 +88,7 @@ const Login = () => {
                 // Navigate to trucker dashboard
                 handleClear();
                 // alert("Trucker INCOMING");
-                router.push("/TruckerDashboard"); // Update route for trucker
+                router.push("/TruckerDashboardNew"); // Update route for trucker
             }
         } catch (error: any) {
             console.error('Error signing in:', error);

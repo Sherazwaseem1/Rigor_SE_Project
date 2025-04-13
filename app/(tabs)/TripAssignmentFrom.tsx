@@ -82,7 +82,7 @@ const TripAssignmentScreen: React.FC = () => {
 
       handleClear()
       
-      router.push('/AdminDashboard');
+      router.push('/AdminDashboardNew');
 
     } catch (error) {
       console.error("Trip creation error:", error);
@@ -112,7 +112,7 @@ const TripAssignmentScreen: React.FC = () => {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => {
-              router.push('/AdminDashboard');
+              router.push('/AdminDashboardNew');
           }}
         >
           <View style={styles.backButtonContent}>

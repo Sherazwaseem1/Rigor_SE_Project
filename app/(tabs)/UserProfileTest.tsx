@@ -74,9 +74,9 @@ const UserProfileTest = () => {
           style={styles.backButton}
           onPress={() => {
             if (isAdmin) {
-              router.push("/AdminDashboard");
+              router.push("/AdminDashboardNew");
             } else {
-              router.push("/TruckerDashboard");
+              router.push("/TruckerDashboardNew");
             }
           }}
         >

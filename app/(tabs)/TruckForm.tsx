@@ -63,11 +63,10 @@ export default function TruckForm() {
 
     console.log("Form data to submit:", submissionData);
 
-    router.push("/AdminDashboard"); // Navigate to AdminDashboard after submission
-
     try {
       const response = await createTruck(submissionData);
       alert("Truck created successfully!");
+      router.push("/AdminDashboardNew"); // Navigate to AdminDashboardNew after successful submission
     } catch (error) {
       alert("Failed to create truck. Please try again.");
     }
@@ -80,7 +79,7 @@ export default function TruckForm() {
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => {
-                router.push('/AdminDashboard');
+                router.push('/AdminDashboardNew');
             }}
           >
             <View style={styles.backButtonContent}>
