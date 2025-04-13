@@ -107,11 +107,9 @@ const Login = () => {
                 <ThemedView style={styles.container}>
                 
                 {/* Back Button */}
-                <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-                    <View style={styles.backButtonContent}>
-                        <IconSymbol size={24} name="chevron.left" color="#333" />
-                        <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
-                    </View>
+                <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                    <IconSymbol size={24} name="chevron.left" color="#333" />
+                    <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
                 </TouchableOpacity>
 
                 {/* Logo */}
@@ -197,11 +195,11 @@ export default Login
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#EBF4F6',
-        paddingTop: Platform.OS === 'ios' ? 0 : Math.min(screenHeight * 0.02, 16),
+        backgroundColor: '#FFFFFF',
+        paddingTop: Platform.OS === 'ios' ? 40 : 20
     },
     scrollContainer: {
-        flexGrow: 1,
+        flexGrow: 1
     },
     container: {
         flex: 1,
@@ -209,26 +207,17 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
-        paddingTop: Math.max(screenHeight * 0.08, 60),
-        paddingBottom: Math.max(screenHeight * 0.05, 40),
+        paddingTop: 0,
+        paddingBottom: Math.max(screenHeight * 0.06, 48),
         borderRadius: 20,
+        minHeight: screenHeight * 0.9,
     },
     backButton: {
-        paddingVertical: Math.max(screenHeight * 0.015, 12),
-        backgroundColor: '#FFFFFF',
-        borderRadius: 12,
-        paddingHorizontal: 16,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
-        elevation: 2,
-        position: 'absolute',
-        top: Math.max(screenHeight * 0.03, 20),
-        left: Math.max(screenWidth * 0.05, 20),
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        marginBottom: 20,
         zIndex: 1,
-        borderWidth: 1,
-        borderColor: '#E5E9F0',
     },
     backButtonContent: {
         flexDirection: 'row',
@@ -236,26 +225,29 @@ const styles = StyleSheet.create({
     },
     backButtonLabel: {
         fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
-        color: '#071952',
-        marginLeft: 8,
-        fontWeight: '700',
+        color: '#1E293B',
+        marginLeft: 12,
+        fontWeight: '600',
+        letterSpacing: 0.5,
     },
     logoContainer: {
         alignItems: 'center',
-        marginBottom: Math.max(screenHeight * 0.04, 32),
-        marginTop: Math.max(screenHeight * 0.02, 15),
+        marginBottom: Math.max(screenHeight * 0.05, 40),
+        marginTop: 20,
+        paddingTop: Math.max(screenHeight * 0.04, 32),
+        paddingBottom: Math.max(screenHeight * 0.04, 32),
         marginHorizontal: Math.max(screenWidth * 0.1, 40),
         backgroundColor: '#FFFFFF',
-        padding: 25,
+        padding: 32,
         borderRadius: 30,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 8,
         },
-        shadowOpacity: 0.2,
-        shadowRadius: 15,
-        elevation: 8,
+        shadowOpacity: 0.15,
+        shadowRadius: 24,
+        elevation: 12,
         borderWidth: 1,
         borderColor: '#E5E9F0',
         overflow: 'hidden',

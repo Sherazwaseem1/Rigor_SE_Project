@@ -30,7 +30,6 @@ import { StarRatingDisplay } from "react-native-star-rating-widget";
 const UserProfileTest = () => {
   const { isAdmin, id } = useSelector((state: RootState) => state.user);
   const [userData, setUserData] = useState<Admin | Trucker | null>(null);
-  const [ratingData, setRatingData] = useState<number | null>(null); // Add state for rating
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const isFocused = useIsFocused();
@@ -42,11 +41,6 @@ const UserProfileTest = () => {
           ? await getAdminById(id)
           : await getTruckerById(id);
         setUserData(data);
-
-        // Set rating data if it's a Trucker
-        if (!isAdmin && data && "rating" in data) {
-          setRatingData((data as Trucker).rating);
-        }
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
@@ -125,19 +119,6 @@ const UserProfileTest = () => {
             </View>
           </View>
         </View>
-
-        {/* Render the rating only if user is a Trucker */}
-        {!isAdmin && ratingData !== null && (
-          <View style={styles.infoField}>
-            <StarRatingDisplay rating={ratingData} />
-          </View>
-        )}
-
-        {!isAdmin && (
-          <TouchableOpacity style={styles.ridesButton}>
-            <Text style={styles.ridesButtonText}>Rides</Text>
-          </TouchableOpacity>
-        )}
       </View>
     </ScrollView>
   );
