@@ -132,16 +132,35 @@ const AdminDashboardNew = () => {
         return (
           <ScrollView>
             {ongoingTrips.map(trip => (
-              <View key={trip.trip_id} style={styles.card}>
-                <Text style={styles.cardText}>Trip ID: {trip.trip_id}</Text>
-                <Text style={styles.cardText}>📍 From: {trip.start_location}</Text>
-                <Text style={styles.cardText}>🏁 To: {trip.end_location}</Text>
-                <Text style={[styles.cardText, styles.statusText]}>Status: {trip.status}</Text>
+              <View key={trip.trip_id} style={[styles.card, styles.recentTripCard]}>
+                <View style={styles.tripHeader}>
+                  <View style={styles.tripRoute}>
+                    <Text style={styles.routeText}>{trip.start_location} → {trip.end_location}</Text>
+                  </View>
+                  <View style={styles.tripIdBadge}>
+                    <Text style={styles.tripIdText}>#{trip.trip_id}</Text>
+                  </View>
+                </View>
+                <View style={styles.tripDetails}>
+                  <View style={styles.locationContainer}>
+                    <Text style={styles.locationLabel}>Start Location</Text>
+                    <Text style={styles.locationText}>{trip.start_location}</Text>
+                  </View>
+                  <View style={styles.locationContainer}>
+                    <Text style={styles.locationLabel}>Destination</Text>
+                    <Text style={styles.locationText}>{trip.end_location}</Text>
+                  </View>
+                </View>
+                <View style={styles.statusContainer}>
+                  <View style={[styles.completedBadge, { backgroundColor: '#FEF3C7' }]}>
+                    <Text style={[styles.completedBadgeText, { color: '#9B403D' }]}>In Progress</Text>
+                  </View>
+                </View>
               </View>
             ))}
             {ongoingTrips.length === 0 && (
-              <View style={styles.card}>
-                <Text style={styles.cardText}>No ongoing trips</Text>
+              <View style={[styles.card, styles.emptyCard]}>
+                <Text style={styles.emptyText}>No ongoing trips</Text>
               </View>
             )}
           </ScrollView>
@@ -152,16 +171,35 @@ const AdminDashboardNew = () => {
         return (
           <ScrollView>
             {completedTrips.map(trip => (
-              <View key={trip.trip_id} style={styles.card}>
-                <Text style={styles.cardText}>Trip ID: {trip.trip_id}</Text>
-                <Text style={styles.cardText}>📍 From: {trip.start_location}</Text>
-                <Text style={styles.cardText}>🏁 To: {trip.end_location}</Text>
-                <Text style={[styles.cardText, styles.completedText]}>Completed</Text>
+              <View key={trip.trip_id} style={[styles.card, styles.recentTripCard]}>
+                <View style={styles.tripHeader}>
+                  <View style={styles.tripRoute}>
+                    <Text style={styles.routeText}>{trip.start_location} → {trip.end_location}</Text>
+                  </View>
+                  <View style={styles.tripIdBadge}>
+                    <Text style={styles.tripIdText}>#{trip.trip_id}</Text>
+                  </View>
+                </View>
+                <View style={styles.tripDetails}>
+                  <View style={styles.locationContainer}>
+                    <Text style={styles.locationLabel}>Start Location</Text>
+                    <Text style={styles.locationText}>{trip.start_location}</Text>
+                  </View>
+                  <View style={styles.locationContainer}>
+                    <Text style={styles.locationLabel}>Destination</Text>
+                    <Text style={styles.locationText}>{trip.end_location}</Text>
+                  </View>
+                </View>
+                <View style={styles.statusContainer}>
+                  <View style={styles.completedBadge}>
+                    <Text style={styles.completedBadgeText}>Completed</Text>
+                  </View>
+                </View>
               </View>
             ))}
             {completedTrips.length === 0 && (
-              <View style={styles.card}>
-                <Text style={styles.cardText}>No recent trips</Text>
+              <View style={[styles.card, styles.emptyCard]}>
+                <Text style={styles.emptyText}>No recent trips available</Text>
               </View>
             )}
           </ScrollView>
@@ -172,15 +210,35 @@ const AdminDashboardNew = () => {
         return (
           <ScrollView>
             {pendingReimbursements.map(item => (
-              <View key={item.reimbursement_id} style={styles.card}>
-                <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
-                <Text style={styles.cardText}>💵 Amount: ${parseFloat(item.amount.$numberDecimal).toFixed(2)}</Text>
-                <Text style={[styles.cardText, styles.pendingText]}>Status: {item.status}</Text>
+              <View key={item.reimbursement_id} style={[styles.card, styles.recentTripCard]}>
+                <View style={styles.tripHeader}>
+                  <View style={styles.tripRoute}>
+                    <Text style={styles.routeText}>Reimbursement Request</Text>
+                  </View>
+                  <View style={styles.tripIdBadge}>
+                    <Text style={styles.tripIdText}>#{item.reimbursement_id}</Text>
+                  </View>
+                </View>
+                <View style={styles.tripDetails}>
+                  <View style={styles.locationContainer}>
+                    <Text style={styles.locationLabel}>Trip ID</Text>
+                    <Text style={styles.locationText}>{item.trip_id}</Text>
+                  </View>
+                  <View style={styles.locationContainer}>
+                    <Text style={styles.locationLabel}>Amount</Text>
+                    <Text style={styles.locationText}>$ {parseFloat(item.amount.$numberDecimal).toFixed(2)}</Text>
+                  </View>
+                </View>
+                <View style={styles.statusContainer}>
+                  <View style={[styles.completedBadge, { backgroundColor: '#FEF3C7' }]}>
+                    <Text style={[styles.completedBadgeText, { color: '#9B403D' }]}>Pending Approval</Text>
+                  </View>
+                </View>
               </View>
             ))}
             {pendingReimbursements.length === 0 && (
-              <View style={styles.card}>
-                <Text style={styles.cardText}>No pending reimbursements</Text>
+              <View style={[styles.card, styles.emptyCard]}>
+                <Text style={styles.emptyText}>No pending reimbursements</Text>
               </View>
             )}
           </ScrollView>
@@ -190,16 +248,40 @@ const AdminDashboardNew = () => {
         return (
           <ScrollView>
             {truckers.map(trucker => (
-              <View key={trucker.trucker_id} style={styles.card}>
-                <Text style={styles.cardText}>Name: {trucker.name}</Text>
-                <Text style={styles.cardText}>ID: {trucker.trucker_id}</Text>
-                <Text style={styles.cardText}>📱 Phone: {trucker.phone_number}</Text>
-                <Text style={[styles.cardText, styles.statusText]}>Status: {trucker.status}</Text>
+              <View key={trucker.trucker_id} style={[styles.card, styles.truckerCard]}>
+                <View style={styles.truckerHeader}>
+                  <View style={styles.truckerInfo}>
+                    <View style={styles.truckerAvatar}>
+                      <Text style={styles.avatarText}>{trucker.name[0]}</Text>
+                    </View>
+                    <View style={styles.truckerDetails}>
+                      <Text style={styles.truckerName}>{trucker.name}</Text>
+                      <Text style={styles.truckerId}>ID: #{trucker.trucker_id}</Text>
+                    </View>
+                  </View>
+                  <View style={[styles.statusBadge, 
+                    { backgroundColor: trucker.status === 'Active' ? '#ECFDF5' : '#FEF3C7' }]}>
+                    <Text style={[styles.statusBadgeText, 
+                      { color: trucker.status === 'Active' ? '#047857' : '#9B403D' }]}>
+                      {trucker.status === 'Active' ? '🟢 Active' : '⏳ Inactive'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.truckerContact}>
+                  <View style={styles.contactItem}>
+                    <Text style={styles.contactLabel}>Phone Number</Text>
+                    <Text style={styles.contactValue}>Phone: {trucker.phone_number}</Text>
+                  </View>
+                  <View style={styles.contactItem}>
+                    <Text style={styles.contactLabel}>Email</Text>
+                    <Text style={styles.contactValue}>Email: {trucker.email}</Text>
+                  </View>
+                </View>
               </View>
             ))}
             {truckers.length === 0 && (
-              <View style={styles.card}>
-                <Text style={styles.cardText}>No registered truckers</Text>
+              <View style={[styles.card, styles.emptyCard]}>
+                <Text style={styles.emptyText}>No registered truckers</Text>
               </View>
             )}
           </ScrollView>
@@ -239,6 +321,214 @@ const AdminDashboardNew = () => {
 };
 
 const styles = StyleSheet.create({
+  truckerCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginHorizontal: 16,
+    marginVertical: 8,
+  },
+  truckerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  truckerInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  truckerAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#088395',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  avatarText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  truckerDetails: {
+    flex: 1,
+  },
+  truckerName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#071952',
+    marginBottom: 4,
+  },
+  truckerId: {
+    fontSize: 14,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  statusBadgeText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  truckerContact: {
+    marginTop: 8,
+    backgroundColor: '#EBF4F6',
+    borderRadius: 12,
+    padding: 16,
+  },
+  contactItem: {
+    marginBottom: 8,
+  },
+  contactLabel: {
+    fontSize: 12,
+    color: '#64748B',
+    marginBottom: 4,
+    fontWeight: '500',
+  },
+  contactValue: {
+    fontSize: 15,
+    color: '#1E293B',
+    fontWeight: '500',
+  },
+  recentTripCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  tripHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  tripRoute: {
+    flex: 1,
+    marginRight: 12,
+  },
+  routeText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#071952',
+  },
+  tripIdBadge: {
+    backgroundColor: '#EBF4F6',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  tripIdText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#088395',
+  },
+  tripDetails: {
+    marginBottom: 16,
+  },
+  locationContainer: {
+    marginBottom: 12,
+  },
+  locationLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#64748B',
+    marginBottom: 4,
+  },
+  locationText: {
+    fontSize: 15,
+    color: '#1E293B',
+    fontWeight: '500',
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  completedBadge: {
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  completedBadgeText: {
+    color: '#047857',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  emptyCard: {
+    alignItems: 'center',
+    padding: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.05)',
+    transform: [{ translateY: -2 }],
+  },
+  cardText: {
+    fontSize: 16,
+    color: '#1E293B',
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  statusText: {
+    color: '#088395',
+    fontWeight: '600',
+    fontSize: 14,
+    marginTop: 4,
+    backgroundColor: '#EBF4F6',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  completedText: {
+    color: '#047857',
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    fontWeight: '600',
+    fontSize: 14,
+    marginTop: 4,
+    alignSelf: 'flex-start',
+  },
+  pendingText: {
+    color: '#9B403D',
+    backgroundColor: '#FEF2F2',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    fontWeight: '600',
+    fontSize: 14,
+    marginTop: 4,
+    alignSelf: 'flex-start',
+  },
   container: {
     flex: 1,
     backgroundColor: '#EBF4F6',
@@ -299,10 +589,25 @@ const styles = StyleSheet.create({
   },
   signOutItem: {
     marginTop: 'auto',
-    backgroundColor: '#FEE2E2',
+    marginHorizontal: 16,
+    marginBottom: 24,
+    backgroundColor: '#FF3B30',
+    borderRadius: 12,
+    borderWidth: 0,
+    shadowColor: '#FF3B30',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
   },
   signOutText: {
-    color: '#DC2626',
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
   },
   header: {
     flexDirection: 'row',
@@ -349,6 +654,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  cardText: {
+    fontSize: 14,
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  statusText: {
+    color: '#088395',
+    fontWeight: '600',
+  },
+  completedText: {
+    color: '#059669',
+    fontWeight: '600',
+  },
+  pendingText: {
+    color: '#D97706',
+    fontWeight: '600',
+  },
+  hourglassIcon: {
+    marginRight: 4,
   },
   cardText: {
     fontSize: 14,

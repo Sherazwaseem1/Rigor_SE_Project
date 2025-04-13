@@ -3,13 +3,13 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   ScrollView,
   Alert,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  Image
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Trip, Trucker, getAllTruckers, createTrip, getTruckByTruckerId, updateTruckerStatus } from "../../services/api";
@@ -123,62 +123,86 @@ const TripAssignmentScreen: React.FC = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.heading}>🚚 Assign New Trip</Text>
-
-        <Text style={styles.label}>Select InActive Trucker:</Text>
-        <View style={styles.pickerWrapper}>
-          <Picker
-            selectedValue={selectedTruckerId}
-            onValueChange={(itemValue) => setSelectedTruckerId(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="-- Select Trucker --" value={null} />
-            {truckers.map((trucker) => (
-              <Picker.Item
-                key={trucker.trucker_id}
-                label={`${trucker.name} (${trucker.trucker_id})`}
-                value={trucker.trucker_id}
-              />
-            ))}
-          </Picker>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../../assets/images/rigor_no_bg.jpeg")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
 
-        <Text style={styles.label}>Start Location:</Text>
-        <TextInput
-          style={styles.input}
-          value={form.start_location}
-          onChangeText={(text) => handleInputChange("start_location", text)}
-        />
+        <Text style={[styles.title, { marginBottom: 32 }]}>Assign New Trip</Text>
 
-        <Text style={styles.label}>End Location:</Text>
-        <TextInput
-          style={styles.input}
-          value={form.end_location}
-          onChangeText={(text) => handleInputChange("end_location", text)}
-        />
+        <View style={[styles.inputContainer, { marginTop: 16 }]}>
+          <Text style={styles.label}>Select InActive Trucker</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={selectedTruckerId}
+              onValueChange={(itemValue) => setSelectedTruckerId(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="-- Select Trucker --" value={null} />
+              {truckers.map((trucker) => (
+                <Picker.Item
+                  key={trucker.trucker_id}
+                  label={`${trucker.name} (${trucker.trucker_id})`}
+                  value={trucker.trucker_id}
+                />
+              ))}
+            </Picker>
+          </View>
 
-        <Text style={styles.label}>Start Time (ISO):</Text>
-        <TextInput
-          style={styles.input}
-          value={form.start_time}
-          onChangeText={(text) => handleInputChange("start_time", text)}
-        />
+          <Text style={styles.label}>Start Location</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter start location"
+            placeholderTextColor="#666"
+            value={form.start_location}
+            onChangeText={(text) => handleInputChange("start_location", text)}
+          />
 
-        <Text style={styles.label}>Distance (in km):</Text>
-        <TextInput
-          style={styles.input}
-          value={form.distance ? form.distance.toString() : ""}
-          keyboardType="numeric"
-          onChangeText={(text) => handleInputChange("distance", parseFloat(text) || 0)}
-        />
+          <Text style={styles.label}>End Location</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter end location"
+            placeholderTextColor="#666"
+            value={form.end_location}
+            onChangeText={(text) => handleInputChange("end_location", text)}
+          />
 
-        <View style={styles.buttonContainer}>
-          <Button title="Assign Trip" onPress={handleSubmit} color="#007AFF" />
+          <Text style={styles.label}>Start Time</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter start time"
+            placeholderTextColor="#666"
+            value={form.start_time}
+            onChangeText={(text) => handleInputChange("start_time", text)}
+          />
+
+          <Text style={styles.label}>Distance (km)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter distance"
+            placeholderTextColor="#666"
+            value={form.distance ? form.distance.toString() : ""}
+            keyboardType="numeric"
+            onChangeText={(text) => handleInputChange("distance", parseFloat(text) || 0)}
+          />
         </View>
 
-        <View style={styles.buttonContainer}>
-          <Button title="Clear Form" onPress={handleClear} color="#FF3B30" />
-        </View>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleSubmit}
+        >
+          <Text style={styles.submitButtonText}>Assign Trip</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.submitButton, { backgroundColor: "#FF3B30" }]}
+          onPress={handleClear}
+        >
+          <Text style={styles.submitButtonText}>Clear Form</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -187,69 +211,90 @@ const TripAssignmentScreen: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#fff",
   },
   header: {
-    marginTop: Math.max(screenHeight * 0.04, 24),
-    paddingHorizontal: Math.max(screenWidth * 0.04, 16),
+    paddingTop: Math.max(screenHeight * 0.03, 24),
+    paddingHorizontal: Math.max(screenWidth * 0.03, 12),
   },
   backButton: {
     paddingVertical: Math.max(screenHeight * 0.01, 8),
   },
   backButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   backButtonLabel: {
     fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
-    color: '#333',
-    marginBottom: screenHeight * 0.004,
-    marginLeft: 5, // Add some space between the icon and the text
+    color: "#333",
+    marginLeft: 5,
   },
   container: {
-    padding: 20,
-    paddingBottom: 40,
+    flexGrow: 1,
+    padding: Math.max(screenWidth * 0.04, 16),
   },
-  heading: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 30,
-    textAlign: "center",
-    color: "#007AFF",
-    flexDirection: "row",
+  logoContainer: {
     alignItems: "center",
-    justifyContent: "center",
+    marginBottom: Math.max(screenHeight * 0.02, 16),
+    height: Math.max(screenHeight * 0.1, 80), // Adjusted logo container height
+  },
+  logo: {
+    width: "60%",
+    height: "100%",
+  },
+  title: {
+    fontSize: Math.min(Math.max(screenWidth * 0.05, 18), 22),
+    fontWeight: "600",
+    marginBottom: Math.max(screenHeight * 0.02, 16),
+    textAlign: "center",
+    color: "#202545",
+    letterSpacing: 0.5,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 8,
-    marginTop: 15,
-    color: "#555",
+    fontSize: Math.min(Math.max(screenWidth * 0.035, 14), 16),
+    marginBottom: Math.max(screenHeight * 0.01, 8),
+    color: "#202545",
+    fontWeight: "500",
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#E2E8F0",
+    borderRadius: 8,
+    padding: Math.max(screenWidth * 0.03, 12),
+    marginBottom: Math.max(screenHeight * 0.02, 16),
+    width: "100%",
     backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 10,
-    fontSize: 16,
-    marginBottom: 15,
+    fontSize: Math.min(Math.max(screenWidth * 0.04, 14), 16),
+    color: "#202545",
   },
   pickerWrapper: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
+    borderColor: "#E2E8F0",
+    borderRadius: 8,
     backgroundColor: "#fff",
-    marginBottom: 15,
+    marginBottom: Math.max(screenHeight * 0.02, 16),
+    height: Math.max(screenHeight * 0.06, 40),
   },
   picker: {
-    height: 50,
+    height: Math.max(screenHeight * 0.06, 40),
     width: "100%",
   },
-  buttonContainer: {
-    marginTop: 30,
+  submitButton: {
+    backgroundColor: "#088395",
+    padding: Math.max(screenHeight * 0.015, 12),
     borderRadius: 8,
-    overflow: "hidden",
+    alignItems: "center",
+    marginBottom: Math.max(screenHeight * 0.02, 16),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  submitButtonText: {
+    color: "white",
+    fontSize: Math.min(Math.max(screenWidth * 0.04, 14), 16),
+    fontWeight: "600",
   },
 });
 

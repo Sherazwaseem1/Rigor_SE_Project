@@ -1,10 +1,34 @@
 import { router } from 'expo-router';
-import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet, Dimensions, PixelRatio, Platform, SafeAreaView, ScrollView } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Image, TouchableOpacity, StyleSheet, Dimensions, PixelRatio, Platform, SafeAreaView, ScrollView, Animated } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function WelcomeScreen() {
+  const truckPosition = useRef(new Animated.Value(-150)).current;
+
+  useEffect(() => {
+    const moveAnimation = Animated.loop(
+      Animated.sequence([
+        // Move right
+        Animated.timing(truckPosition, {
+          toValue: SCREEN_WIDTH - 100,
+          duration: 4000,
+          useNativeDriver: true,
+        }),
+        // Reset position
+        Animated.timing(truckPosition, {
+          toValue: -150,
+          duration: 0,
+          useNativeDriver: true,
+        })
+      ])
+    );
+
+    moveAnimation.start();
+    return () => moveAnimation.stop();
+  }, []);
+
   return (
     <SafeAreaView style={styles.safeArea}>
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -19,6 +43,21 @@ export default function WelcomeScreen() {
       
       <ThemedText style={styles.welcomeText} type="title">Welcome</ThemedText>
       <ThemedText style={styles.subtitleText}>Where Every Mile Matters</ThemedText>
+
+      <View style={styles.animationContainer}>
+        <Image
+          source={require('../../assets/images/line_rm.png')}
+          style={styles.roadLine}
+          resizeMode="stretch"
+        />
+        <Animated.View style={[styles.truckContainer, { transform: [{ translateX: truckPosition }] }]}>
+          <Image
+            source={require('../../assets/images/truck_only_rm.png')}
+            style={styles.truckImage}
+            resizeMode="contain"
+          />
+        </Animated.View>
+      </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
@@ -58,16 +97,40 @@ const normalize = (size:any) => {
 };
 
 const styles = StyleSheet.create({
+  animationContainer: {
+    position: 'relative',
+    height: 150,
+    marginTop: Math.min(SCREEN_HEIGHT * 0.03, 24),
+    marginBottom: Math.min(SCREEN_HEIGHT * 0.03, 24),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  roadLine: {
+    width: '100%',
+    height: 20,
+    position: 'absolute',
+    bottom: 25,
+  },
+  truckContainer: {
+    position: 'absolute',
+    bottom: 25,
+    zIndex: 1,
+  },
+  truckImage: {
+    width: 120,
+    height: 72,
+  },
   safeArea: {
     flex: 1,
-    backgroundColor: '#EBF4F6',
+    
+    backgroundColor: '#FFFFFF',
   },
   scrollContainer: {
     flexGrow: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: '#EBF4F6',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: Math.min(SCREEN_WIDTH * 0.05, 24),
     paddingTop: Platform.OS === 'ios' ? 0 : Math.min(SCREEN_HEIGHT * 0.02, 16),
     paddingBottom: Math.min(SCREEN_HEIGHT * 0.02, 16),
@@ -76,17 +139,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: Math.min(SCREEN_HEIGHT * 0.08, 80),
     marginBottom: Math.min(SCREEN_HEIGHT * 0.05, 40),
-    backgroundColor: '#FFF',
-    padding: 20,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 8,
   },
   logo: {
     width: Math.min(SCREEN_WIDTH * 0.9, 420),
@@ -118,7 +170,7 @@ const styles = StyleSheet.create({
     display:'flex',
     justifyContent: 'center',
     gap: Math.min(SCREEN_HEIGHT * 0.02, 20),
-    marginTop: Math.min(SCREEN_HEIGHT * 0.35, 180),
+    marginTop: Math.min(SCREEN_HEIGHT * 0.05, 40),
   },
   createAccountButton: {
     backgroundColor: '#071952',

@@ -101,6 +101,16 @@ const UserProfileTest = () => {
         <View style={styles.infoCard}>
           <View style={styles.infoField}>
             <View style={styles.iconContainer}>
+              <IconSymbol name="user" size={20} color="#7F9FB4" />
+            </View>
+            <View style={styles.textContainer}>
+              <Text style={styles.label}>Name</Text>
+              <Text style={styles.value}>{userData.name}</Text>
+            </View>
+          </View>
+
+          <View style={styles.infoField}>
+            <View style={styles.iconContainer}>
               <IconSymbol name="phone" size={20} color="#7F9FB4" />
             </View>
             <View style={styles.textContainer}>
