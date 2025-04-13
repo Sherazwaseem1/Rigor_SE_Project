@@ -191,7 +191,7 @@ const Login = () => {
 }
 
 export default Login
-
+//styling
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
