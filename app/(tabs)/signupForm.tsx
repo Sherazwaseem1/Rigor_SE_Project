@@ -235,7 +235,7 @@ const SignUp = () => {
 };
 
 export default SignUp;
-
+//styling
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
