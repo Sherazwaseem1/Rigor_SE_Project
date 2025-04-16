@@ -18,13 +18,14 @@ import { RootState } from "../../redux/store"; // Import RootState from your sto
 import { router } from 'expo-router'
 import IconSymbol from "react-native-vector-icons/FontAwesome"; // Make sure you import the icon library you're using.
 import { useIsFocused } from "@react-navigation/native";
+import { requestNotificationPermissions, sendTripAssignmentNotification } from "../../services/notification";
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const TripAssignmentScreen: React.FC = () => {
   const [truckers, setTruckers] = useState<Trucker[]>([]);
-  const [selectedTruckerId, setSelectedTruckerId] = useState<number | null>(null);
+  const [selectedTruckerId, setSelectedTruckerId] = useState<number | string>("");
   const [form, setForm] = useState<Partial<Trip>>({
     truck_id: 0,
     start_location: "",
@@ -56,32 +57,41 @@ const TripAssignmentScreen: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!selectedTruckerId) {
+    if (!selectedTruckerId || selectedTruckerId === "") {
       Alert.alert("Missing Info", "Please select trucker.");
       return;
     }
 
-        // Clear the input fields after successful trip creation
-
-
     try {
+      // Request notification permissions
+      await requestNotificationPermissions();
+      
       const truck = await getTruckByTruckerId(selectedTruckerId);
+      const selectedTrucker = truckers.find(t => t.trucker_id === selectedTruckerId);
 
       const newTrip = {
         ...form,
         truck_id: truck.truck_id,
         trucker_id: selectedTruckerId,
-        assigned_by_admin_id: user.id, // Use the admin ID from Redux state
+        assigned_by_admin_id: user.id,
         end_time: undefined,
         trip_rating: 0,
       } as Omit<Trip, "trip_id">;
 
       await createTrip(newTrip);
       await updateTruckerStatus(selectedTruckerId, "Active");
-      Alert.alert("Success", "Trip assigned successfully!");
 
-      handleClear()
-      
+      // Send notification to trucker
+      if (selectedTrucker) {
+        await sendTripAssignmentNotification(selectedTrucker.name, {
+          start_location: form.start_location,
+          end_location: form.end_location,
+          start_time: form.start_time
+        });
+      }
+
+      Alert.alert("Success", "Trip assigned successfully!");
+      handleClear();
       router.push('/AdminDashboard');
 
     } catch (error) {
@@ -132,7 +142,7 @@ const TripAssignmentScreen: React.FC = () => {
             onValueChange={(itemValue) => setSelectedTruckerId(itemValue)}
             style={styles.picker}
           >
-            <Picker.Item label="-- Select Trucker --" value={null} />
+            <Picker.Item label="-- Select Trucker --" value="" />
             {truckers.map((trucker) => (
               <Picker.Item
                 key={trucker.trucker_id}
