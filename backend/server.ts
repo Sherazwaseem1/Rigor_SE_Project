@@ -5,6 +5,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import connectDB from "./db"; 
 
+
 // Routes
 import truckerRoutes from "./routes/truckerRoutes"; 
 import adminRoutes from "./routes/adminRoutes";
