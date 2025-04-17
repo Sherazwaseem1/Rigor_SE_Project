@@ -75,11 +75,22 @@ export const createTrip = async (req: Request, res: Response): Promise<void> => 
             status,
             distance,
             assigned_by_admin_id,
-            trip_rating
+            trip_rating,
+            expected_cost // ✅ Added expected_cost
         } = req.body;
 
         // ✅ Ensure required fields are provided (excluding trip_id now)
-        if (!trucker_id || !truck_id || !start_location || !end_location || !start_time || !status || !distance || !assigned_by_admin_id) {
+        if (
+            !trucker_id ||
+            !truck_id ||
+            !start_location ||
+            !end_location ||
+            !start_time ||
+            !status ||
+            !distance ||
+            !assigned_by_admin_id ||
+            !expected_cost 
+        ) {
             res.status(400).json({ error: "Missing required fields" });
             return;
         }
@@ -99,7 +110,8 @@ export const createTrip = async (req: Request, res: Response): Promise<void> => 
             status,
             distance: Number(distance),
             assigned_by_admin_id: Number(assigned_by_admin_id),
-            trip_rating: trip_rating ? Number(trip_rating) : undefined
+            trip_rating: trip_rating ? Number(trip_rating) : undefined,
+            expected_cost: expected_cost ? Number(expected_cost) : undefined // ✅ Store expected_cost
         });
 
         await newTrip.save();
@@ -108,4 +120,5 @@ export const createTrip = async (req: Request, res: Response): Promise<void> => 
         res.status(400).json({ error: "Failed to create trip", details: error });
     }
 };
+
 

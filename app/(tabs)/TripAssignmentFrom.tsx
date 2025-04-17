@@ -85,8 +85,10 @@ const TripAssignmentScreen: React.FC = () => {
     start_time: new Date().toISOString(),
     status: "Scheduled",
     distance: 0,
+    expected_cost: 0,
     assigned_by_admin_id: 0,
   });
+  
   
   // State for dropdown pickers
   const [startLocationOpen, setStartLocationOpen] = useState(false);
@@ -141,6 +143,8 @@ const TripAssignmentScreen: React.FC = () => {
       );
       
       setEstimatedCost(costEstimate.estimated_cost);
+      handleInputChange("expected_cost", parseFloat(costEstimate.estimated_cost));
+
     } catch (error) {
       console.error("Error getting cost estimate:", error);
       Alert.alert("Error", "Could not get cost estimate. Please try again.");
@@ -162,6 +166,12 @@ const TripAssignmentScreen: React.FC = () => {
     
     if (!form.end_location) {
       Alert.alert("Missing Info", "Please select an end location.");
+      return;
+    }
+
+    if (!form.expected_cost)
+    {
+      Alert.alert("Missing Info", "Please enter expected cost.");
       return;
     }
 
@@ -313,6 +323,14 @@ const TripAssignmentScreen: React.FC = () => {
           onChangeText={(text) => handleInputChange("distance", parseFloat(text) || 0)}
         />
 
+        <Text style={styles.label}>Expected Cost (PKR):</Text>
+        <TextInput
+          style={styles.input}
+          value={form.expected_cost ? form.expected_cost.toString() : ""}
+          keyboardType="numeric"
+          onChangeText={(text) => handleInputChange("expected_cost", parseFloat(text) || 0)}
+        />
+
         {/* Cost Estimation Section */}
         <View style={styles.costEstimationSection}>
           <TouchableOpacity
@@ -335,6 +353,7 @@ const TripAssignmentScreen: React.FC = () => {
             </View>
           )}
         </View>
+
 
         <View style={styles.buttonContainer}>
           <Button title="Assign Trip" onPress={handleSubmit} color="#007AFF" />

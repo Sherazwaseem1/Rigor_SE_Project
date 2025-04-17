@@ -5,7 +5,7 @@ import { Platform } from "react-native";
 const API_URL =
   Platform.OS === "web"
     ? "http://localhost:5000/api"
-    : "http://192.168.1.6:5000/api"; // Replace with your IPv4 if necessary
+    : "http://10.130.10.171:5000/api"; // Replace with your IPv4 if necessary
 
 export interface Trucker {
   trucker_id: number;
@@ -250,14 +250,15 @@ export interface Trip {
   truck_id: number;
   start_location: string;
   end_location: string;
-  start_time: string; // Date is stored as string in JSON
-  end_time?: string; // Optional Date
+  start_time: string; 
+  end_time?: string;
   status: string;
   distance: number;
   assigned_by_admin_id: number;
-  trip_rating: number; // Optional
-  trucker_name?: string; // Optional field for trucker name
+  trip_rating?: number;
+  expected_cost?: number;
 }
+
 
 // ✅ Trip APIs
 export const getAllTrips = async (): Promise<Trip[]> => {
