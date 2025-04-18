@@ -7,8 +7,9 @@ import { useIsFocused } from '@react-navigation/native';
 import { Drawer } from 'react-native-drawer-layout';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { RootState } from '../../redux/store';
-import { getAllTrips, getAllTruckers, getAllReimbursements } from '../../services/api';
+import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage } from '../../services/api';
 import { Trip, Trucker, Reimbursement } from '../../services/api';
+import { Image } from 'react-native';
 
 const AdminDashboardNew = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -19,6 +20,7 @@ const AdminDashboardNew = () => {
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState('map');
   const isFocused = useIsFocused();
+  const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,27 +28,40 @@ const AdminDashboardNew = () => {
         const [tripsData, truckersData, reimbursementsData] = await Promise.all([
           getAllTrips(),
           getAllTruckers(),
-          getAllReimbursements()
+          getAllReimbursements(),
         ]);
-
+  
         setTrips(tripsData);
         setTruckers(truckersData);
         setReimbursements(reimbursementsData);
+  
+        // fetch profile picture
+        const profilePicResponse = await getAdminProfileImage(admin.id);
+        setProfilePicUrl(profilePicResponse?.profile_pic_url || null);
       } catch (error) {
         console.error('Error fetching admin dashboard data:', error);
       } finally {
         setLoading(false);
       }
     };
+  
     fetchData();
   }, [isFocused]);
+  
 
   const renderDrawerContent = () => (
     <View style={styles.drawerContent}>
       <View style={styles.profileSection}>
-        <View style={styles.profileIcon}>
-          <Text style={styles.profileIconText}>{admin.name[0]}</Text>
-        </View>
+              {profilePicUrl ? (
+          <View style={styles.profileImageWrapper}>
+            <Image source={{ uri: profilePicUrl }} style={styles.profileImage} />
+          </View>
+        ) : (
+          <View style={styles.profileIcon}>
+            <Text style={styles.profileIconText}>{admin.name[0]}</Text>
+          </View>
+        )}
+
         <Text style={styles.profileName}>{admin.name}</Text>
         <Text style={styles.role}>Administrator</Text>
       </View>
@@ -647,6 +662,19 @@ const styles = StyleSheet.create({
     color: '#071952',
     textAlign: 'center',
   },
+  profileImageWrapper: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  
 });
 
 

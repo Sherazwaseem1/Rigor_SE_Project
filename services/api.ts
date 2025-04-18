@@ -118,9 +118,11 @@ export interface Admin {
   name: string;
   email: string;
   phone_number: string;
+  profile_pic_url?: string; // Optional field for profile pic
 }
 
 // ✅ Admin APIs
+
 export const getAllAdmins = async (): Promise<Admin[]> => {
   const response = await axios.get<Admin[]>(`${API_URL}/admins`);
   return response.data;
@@ -131,7 +133,6 @@ export const getAdminById = async (id: number): Promise<Admin> => {
   return response.data;
 };
 
-// ✅ Exclude admin_id when creating a new admin
 export const createAdmin = async (
   adminData: Omit<Admin, "admin_id">
 ): Promise<Admin> => {
@@ -141,13 +142,15 @@ export const createAdmin = async (
 
 export const updateAdmin = async (
   id: number,
-  adminData: Partial<Admin>
+  adminData: Partial<Omit<Admin, "admin_id">>
 ): Promise<Admin> => {
   const response = await axios.put<Admin>(`${API_URL}/admins/${id}`, adminData);
   return response.data;
 };
 
-export const deleteAdmin = async (id: number): Promise<{ message: string }> => {
+export const deleteAdmin = async (
+  id: number
+): Promise<{ message: string }> => {
   const response = await axios.delete<{ message: string }>(
     `${API_URL}/admins/${id}`
   );
@@ -155,7 +158,31 @@ export const deleteAdmin = async (id: number): Promise<{ message: string }> => {
 };
 
 export const getAdminByEmail = async (email: string): Promise<Admin> => {
-  const response = await axios.get<Admin>(`${API_URL}/admins/email/${email}`);
+  const response = await axios.get<Admin>(
+    `${API_URL}/admins/email/${email}`
+  );
+  return response.data;
+};
+
+// 🆕 Get admin profile image by ID
+export const getAdminProfileImage = async (
+  id: number
+): Promise<{ profile_pic_url: string | null }> => {
+  const response = await axios.get<{ profile_pic_url: string | null }>(
+    `${API_URL}/admins/profile-pic/${id}`
+  );
+  return response.data;
+};
+
+// ✅ Match PATCH method
+export const updateAdminProfileImage = async (
+  id: number,
+  profile_pic_url: string
+): Promise<Admin> => {
+  const response = await axios.patch<Admin>(
+    `${API_URL}/admins/profile-pic/${id}`,
+    { profile_pic_url }
+  );
   return response.data;
 };
 

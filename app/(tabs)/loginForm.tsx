@@ -52,8 +52,6 @@ const Login = () => {
         setLoading(true)
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log('User signed in:', userCredential.user);
-            // alert("SIGNED IN YAYY");
 
             let userData;
             if (userType === 'admin') {

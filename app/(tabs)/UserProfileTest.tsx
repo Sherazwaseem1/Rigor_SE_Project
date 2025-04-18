@@ -20,9 +20,16 @@ import {
   getTruckerById,
   Trucker,
   Admin,
+  updateTruckerProfilePic,
+  updateAdminProfileImage,
 } from "../../services/api"; // Adjust path based on your API setup
 import { useRouter } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
+import * as ImagePicker from 'expo-image-picker';
+
+
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dx7hrymxn/image/upload';
+const UPLOAD_PRESET = 'Rigor-code';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 import { StarRatingDisplay } from "react-native-star-rating-widget";
@@ -33,6 +40,8 @@ const UserProfileTest = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const isFocused = useIsFocused();
+  const [uploading, setUploading] = useState(false);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -49,7 +58,68 @@ const UserProfileTest = () => {
     };
 
     fetchUserData();
-  }, [isFocused]);
+  }, [isFocused, userData]);
+
+  // Upload image to Cloudinary
+const uploadToCloudinary = async (photoUri: string): Promise<string | null> => {
+  const data = new FormData();
+  data.append("file", {
+    uri: photoUri,
+    type: "image/jpeg",
+    name: `upload_${Date.now()}.jpg`,
+  } as any);
+  data.append("upload_preset", UPLOAD_PRESET);
+
+  try {
+    const res = await fetch(CLOUDINARY_URL, {
+      method: "POST",
+      body: data,
+    });
+
+    const json = await res.json();
+    return json.secure_url || null;
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
+    return null;
+  }
+  };
+  
+  // Handle Image Picker + Upload + Backend Update
+  const handleImagePick = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      return;
+    }
+  
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+  
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const uri = result.assets[0].uri;
+      setUploading(true);
+      const uploadedUrl = await uploadToCloudinary(uri);
+      setUploading(false);
+  
+      if (uploadedUrl) {
+        try {
+          if (isAdmin) {
+            const updatedAdmin = await updateAdminProfileImage(id, uploadedUrl);
+            console.log("Updated admin:", updatedAdmin);
+            setUserData(updatedAdmin);
+          } else {
+            const updatedTrucker = await updateTruckerProfilePic(id, uploadedUrl);
+            console.log("Updated Trucker:", updatedTrucker);
+            setUserData(updatedTrucker);
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -90,10 +160,19 @@ const UserProfileTest = () => {
       <View style={styles.profileSection}>
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>My profile</Text>
-          <Image
-            source={require("../../assets/images/prof.png")}
-            style={styles.profileImage}
-          />
+          <View>
+              <Image
+                source={
+                  userData?.profile_pic_url
+                    ? { uri: userData.profile_pic_url }
+                    : require("../../assets/images/prof.png")
+                }
+                style={styles.profileImage}
+              />
+              <TouchableOpacity style={styles.imageOverlayButton} onPress={handleImagePick}>
+                <Text style={styles.imageOverlayText}>+</Text>
+              </TouchableOpacity>
+            </View>
         </View>
       </View>
 
@@ -355,6 +434,23 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: "#071952",
+  },
+  imageOverlayButton: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: '#088395',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+  },
+  imageOverlayText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });
 

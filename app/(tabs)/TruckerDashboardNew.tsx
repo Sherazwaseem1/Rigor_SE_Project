@@ -7,7 +7,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { Drawer } from 'react-native-drawer-layout';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { RootState } from '../../redux/store';
-import { getTripsByTruckerId, getTruckerByEmail, getReimbursementsByTripId } from '../../services/api';
+import { getTripsByTruckerId, getTruckerByEmail, getReimbursementsByTripId, getAdminProfileImage } from '../../services/api';
 import { Trip, Reimbursement } from '../../services/api';
 
 const TruckerDashboardNew = () => {
