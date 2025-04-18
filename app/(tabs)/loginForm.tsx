@@ -296,7 +296,8 @@ const styles = StyleSheet.create({
     },
     eyeIcon: {
         position: 'absolute',
-        right: 15,
+        bottom: 20,
+        right: 6,
         padding: 10,
         zIndex: 1,
     },

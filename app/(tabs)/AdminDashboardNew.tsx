@@ -321,6 +321,10 @@ const AdminDashboardNew = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#EBF4F6',
+  },
   truckerCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
@@ -477,22 +481,22 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
     marginHorizontal: 16,
-    marginVertical: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
+    shadowRadius: 4,
+    elevation: 3,
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.05)',
     transform: [{ translateY: -2 }],
   },
   cardText: {
-    fontSize: 16,
-    color: '#1E293B',
+    fontSize: 14,
+    color: '#1F2937',
     marginBottom: 8,
     fontWeight: '500',
   },
@@ -508,7 +512,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   completedText: {
-    color: '#047857',
+    color: '#059669',
     backgroundColor: '#ECFDF5',
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -519,7 +523,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   pendingText: {
-    color: '#9B403D',
+    color: '#D97706',
     backgroundColor: '#FEF2F2',
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -529,9 +533,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
     alignSelf: 'flex-start',
   },
-  container: {
-    flex: 1,
-    backgroundColor: '#EBF4F6',
+  hourglassIcon: {
+    marginRight: 4,
   },
   drawer: {
     backgroundColor: '#FFFFFF',
@@ -644,54 +647,7 @@ const styles = StyleSheet.create({
     color: '#071952',
     textAlign: 'center',
   },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  cardText: {
-    fontSize: 14,
-    color: '#1F2937',
-    marginBottom: 8,
-  },
-  statusText: {
-    color: '#088395',
-    fontWeight: '600',
-  },
-  completedText: {
-    color: '#059669',
-    fontWeight: '600',
-  },
-  pendingText: {
-    color: '#D97706',
-    fontWeight: '600',
-  },
-  hourglassIcon: {
-    marginRight: 4,
-  },
-  cardText: {
-    fontSize: 14,
-    color: '#1F2937',
-    marginBottom: 8,
-  },
-  statusText: {
-    color: '#088395',
-    fontWeight: '600',
-  },
-  completedText: {
-    color: '#059669',
-    fontWeight: '600',
-  },
-  pendingText: {
-    color: '#D97706',
-    fontWeight: '600',
-  },
 });
+
 
 export default AdminDashboardNew;
