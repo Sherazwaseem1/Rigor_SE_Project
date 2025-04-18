@@ -3,17 +3,17 @@ import {
   View,
   Text,
   TextInput,
+  Button,
   StyleSheet,
   ScrollView,
   Alert,
   SafeAreaView,
   TouchableOpacity,
   Dimensions,
-  Image,
-  Button,
   ActivityIndicator, 
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from 'react-native-dropdown-picker';
 import { 
   Trip, 
   Trucker, 
@@ -24,12 +24,10 @@ import {
   estimateTripCost 
 } from "../../services/api";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store"; // Import RootState from your store
-import { router } from 'expo-router'
-import IconSymbol from "react-native-vector-icons/FontAwesome"; // Make sure you import the icon library you're using.
+import { RootState } from "../../redux/store";
+import { router } from 'expo-router';
+import IconSymbol from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from "@react-navigation/native";
-import DropDownPicker from 'react-native-dropdown-picker';
-
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -77,7 +75,6 @@ const pakistaniCities = [
   { label: 'Skardu', value: 'Skardu' }
 ].sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically
 
-
 const TripAssignmentScreen: React.FC = () => {
   const [truckers, setTruckers] = useState<Trucker[]>([]);
   const [selectedTruckerId, setSelectedTruckerId] = useState<number | null>(null);
@@ -91,7 +88,8 @@ const TripAssignmentScreen: React.FC = () => {
     expected_cost: 0,
     assigned_by_admin_id: 0,
   });
-
+  
+  
   // State for dropdown pickers
   const [startLocationOpen, setStartLocationOpen] = useState(false);
   const [endLocationOpen, setEndLocationOpen] = useState(false);
@@ -110,52 +108,50 @@ const TripAssignmentScreen: React.FC = () => {
         const activeTruckers = truckerData.filter(t => t.status === "Inactive");
         setTruckers(activeTruckers);
       } catch (error) {
-        
+        console.error("Error fetching truckers", error);
+        Alert.alert("Error", "Could not load truckers.");
       }
     };
     fetchTruckers();
-    handleClear();
   }, [isFocused]);
 
-    // Reset estimated cost when any inputs change
+  // Reset estimated cost when any inputs change
   useEffect(() => {
     setEstimatedCost(null);
   }, [form.start_location, form.end_location, form.distance]);
-
 
   const handleInputChange = (key: keyof Trip, value: any) => {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 
   const handleGetCostEstimate = async () => {
-      // Validate required fields
-      if (!form.start_location || !form.end_location || !form.distance) {
-        Alert.alert(
-          "Missing Information", 
-          "Please select both start and end locations, and enter a distance to get a cost estimate."
-        );
-        return;
-      }
+    // Validate required fields
+    if (!form.start_location || !form.end_location || !form.distance) {
+      Alert.alert(
+        "Missing Information", 
+        "Please select both start and end locations, and enter a distance to get a cost estimate."
+      );
+      return;
+    }
+    
+    setIsLoadingCost(true);
+    try {
+      const costEstimate = await estimateTripCost(
+        form.start_location as string,
+        form.end_location as string,
+        form.distance
+      );
       
-      setIsLoadingCost(true);
-      try {
-        const costEstimate = await estimateTripCost(
-          form.start_location as string,
-          form.end_location as string,
-          form.distance
-        );
-        
-        setEstimatedCost(costEstimate.estimated_cost);
-        handleInputChange("expected_cost", parseFloat(costEstimate.estimated_cost));
-  
-      } catch (error) {
-        console.error("Error getting cost estimate:", error);
-        Alert.alert("Error", "Could not get cost estimate. Please try again.");
-      } finally {
-        setIsLoadingCost(false);
-      }
-    };
-  
+      setEstimatedCost(costEstimate.estimated_cost);
+      handleInputChange("expected_cost", parseFloat(costEstimate.estimated_cost));
+
+    } catch (error) {
+      console.error("Error getting cost estimate:", error);
+      Alert.alert("Error", "Could not get cost estimate. Please try again.");
+    } finally {
+      setIsLoadingCost(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!selectedTruckerId) {
@@ -197,7 +193,7 @@ const TripAssignmentScreen: React.FC = () => {
 
       handleClear();
       
-      router.push('/AdminDashboardNew');
+      router.push('/AdminDashboard');
 
     } catch (error) {
       console.error("Trip creation error:", error);
@@ -205,21 +201,20 @@ const TripAssignmentScreen: React.FC = () => {
     }
   };
 
-    // Function to clear the form inputs on the screen
-    const handleClear = () => {
-      setForm({
-        truck_id: 0,
-        start_location: "",
-        end_location: "",
-        start_time: new Date().toISOString(),
-        status: "Scheduled",
-        distance: 0,
-        assigned_by_admin_id: 0,
-      });
-    
-      setSelectedTruckerId(null);
-      setEstimatedCost(null);
-    };
+  const handleClear = () => {
+    setForm({
+      truck_id: 0,
+      start_location: "",
+      end_location: "",
+      start_time: new Date().toISOString(),
+      status: "Scheduled",
+      distance: 0,
+      assigned_by_admin_id: 0,
+    });
+  
+    setSelectedTruckerId(null);
+    setEstimatedCost(null);
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -228,7 +223,7 @@ const TripAssignmentScreen: React.FC = () => {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => {
-              router.push('/AdminDashboardNew');
+              router.push('/AdminDashboard');
           }}
         >
           <View style={styles.backButtonContent}>
@@ -239,36 +234,27 @@ const TripAssignmentScreen: React.FC = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("../../assets/images/rigor_no_bg.jpeg")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+        <Text style={styles.heading}>🚚 Assign New Trip</Text>
+
+        <Text style={styles.label}>Select InActive Trucker:</Text>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={selectedTruckerId}
+            onValueChange={(itemValue) => setSelectedTruckerId(itemValue)}
+            style={styles.picker}
+          >
+            <Picker.Item label="-- Select Trucker --" value={null} />
+            {truckers.map((trucker) => (
+              <Picker.Item
+                key={trucker.trucker_id}
+                label={`${trucker.name} (${trucker.trucker_id})`}
+                value={trucker.trucker_id}
+              />
+            ))}
+          </Picker>
         </View>
 
-        <Text style={[styles.title, { marginBottom: 32 }]}>Assign New Trip</Text>
-
-        <View style={[{ marginTop: 16 }]}>
-          <Text style={styles.label}>Select InActive Trucker</Text>
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={selectedTruckerId}
-              onValueChange={(itemValue) => setSelectedTruckerId(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="-- Select Trucker --" value={null} />
-              {truckers.map((trucker) => (
-                <Picker.Item
-                  key={trucker.trucker_id}
-                  label={`${trucker.name} (${trucker.trucker_id})`}
-                  value={trucker.trucker_id}
-                />
-              ))}
-            </Picker>
-          </View>
-
-          <Text style={styles.label}>Start Location:</Text>
+        <Text style={styles.label}>Start Location:</Text>
         <DropDownPicker
           open={startLocationOpen}
           value={form.start_location as string}
@@ -322,25 +308,20 @@ const TripAssignmentScreen: React.FC = () => {
           zIndexInverse={2000}
         />
 
-          <Text style={styles.label}>Start Time</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter start time"
-            placeholderTextColor="#666"
-            value={form.start_time}
-            onChangeText={(text) => handleInputChange("start_time", text)}
-          />
+        <Text style={[styles.label, { marginTop: endLocationOpen ? 200 : 15 }]}>Start Time (ISO):</Text>
+        <TextInput
+          style={styles.input}
+          value={form.start_time}
+          onChangeText={(text) => handleInputChange("start_time", text)}
+        />
 
-          <Text style={styles.label}>Distance (km)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter distance"
-            placeholderTextColor="#666"
-            value={form.distance ? form.distance.toString() : ""}
-            keyboardType="numeric"
-            onChangeText={(text) => handleInputChange("distance", parseFloat(text) || 0)}
-          />
-        </View>
+        <Text style={styles.label}>Distance (in km):</Text>
+        <TextInput
+          style={styles.input}
+          value={form.distance ? form.distance.toString() : ""}
+          keyboardType="numeric"
+          onChangeText={(text) => handleInputChange("distance", parseFloat(text) || 0)}
+        />
 
         <Text style={styles.label}>Expected Cost (PKR):</Text>
         <TextInput
@@ -373,19 +354,14 @@ const TripAssignmentScreen: React.FC = () => {
           )}
         </View>
 
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={handleSubmit}
-        >
-          <Text style={styles.submitButtonText}>Assign Trip</Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.submitButton, { backgroundColor: "#FF3B30" }]}
-          onPress={handleClear}
-        >
-          <Text style={styles.submitButtonText}>Clear Form</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <Button title="Assign Trip" onPress={handleSubmit} color="#007AFF" />
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <Button title="Clear Form" onPress={handleClear} color="#FF3B30" />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -394,90 +370,69 @@ const TripAssignmentScreen: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f9f9f9",
   },
   header: {
-    paddingTop: Math.max(screenHeight * 0.03, 24),
-    paddingHorizontal: Math.max(screenWidth * 0.03, 12),
+    marginTop: Math.max(screenHeight * 0.04, 24),
+    paddingHorizontal: Math.max(screenWidth * 0.04, 16),
   },
   backButton: {
     paddingVertical: Math.max(screenHeight * 0.01, 8),
   },
   backButtonContent: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   backButtonLabel: {
     fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
-    color: "#333",
+    color: '#333',
+    marginBottom: screenHeight * 0.004,
     marginLeft: 5,
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginBottom: Math.max(screenHeight * 0.02, 16),
-    height: Math.max(screenHeight * 0.1, 80), // Adjusted logo container height
-  },
-  logo: {
-    width: "60%",
-    height: "100%",
-  },
-  title: {
-    fontSize: Math.min(Math.max(screenWidth * 0.05, 18), 22),
-    fontWeight: "600",
-    marginBottom: Math.max(screenHeight * 0.02, 16),
-    textAlign: "center",
-    color: "#202545",
-    letterSpacing: 0.5,
-  },
-  label: {
-    fontSize: Math.min(Math.max(screenWidth * 0.035, 14), 16),
-    marginBottom: Math.max(screenHeight * 0.01, 8),
-    color: "#202545",
-    fontWeight: "500",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    borderRadius: 8,
-    padding: Math.max(screenWidth * 0.03, 12),
-    marginBottom: Math.max(screenHeight * 0.02, 16),
-    width: "100%",
-    backgroundColor: "#fff",
-    fontSize: Math.min(Math.max(screenWidth * 0.04, 14), 16),
-    color: "#202545",
   },
   container: {
     padding: 20,
     paddingBottom: 40,
   },
+  heading: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 30,
+    textAlign: "center",
+    color: "#007AFF",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    marginTop: 15,
+    color: "#555",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 10,
+    fontSize: 16,
+    marginBottom: 15,
+  },
   pickerWrapper: {
     borderWidth: 1,
-    borderColor: "#E2E8F0",
-    borderRadius: 8,
+    borderColor: "#ccc",
+    borderRadius: 10,
     backgroundColor: "#fff",
-    marginBottom: Math.max(screenHeight * 0.02, 14),
-    height: Math.max(screenHeight * 0.06, 50),
+    marginBottom: 15,
   },
   picker: {
-    height: Math.max(screenHeight * 0.06, 50),
+    height: 50,
     width: "100%",
   },
-  submitButton: {
-    backgroundColor: "#088395",
-    padding: Math.max(screenHeight * 0.015, 12),
+  buttonContainer: {
+    marginTop: 10,
     borderRadius: 8,
-    alignItems: "center",
-    marginBottom: Math.max(screenHeight * 0.02, 16),
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  submitButtonText: {
-    color: "white",
-    fontSize: Math.min(Math.max(screenWidth * 0.04, 14), 16),
-    fontWeight: "600",
+    overflow: "hidden",
   },
   dropdownPicker: {
     borderColor: "#ccc",
