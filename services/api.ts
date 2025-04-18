@@ -7,6 +7,7 @@ const API_URL =
     ? "http://localhost:5000/api"
     : "http://172.27.144.1:5000/api"; // Replace with your IPv4 if necessary
 
+// ✅ Trucker Interfaces
 export interface Trucker {
   trucker_id: number;
   name: string;
@@ -16,6 +17,7 @@ export interface Trucker {
   status: string;
   age: number;
   gender: string;
+  profile_pic_url?: string | null; // ✅ NEW FIELD
 }
 
 export interface NewTrucker {
@@ -26,6 +28,7 @@ export interface NewTrucker {
   status: string;
   age: number;
   gender: string;
+  profile_pic_url?: string | null; // ✅ NEW FIELD (optional for creation)
 }
 
 // ✅ Trucker APIs
@@ -85,6 +88,26 @@ export const updateTruckerStatus = async (
     {
       status,
     }
+  );
+  return response.data;
+};
+
+// 🆕 Update trucker's profile image
+export const updateTruckerProfilePic = async (
+  truckerId: number,
+  profile_pic_url: string
+) => {
+  const response = await axios.patch(
+    `${API_URL}/truckers/profile-pic/${truckerId}`,
+    { profile_pic_url }
+  );
+  return response.data;
+};
+
+// 🆕 Get trucker's profile image
+export const getTruckerProfilePic = async (truckerId: number) => {
+  const response = await axios.get<{ profile_pic_url: string | null }>(
+    `${API_URL}/truckers/profile-pic/${truckerId}`
   );
   return response.data;
 };
@@ -250,14 +273,15 @@ export interface Trip {
   truck_id: number;
   start_location: string;
   end_location: string;
-  start_time: string; // Date is stored as string in JSON
-  end_time?: string; // Optional Date
+  start_time: string; 
+  end_time?: string;
   status: string;
   distance: number;
   assigned_by_admin_id: number;
-  trip_rating: number; // Optional
-  trucker_name?: string; // Optional field for trucker name
+  trip_rating?: number;
+  expected_cost?: number;
 }
+
 
 // ✅ Trip APIs
 export const getAllTrips = async (): Promise<Trip[]> => {
@@ -328,4 +352,22 @@ export const getTruckByTruckerId = async (truckerId: number) => {
   const res = await fetch(`${API_URL}/trucks/by-trucker/${truckerId}`);
   if (!res.ok) throw new Error("Failed to fetch truck for trucker");
   return res.json();
+};
+
+// ✅ Update LLM API call
+export interface TripCostEstimate {
+  estimated_cost: string;
+}
+
+export const estimateTripCost = async (
+  start_location: string,
+  end_location: string,
+  distance: number
+): Promise<TripCostEstimate> => {
+  const response = await axios.post<TripCostEstimate>(`${API_URL}/llm/estimate`, {
+    start_location,
+    end_location,
+    distance,
+  });
+  return response.data;
 };

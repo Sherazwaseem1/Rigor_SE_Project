@@ -21,6 +21,8 @@ import {
 } from "../../services/api";
 import { router } from 'expo-router'
 import { TouchableOpacity } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+
 
 const AdminDashboard = () => {
   const admin = useSelector((state: RootState) => state.user);
@@ -29,6 +31,8 @@ const AdminDashboard = () => {
   const [truckers, setTruckers] = useState<Trucker[]>([]);
   const [pendingReimbursements, setPendingReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
+  const isFocused = useIsFocused();
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +63,7 @@ const AdminDashboard = () => {
       }
     };
     fetchData();
-  }, [admin.name]);
+  }, [isFocused]);
 
   if (loading) return <ActivityIndicator size="large" color="#007bff" />;
 

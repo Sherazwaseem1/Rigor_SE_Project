@@ -13,7 +13,9 @@ interface ITrip extends Document {
     distance: number;
     assigned_by_admin_id: number;
     trip_rating?: number;
+    expected_cost?: number; 
 }
+
 
 // Define Mongoose schema
 const TripSchema = new Schema<ITrip>({
@@ -27,8 +29,10 @@ const TripSchema = new Schema<ITrip>({
     status: { type: String, required: true },
     distance: { type: Number, required: true },
     assigned_by_admin_id: { type: Number, required: true }, 
-    trip_rating: { type: Number }
+    trip_rating: { type: Number },
+    expected_cost: { type: Number } 
 });
+
 
 // Export model
 const Trip = mongoose.model<ITrip>("Trip", TripSchema);

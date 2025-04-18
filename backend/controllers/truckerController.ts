@@ -120,3 +120,51 @@ export const updateTruckerStatus = async (req: Request, res: Response): Promise<
     res.status(500).json({ error: "Failed to update status", details: error });
   }
 };
+
+// 🟦 Update trucker profile picture URL by trucker_id
+export const updateTruckerProfilePic = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const truckerId = Number(req.params.id);
+    const { profile_pic_url } = req.body;
+
+    if (!profile_pic_url) {
+      res.status(400).json({ error: "profile_pic_url is required" });
+      return;
+    }
+
+    const updatedTrucker = await Trucker.findOneAndUpdate(
+      { trucker_id: truckerId },
+      { profile_pic_url },
+      { new: true }
+    );
+
+    if (!updatedTrucker) {
+      res.status(404).json({ error: "Trucker not found" });
+      return;
+    }
+
+    res.status(200).json(updatedTrucker);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update profile picture", details: error });
+  }
+};
+
+
+
+export const getTruckerProfilePic = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const truckerId = Number(req.params.id);
+    const trucker = await Trucker.findOne({ trucker_id: truckerId });
+
+    if (!trucker) {
+      res.status(404).json({ error: "Trucker not found" });
+      return;
+    }
+
+    res.status(200).json({ profile_pic_url: trucker.profile_pic_url });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch profile picture", details: error });
+  }
+};
+
+

@@ -5,6 +5,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import connectDB from "./db"; 
 
+
 // Routes
 import truckerRoutes from "./routes/truckerRoutes"; 
 import adminRoutes from "./routes/adminRoutes";
@@ -12,6 +13,8 @@ import reimbursementRoutes from "./routes/reimbursementRoutes";
 import tripRoutes from "./routes/tripRoutes";
 import truckRoutes from "./routes/truckRoutes";
 import locationRoutes from "./routes/locationRoutes"; 
+import llmRoutes from "./routes/llmRoutes";
+
 
 const app = express();
 app.use(express.json());
@@ -31,6 +34,7 @@ app.use("/api/reimbursements", reimbursementRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/trucks", truckRoutes);
 app.use("/api/locations", locationRoutes); 
+app.use("/api/llm", llmRoutes); 
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
