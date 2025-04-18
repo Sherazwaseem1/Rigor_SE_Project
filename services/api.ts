@@ -7,6 +7,7 @@ const API_URL =
     ? "http://localhost:5000/api"
     : "http://10.130.10.171:5000/api"; // Replace with your IPv4 if necessary
 
+// ✅ Trucker Interfaces
 export interface Trucker {
   trucker_id: number;
   name: string;
@@ -16,6 +17,7 @@ export interface Trucker {
   status: string;
   age: number;
   gender: string;
+  profile_pic_url?: string | null; // ✅ NEW FIELD
 }
 
 export interface NewTrucker {
@@ -26,6 +28,7 @@ export interface NewTrucker {
   status: string;
   age: number;
   gender: string;
+  profile_pic_url?: string | null; // ✅ NEW FIELD (optional for creation)
 }
 
 // ✅ Trucker APIs
@@ -85,6 +88,26 @@ export const updateTruckerStatus = async (
     {
       status,
     }
+  );
+  return response.data;
+};
+
+// 🆕 Update trucker's profile image
+export const updateTruckerProfilePic = async (
+  truckerId: number,
+  profile_pic_url: string
+) => {
+  const response = await axios.patch(
+    `${API_URL}/truckers/profile-pic/${truckerId}`,
+    { profile_pic_url }
+  );
+  return response.data;
+};
+
+// 🆕 Get trucker's profile image
+export const getTruckerProfilePic = async (truckerId: number) => {
+  const response = await axios.get<{ profile_pic_url: string | null }>(
+    `${API_URL}/truckers/profile-pic/${truckerId}`
   );
   return response.data;
 };

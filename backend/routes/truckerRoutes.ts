@@ -6,7 +6,10 @@ import {
     createTrucker, 
     updateTrucker, 
     deleteTrucker,
-    updateTruckerStatus
+    updateTruckerStatus,
+    updateTruckerProfilePic,
+    getTruckerProfilePic,
+
 } from "../controllers/truckerController";
 
 const router = express.Router();
@@ -19,6 +22,8 @@ router.post("/", createTrucker);
 router.put("/:id", updateTrucker);
 router.delete("/:id", deleteTrucker);
 router.patch("/status/:id", updateTruckerStatus);
+router.patch('/profile-pic/:id', updateTruckerProfilePic);
+router.get('/profile-pic/:id', getTruckerProfilePic);
 
 
 export default router;
