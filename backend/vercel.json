@@ -3,14 +3,14 @@
   "name": "rigor-se-project",
   "builds": [
     {
-      "src": "backend/server.ts",
+      "src": "server.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "backend/server.ts"
+      "dest": "server.ts"
     }
   ]
 }
