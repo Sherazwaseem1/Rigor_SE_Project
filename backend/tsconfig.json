@@ -9,6 +9,6 @@
     "forceConsistentCasingInFileNames": true
 
   },
-  "include": ["./"],
+  "include": ["backend"],
   "exclude": ["node_modules"],
 }
