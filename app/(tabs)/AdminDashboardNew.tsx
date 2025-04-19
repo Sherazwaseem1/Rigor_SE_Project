@@ -318,7 +318,7 @@ const AdminDashboardNew = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => setIsDrawerOpen(true)} style={styles.menuButton}>
-            <IconSymbol name="menu" size={24} color="#071952" />
+            <IconSymbol name="line.3.horizontal" size={24} color="#071952" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{activeSection === 'map' ? 'Live Location' : 
             activeSection === 'ongoing' ? 'Ongoing Trips' :
