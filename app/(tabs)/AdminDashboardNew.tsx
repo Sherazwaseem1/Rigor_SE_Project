@@ -6,8 +6,9 @@ import { router } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { Drawer } from 'react-native-drawer-layout';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import MapView, { Marker } from 'react-native-maps';   
 import { RootState } from '../../redux/store';
-import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage } from '../../services/api';
+import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById   } from '../../services/api';
 import { Trip, Trucker, Reimbursement } from '../../services/api';
 import { Image } from 'react-native';
 
@@ -18,9 +19,15 @@ const AdminDashboardNew = () => {
   const [truckers, setTruckers] = useState<Trucker[]>([]);
   const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeSection, setActiveSection] = useState('map');
+  // const [activeSection, setActiveSection] = useState('map');
+  const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements' | 'truckers'>('map');
   const isFocused = useIsFocused();
   const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
+
+  const [locations, setLocations] = useState<any[]>([]);
+  const [locLoading, setLocLoading] = useState(true);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +54,29 @@ const AdminDashboardNew = () => {
   
     fetchData();
   }, [isFocused]);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      if (activeSection !== 'map') return;          // only when needed
+      setLocLoading(true);
+      try {
+        if (admin.isAdmin) {
+          const allLocations = await getAllLocations();
+          setLocations(allLocations);
+        } else {
+          const loc = await getLocationById(admin.id);
+          setLocations([loc]);
+        }
+      } catch (err) {
+        console.error('Error fetching locations:', err);
+        setLocations([]);
+      } finally {
+        setLocLoading(false);
+      }
+    };
+
+    fetchLocations();
+  }, [activeSection, admin, isFocused]);
   
 
   const renderDrawerContent = () => (
@@ -66,8 +96,8 @@ const AdminDashboardNew = () => {
         <Text style={styles.role}>Administrator</Text>
       </View>
       
-      <TouchableOpacity 
-        style={[styles.drawerItem, activeSection === 'map' && styles.activeDrawerItem]} 
+      <TouchableOpacity
+        style={[styles.drawerItem, activeSection === 'map' && styles.activeDrawerItem]}
         onPress={() => { setActiveSection('map'); setIsDrawerOpen(false); }}
       >
         <Text style={styles.drawerItemText}>Live Location</Text>
@@ -136,10 +166,45 @@ const AdminDashboardNew = () => {
 
     switch (activeSection) {
       case 'map':
+        if (locLoading) {
+          return (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color="#088395" />
+            </View>
+          );
+        }
+        if (locations.length === 0) {
+          return (
+             <View style={styles.mapWrapper}>
+               {/* empty map so the screen still shows a map */}
+               <MapView
+                 style={styles.map}
+                 initialRegion={{
+                   latitude: 30.3753,      // centre of Pakistan
+                   longitude: 69.3451,
+                   latitudeDelta: 15,
+                   longitudeDelta: 15,
+                 }}
+               />
+
+               {/* banner over the map */}
+               <View style={styles.noTripsBanner}>
+                 <Text style={styles.noTripsText}>No active trips</Text>
+               </View>
+             </View>
+           );
+        }
         return (
-          <View style={styles.mapPlaceholder}>
-            <Text style={styles.mapText}>Live location tracking will be implemented soon!</Text>
-          </View>
+          <MapView style={styles.map}>
+            {locations.map((loc) => (
+              <Marker
+                key={loc.location_id}
+                coordinate={{ latitude: loc.latitude, longitude: loc.longitude }}
+                title={`Trip ID: ${loc.trip_id}`}
+                description={`Timestamp: ${new Date(loc.timestamp).toLocaleString()}`}
+              />
+            ))}
+          </MapView>
         );
       
       case 'ongoing':
@@ -327,7 +392,7 @@ const AdminDashboardNew = () => {
             activeSection === 'truckers' ? 'Registered Truckers' :
             'Dashboard'}</Text>
         </View>
-        <View style={styles.content}>
+        <View style={[styles.content, activeSection === 'map' && styles.contentMap]}>
           {renderContent()}
         </View>
       </SafeAreaView>
@@ -673,6 +738,33 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  map: { flex: 1, borderRadius: 16 },
+  loaderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  contentMap: {       
+    padding: 0,
+  },
+  noTripsBanner: {
+    position: 'absolute',
+    top: 20,
+    alignSelf: 'center',
+    backgroundColor: '#071952',     
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  mapWrapper: {
+    flex: 1,
+  },
+  noTripsText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
   
 });
