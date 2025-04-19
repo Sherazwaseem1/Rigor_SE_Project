@@ -15,12 +15,14 @@ import {
   getTripsByTruckerId,
   getReimbursementsByTripId,
   getTruckerByEmail,
+  updateLocation,
   Trip,
   Reimbursement,
 } from "../../services/api";
 
 import { router } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
+import * as Location from "expo-location";
 
 const TruckerDashboard = () => {
   const trucker = useSelector((state: RootState) => state.user);
@@ -66,6 +68,37 @@ const TruckerDashboard = () => {
     };
     fetchData();
   }, [isFocused]);
+
+  useEffect(() => {
+    if (ongoingTrip) {
+      const interval = setInterval(async () => {
+        try {
+          // Fetch current location using Expo Location API
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== "granted") {
+            console.error("Permission to access location was denied");
+            return;
+          }
+
+          const location = await Location.getCurrentPositionAsync({});
+          const currentLocation = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          };
+
+          await updateLocation(ongoingTrip.trip_id, {
+            latitude: currentLocation.latitude,
+            longitude: currentLocation.longitude,
+            timestamp: new Date(),
+          });
+        } catch (error) {
+          console.error("Error updating location:", error);
+        }
+      }, 30000); // Update every 30 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [ongoingTrip]);
 
   if (loading) return <ActivityIndicator size="large" color="#007bff" />;
 
@@ -122,13 +155,20 @@ const TruckerDashboard = () => {
               pastTrips.map((item) => (
                 <View style={[styles.card, styles.tripCard]} key={item.trip_id}>
                   <Text style={styles.cardText}>Trip ID: {item.trip_id}</Text>
-                  <Text style={styles.cardText}>📍 Start: {item.start_location}</Text>
-                  <Text style={styles.cardText}>🏁 End: {item.end_location}</Text>
+                  <Text style={styles.cardText}>
+                    📍 Start: {item.start_location}
+                  </Text>
+                  <Text style={styles.cardText}>
+                    🏁 End: {item.end_location}
+                  </Text>
                   <Text
                     style={[
                       styles.cardText,
                       styles.statusText,
-                      { color: item.status === "Completed" ? "#4CAF50" : "#202545" },
+                      {
+                        color:
+                          item.status === "Completed" ? "#4CAF50" : "#202545",
+                      },
                     ]}
                   >
                     Status: {item.status}
