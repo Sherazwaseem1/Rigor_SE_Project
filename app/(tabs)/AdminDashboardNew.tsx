@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+  LayoutAnimation,              // NEW ► for smooth removal
+  UIManager,                    // NEW ► Android enablement
+  Platform,
+} from 'react-native';
+import axios from 'axios';  
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { router } from 'expo-router';
@@ -8,7 +19,7 @@ import { Drawer } from 'react-native-drawer-layout';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import MapView, { Marker } from 'react-native-maps';   
 import { RootState } from '../../redux/store';
-import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById   } from '../../services/api';
+import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById,    } from '../../services/api';
 import { Trip, Trucker, Reimbursement } from '../../services/api';
 import { Image } from 'react-native';
 
@@ -27,6 +38,11 @@ const AdminDashboardNew = () => {
   const [locations, setLocations] = useState<any[]>([]);
   const [locLoading, setLocLoading] = useState(true);
 
+  useEffect(() => {
+    if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+  }, []);
 
 
   useEffect(() => {
@@ -313,6 +329,43 @@ const AdminDashboardNew = () => {
                   <View style={[styles.completedBadge, { backgroundColor: '#FEF3C7' }]}>
                     <Text style={[styles.completedBadgeText, { color: '#9B403D' }]}>Pending Approval</Text>
                   </View>
+                </View>
+                {/* NEW ► action buttons */}
+                <View style={styles.actionRow}>
+                  <TouchableOpacity
+                    style={[styles.actionBtn, styles.modifyBtn]}
+                    onPress={() => {/* TODO — modify flow later */}}
+                  >
+                    <Text style={styles.actionText}>Modify</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.actionBtn, styles.approveBtn]}
+                    onPress={async () => {
+                      try {
+                        // await approveReimbursement(item.reimbursement_id, admin.id);
+                        LayoutAnimation.configureNext(
+                          LayoutAnimation.create(               
+                            250,
+                            LayoutAnimation.Types.easeInEaseOut,
+                            LayoutAnimation.Properties.opacity
+                          )
+                        );              // NEW ► animate removal
+                        
+                        setReimbursements(prev =>
+                          prev.map(r =>
+                            r.reimbursement_id === item.reimbursement_id
+                              ? { ...r, status: 'Approved' }
+                              : r
+                          )
+                        );
+                      } catch (err) {
+                        console.error('Approve failed', err);
+                      }
+                    }}
+                  >
+                    <Text style={[styles.actionText, { color: '#fff' }]}>Approve</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             ))}
@@ -766,6 +819,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  actionRow: {                                          // NEW
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 12,
+  },
+  actionBtn: {                                          // NEW
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    marginLeft: 8,
+  },
+  approveBtn: { backgroundColor: '#047857' },           // NEW green
+  modifyBtn: { backgroundColor: '#EBF4F6' },            // NEW neutral
+  actionText: { fontWeight: '600', color: '#071952' }, 
   
 });
 
