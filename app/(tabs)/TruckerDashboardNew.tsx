@@ -7,8 +7,15 @@ import { useIsFocused } from '@react-navigation/native';
 import { Drawer } from 'react-native-drawer-layout';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { RootState } from '../../redux/store';
-import { getTripsByTruckerId, getTruckerByEmail, getReimbursementsByTripId, getAdminProfileImage } from '../../services/api';
-import { Trip, Reimbursement } from '../../services/api';
+import MapView, { Marker } from 'react-native-maps';          // NEW ► map
+import * as Location from 'expo-location';
+import {
+  getTripsByTruckerId,
+  getTruckerByEmail,
+  getReimbursementsByTripId,
+  getAllLocations,                                          // NEW ► map data
+  updateLocation,       
+} from '../../services/api'; import { Trip, Reimbursement } from '../../services/api';
 
 const TruckerDashboardNew = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -18,8 +25,16 @@ const TruckerDashboardNew = () => {
   const [ongoingTrip, setOngoingTrip] = useState<Trip | null>(null);
   const [pendingReimbursements, setPendingReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeSection, setActiveSection] = useState('map');
+  // const [activeSection, setActiveSection] = useState('map');
+  const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements'>('map');   // MOD ► typed
   const isFocused = useIsFocused();
+
+  const [locations, setLocations] = useState<any[]>([]);     // NEW ► latest GPS fix(es)
+  const [locLoading, setLocLoading] = useState(true);        // NEW ► spinner while fetching
+
+  const firstLocLoad = React.useRef(true); 
+  const locationIdRef = React.useRef<number | null>(null);            // NEW ► row we’ll update
+  const watchSubRef = React.useRef<Location.LocationSubscription | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +62,95 @@ const TruckerDashboardNew = () => {
     fetchData();
   }, [isFocused]);
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined;
+
+    const fetchLocations = async () => {
+      if (activeSection !== 'map') return;                   // NEW ► only when map open
+      if (!ongoingTrip) {                                    // NEW ► no active trip
+        setLocations([]);
+        // setLocLoading(false);
+        if (firstLocLoad.current) setLocLoading(false);  // NEW
+        return;
+      }
+      // setLocLoading(true);
+      if (firstLocLoad.current) setLocLoading(true);  
+      try {
+        const allLocs = await getAllLocations();             // NEW ► fetch all
+        const tripLoc = allLocs.filter(                      // NEW ► keep only this trip
+          (l: any) => l.trip_id === ongoingTrip.trip_id
+        );
+        setLocations(tripLoc);
+        if (tripLoc.length) locationIdRef.current = tripLoc[0].location_id;
+      } catch (err) {
+        console.error('Error fetching live locations:', err);
+        setLocations([]);
+      } finally {
+        if (firstLocLoad.current) {                      // NEW
+          setLocLoading(false);                          // hide spinner after first load
+          firstLocLoad.current = false;                  // subsequent polls skip spinner
+        }
+      }
+    };
+
+    fetchLocations();
+    interval = setInterval(fetchLocations, 15000);           // NEW ► auto‑refresh
+
+    return () => interval && clearInterval(interval);        // NEW ► clean‑up
+  }, [activeSection, ongoingTrip, isFocused]);
+
+  useEffect(() => {
+    const startWatching = async () => {
+      if (!ongoingTrip || activeSection !== 'map') return;
+  
+      /* ask permission once */
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') return;
+  
+      /* begin high‑accuracy stream */
+      watchSubRef.current = await Location.watchPositionAsync(
+        { accuracy: Location.Accuracy.High, timeInterval: 5000, distanceInterval: 10 },
+        async (pos) => {
+          /* update local marker immediately */
+          setLocations((prev) => {
+            if (!prev.length) return prev;
+            const latest = prev[0];
+            const updated = {
+              ...latest,
+              latitude:  pos.coords.latitude,
+              longitude: pos.coords.longitude,
+              timestamp: new Date().toISOString(),
+            };
+            return [updated, ...prev.slice(1)];
+          });
+  
+          /* push to backend (if we know the row id) */
+          if (locationIdRef.current) {
+            try {
+              await updateLocation(locationIdRef.current, {
+                latitude:  pos.coords.latitude,
+                longitude: pos.coords.longitude,
+                timestamp:  new Date(),
+              });
+            } catch (err) {
+              console.warn('updateLocation failed', err);
+            }
+          }
+        }
+      );
+    };
+  
+    startWatching();
+  
+    /* cleanup on blur / trip end */
+    return () => {
+      if (watchSubRef.current) {
+        watchSubRef.current.remove();
+        watchSubRef.current = null;
+      }
+    };
+  }, [ongoingTrip, activeSection]);   
+
   const renderDrawerContent = () => (
     <View style={styles.drawerContent}>
       <View style={styles.profileSection}>
@@ -57,8 +161,8 @@ const TruckerDashboardNew = () => {
         <Text style={styles.rating}>⭐ {rating.toFixed(1)}/5</Text>
       </View>
 
-      <TouchableOpacity 
-        style={[styles.drawerItem, activeSection === 'map' && styles.activeDrawerItem]} 
+      <TouchableOpacity
+        style={[styles.drawerItem, activeSection === 'map' && styles.activeDrawerItem]}
         onPress={() => { setActiveSection('map'); setIsDrawerOpen(false); }}
       >
         <Text style={styles.drawerItemText}>Live Location</Text>
@@ -106,10 +210,46 @@ const TruckerDashboardNew = () => {
 
     switch (activeSection) {
       case 'map':
+        if (locLoading) {
+          return (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color="#088395" />
+            </View>
+          );
+        }
+
+        /* no active trip OR no GPS yet → fallback banner */
+        if (!ongoingTrip || locations.length === 0) {
+          return (
+            <View style={styles.mapWrapper}>
+              <MapView
+                style={styles.map}
+                initialRegion={{
+                  latitude: 30.3753,   // centre of Pakistan
+                  longitude: 69.3451,
+                  latitudeDelta: 15,
+                  longitudeDelta: 15,
+                }}
+              />
+              <View style={styles.noTripsBanner}>
+                <Text style={styles.noTripsText}>Not in a trip</Text>
+              </View>
+            </View>
+          );
+        }
+
+        /* else: show marker(s) for this trip */
         return (
-          <View style={styles.mapPlaceholder}>
-            <Text style={styles.mapText}>Live location tracking will be implemented soon!</Text>
-          </View>
+          <MapView style={styles.map}>
+            {locations.map(loc => (
+              <Marker
+                key={loc.location_id}
+                coordinate={{ latitude: loc.latitude, longitude: loc.longitude }}
+                title={`Trip #${loc.trip_id}`}
+                description={new Date(loc.timestamp).toLocaleString()}
+              />
+            ))}
+          </MapView>
         );
 
       case 'ongoing':
@@ -217,7 +357,10 @@ const TruckerDashboardNew = () => {
              'Pending Reimbursements'}
           </Text>
         </View>
-        <View style={styles.content}>
+        <View style={[
+          styles.content,
+          activeSection === 'map' && styles.contentMap,      // NEW ► remove padding for map
+        ]}>
           {renderContent()}
         </View>
       </SafeAreaView>
@@ -230,6 +373,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  contentMap: { padding: 0 }, 
+  mapWrapper: { flex: 1 },                                  // NEW
+  map: { flex: 1 },                                         // NEW
+  noTripsBanner: {                                          // NEW
+    position: 'absolute',
+    top: 20,
+    alignSelf: 'center',
+    backgroundColor: '#071952',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  noTripsText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },   // NEW
+
+  loaderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },   // NEW (was in admin)
   header: {
     flexDirection: 'row',
     alignItems: 'center',
