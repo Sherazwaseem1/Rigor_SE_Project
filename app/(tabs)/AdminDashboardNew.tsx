@@ -9,6 +9,10 @@ import {
   LayoutAnimation,              // NEW ► for smooth removal
   UIManager,                    // NEW ► Android enablement
   Platform,
+  Modal,                    // NEW ► modal prompt
+  TextInput, 
+  Keyboard,                    // ← 1
+  TouchableWithoutFeedback,
 } from 'react-native';
 import axios from 'axios';  
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -37,6 +41,12 @@ const AdminDashboardNew = () => {
 
   const [locations, setLocations] = useState<any[]>([]);
   const [locLoading, setLocLoading] = useState(true);
+
+  const [editVisible, setEditVisible]       = useState(false);   // NEW
+  const [editAmt, setEditAmt]               = useState('');      // NEW
+  const [editComment, setEditComment]       = useState('');      // NEW
+  const [editingId, setEditingId]           = useState<number>(); // NEW
+
 
   useEffect(() => {
     if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -94,6 +104,12 @@ const AdminDashboardNew = () => {
     fetchLocations();
   }, [activeSection, admin, isFocused]);
   
+  const openModify = (item: Reimbursement) => {                 // NEW
+    setEditingId(item.reimbursement_id);
+    setEditAmt(parseFloat(item.amount.$numberDecimal).toString());
+    setEditComment('');
+    setEditVisible(true);
+  };
 
   const renderDrawerContent = () => (
     <View style={styles.drawerContent}>
@@ -334,7 +350,7 @@ const AdminDashboardNew = () => {
                 <View style={styles.actionRow}>
                   <TouchableOpacity
                     style={[styles.actionBtn, styles.modifyBtn]}
-                    onPress={() => {/* TODO — modify flow later */}}
+                    onPress={() => openModify(item)}               // MOD ► open modal
                   >
                     <Text style={styles.actionText}>Modify</Text>
                   </TouchableOpacity>
@@ -345,13 +361,8 @@ const AdminDashboardNew = () => {
                       try {
                         // await approveReimbursement(item.reimbursement_id, admin.id);
                         LayoutAnimation.configureNext(
-                          LayoutAnimation.create(               
-                            250,
-                            LayoutAnimation.Types.easeInEaseOut,
-                            LayoutAnimation.Properties.opacity
-                          )
-                        );              // NEW ► animate removal
-                        
+                          LayoutAnimation.Presets.easeInEaseOut
+                        );
                         setReimbursements(prev =>
                           prev.map(r =>
                             r.reimbursement_id === item.reimbursement_id
@@ -359,14 +370,13 @@ const AdminDashboardNew = () => {
                               : r
                           )
                         );
-                      } catch (err) {
-                        console.error('Approve failed', err);
-                      }
+                      } catch (err) { console.error(err); }
                     }}
                   >
                     <Text style={[styles.actionText, { color: '#fff' }]}>Approve</Text>
                   </TouchableOpacity>
                 </View>
+
               </View>
             ))}
             {pendingReimbursements.length === 0 && (
@@ -449,6 +459,56 @@ const AdminDashboardNew = () => {
           {renderContent()}
         </View>
       </SafeAreaView>
+      <Modal
+        transparent
+        visible={editVisible}
+        animationType="fade"
+        onRequestClose={() => setEditVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.modalBackdrop}>
+            <View style={styles.modalCard}>
+              <Text style={styles.modalTitle}>Modify Reimbursement</Text>
+
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Amount"
+                keyboardType="numeric"
+                value={editAmt}
+                onChangeText={setEditAmt}
+                blurOnSubmit      // ← 3
+                onSubmitEditing={Keyboard.dismiss}
+              />
+
+              <TextInput
+                style={[styles.modalInput, { height: 80 }]}
+                placeholder="Add comments…"
+                multiline
+                value={editComment}
+                onChangeText={setEditComment}
+                blurOnSubmit
+                onSubmitEditing={Keyboard.dismiss}   // ← 3
+              />
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity
+                  style={[styles.actionBtn, styles.modifyBtn]}
+                  onPress={() => setEditVisible(false)}
+                >
+                  <Text style={styles.actionText}>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.actionBtn, styles.approveBtn]}
+                  // onPress={saveModifiedReimbursement}   {/* helper from earlier */}
+                >
+                  <Text style={[styles.actionText, { color: '#fff' }]}>Save</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </Drawer>
   );
 };
@@ -833,7 +893,37 @@ const styles = StyleSheet.create({
   approveBtn: { backgroundColor: '#047857' },           // NEW green
   modifyBtn: { backgroundColor: '#EBF4F6' },            // NEW neutral
   actionText: { fontWeight: '600', color: '#071952' }, 
-  
+  modalBackdrop: {                         // NEW
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCard: {                             // NEW
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+  },
+  modalTitle: {                            // NEW
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#071952',
+    marginBottom: 12,
+  },
+  modalInput: {                            // NEW
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 12,
+    fontSize: 15,
+  },
+  modalActions: {                          // NEW
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 6,
+  },
 });
 
 
