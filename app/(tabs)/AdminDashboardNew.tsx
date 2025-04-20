@@ -27,6 +27,10 @@ import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage
 import { Trip, Trucker, Reimbursement } from '../../services/api';
 import { Image } from 'react-native';
 
+import { useDispatch } from "react-redux";
+import { resetUser } from "../../redux/slices/userSlice";
+import { persistor } from "../../redux/store";
+
 const AdminDashboardNew = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const admin = useSelector((state: RootState) => state.user);
@@ -38,6 +42,7 @@ const AdminDashboardNew = () => {
   const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements' | 'truckers'>('map');
   const isFocused = useIsFocused();
   const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
+  const dispatch = useDispatch();
 
   const [locations, setLocations] = useState<any[]>([]);
   const [locLoading, setLocLoading] = useState(true);
@@ -72,7 +77,7 @@ const AdminDashboardNew = () => {
         const profilePicResponse = await getAdminProfileImage(admin.id);
         setProfilePicUrl(profilePicResponse?.profile_pic_url || null);
       } catch (error) {
-        console.error('Error fetching admin dashboard data:', error);
+        // console.error('Error fetching admin dashboard data:', error);
       } finally {
         setLoading(false);
       }
@@ -94,7 +99,7 @@ const AdminDashboardNew = () => {
           setLocations([loc]);
         }
       } catch (err) {
-        console.error('Error fetching locations:', err);
+        // console.error('Error fetching locations:', err);
         setLocations([]);
       } finally {
         setLocLoading(false);
@@ -134,6 +139,11 @@ const AdminDashboardNew = () => {
      } catch (err) {
        console.error("Modify failed", err);
      }
+  };
+  
+   const handleSignOut = () => {
+      dispatch(resetUser());      
+      persistor.purge();    
     };
 
   const renderDrawerContent = () => (
@@ -211,7 +221,10 @@ const AdminDashboardNew = () => {
       
       <TouchableOpacity 
         style={[styles.drawerItem, styles.signOutItem]}
-        onPress={() => router.push('/')}
+        onPress={() => {
+          handleSignOut();
+          router.push('/')
+        }}
       >
         <Text style={[styles.drawerItemText, styles.signOutText]}>Sign Out</Text>
       </TouchableOpacity>

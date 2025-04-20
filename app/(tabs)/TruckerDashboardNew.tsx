@@ -19,6 +19,10 @@ import {
   deleteLocation
 } from '../../services/api'; import { Trip, Reimbursement } from '../../services/api';
 
+import { useDispatch } from "react-redux";
+import { resetUser } from "../../redux/slices/userSlice";
+import { persistor } from "../../redux/store";
+
 const TruckerDashboardNew = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const trucker = useSelector((state: RootState) => state.user);
@@ -28,6 +32,7 @@ const TruckerDashboardNew = () => {
   const [pendingReimbursements, setPendingReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
   // const [activeSection, setActiveSection] = useState('map');
+  const dispatch = useDispatch();
   const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements'>('map');   // MOD ► typed
   const isFocused = useIsFocused();
 
@@ -153,6 +158,12 @@ const TruckerDashboardNew = () => {
     };
   }, [ongoingTrip, activeSection]);   
 
+
+  const handleSignOut = () => {
+    dispatch(resetUser());      
+    persistor.purge();           
+  };
+
   const renderDrawerContent = () => (
     <View style={styles.drawerContent}>
       <View style={styles.profileSection}>
@@ -200,7 +211,10 @@ const TruckerDashboardNew = () => {
 
       <TouchableOpacity 
         style={[styles.drawerItem, styles.signOutItem]}
-        onPress={() => router.push('/')}
+        onPress={() => {
+          handleSignOut();
+          router.push('/')
+        }}
       >
         <Text style={[styles.drawerItemText, styles.signOutText]}>Sign Out</Text>
       </TouchableOpacity>
