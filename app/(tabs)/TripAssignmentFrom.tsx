@@ -21,7 +21,8 @@ import {
   createTrip, 
   getTruckByTruckerId, 
   updateTruckerStatus,
-  estimateTripCost 
+  estimateTripCost,
+  createLocation
 } from "../../services/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store"; // Import RootState from your store
@@ -191,9 +192,22 @@ const TripAssignmentScreen: React.FC = () => {
         trip_rating: 0,
       } as Omit<Trip, "trip_id">;
 
-      await createTrip(newTrip);
+      const createdTrip = await createTrip(newTrip);
+      const createdTripId = createdTrip.trip_id;
       await updateTruckerStatus(selectedTruckerId, "Active");
       Alert.alert("Success", "Trip assigned successfully!");
+
+      // ✅ Dummy location data
+    const dummyLocation = {
+      location_id: Date.now(), // simple unique ID for example
+      trip_id: createdTripId,
+      latitude: 31.5204, // Lahore example
+      longitude: 74.3587,
+      timestamp: new Date(),
+    };
+
+    await createLocation(dummyLocation);
+
 
       handleClear();
       
@@ -358,7 +372,7 @@ const TripAssignmentScreen: React.FC = () => {
             disabled={isLoadingCost}
           >
             <Text style={styles.estimateButtonText}>
-              {isLoadingCost ? "Calculating..." : "Get Cost Estimate"}
+              {isLoadingCost ? "Calculating..." : "Get Cost Estimate By AI"}
             </Text>
             {isLoadingCost && (
               <ActivityIndicator size="small" color="#fff" style={styles.estimateLoader} />

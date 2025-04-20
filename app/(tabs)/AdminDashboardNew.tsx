@@ -53,6 +53,10 @@ const AdminDashboardNew = () => {
   const [editingId, setEditingId]           = useState<number>(); // NEW
 
 
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+  const [isImageModalVisible, setImageModalVisible] = useState(false);
+
+
   useEffect(() => {
     if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -358,6 +362,7 @@ const AdminDashboardNew = () => {
       case 'reimbursements':
         const pendingReimbursements = reimbursements.filter(r => r.status === 'Pending');
         return (
+          <>
           <ScrollView>
             {pendingReimbursements.map(item => (
               <View key={item.reimbursement_id} style={[styles.card, styles.recentTripCard]}>
@@ -369,16 +374,33 @@ const AdminDashboardNew = () => {
                     <Text style={styles.tripIdText}>#{item.reimbursement_id}</Text>
                   </View>
                 </View>
-                <View style={styles.tripDetails}>
-                  <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Trip ID</Text>
-                    <Text style={styles.locationText}>{item.trip_id}</Text>
-                  </View>
-                  <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Amount</Text>
-                    <Text style={styles.locationText}>$ {parseFloat(item.amount.$numberDecimal).toFixed(2)}</Text>
-                  </View>
+                <View style={[styles.rowBetween, { marginBottom: 10 }]}>
+                <View>
+                  <Text style={styles.locationLabel}>Trip ID</Text>
+                  <Text style={styles.locationText}>{item.trip_id}</Text>
                 </View>
+                <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                <Text style={styles.locationLabel}>Receipt</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedImageUrl(item.receipt_url);
+                      setImageModalVisible(true);
+                    }}
+                  >
+                    <Image
+                      source={{ uri: item.receipt_url }}
+                      style={styles.receiptThumbnail}
+                      resizeMode="cover"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.locationContainer}>
+                <Text style={styles.locationLabel}>Amount</Text>
+                <Text style={styles.locationText}>$ {parseFloat(item.amount.$numberDecimal).toFixed(2)}</Text>
+              </View>
+
                 <View style={styles.statusContainer}>
                   <View style={[styles.completedBadge, { backgroundColor: '#FEF3C7' }]}>
                     <Text style={[styles.completedBadgeText, { color: '#9B403D' }]}>Pending Approval</Text>
@@ -389,7 +411,7 @@ const AdminDashboardNew = () => {
                   <TouchableOpacity
                     style={[styles.actionBtn, styles.modifyBtn]}
                     onPress={() => openModify(item)}               // MOD ► open modal
-                  >
+                    >
                     <Text style={styles.actionText}>Modify</Text>
                   </TouchableOpacity>
 
@@ -404,13 +426,13 @@ const AdminDashboardNew = () => {
                         setReimbursements(prev =>
                           prev.map(r =>
                             r.reimbursement_id === item.reimbursement_id
-                              ? { ...r, status: 'Approved' }
-                              : r
+                            ? { ...r, status: 'Approved' }
+                            : r
                           )
                         );
                       } catch (err) { console.error(err); }
                     }}
-                  >
+                    >
                     <Text style={[styles.actionText, { color: '#fff' }]}>Approve</Text>
                   </TouchableOpacity>
                 </View>
@@ -423,6 +445,21 @@ const AdminDashboardNew = () => {
               </View>
             )}
           </ScrollView>
+          <Modal visible={isImageModalVisible} transparent={true}>
+            <View style={styles.modalBackground}>
+              <TouchableOpacity style={styles.modalCloseButton} onPress={() => setImageModalVisible(false)}>
+                <Text style={styles.modalCloseText}>✖</Text>
+              </TouchableOpacity>
+              <Image
+                source={{ uri: selectedImageUrl! }}
+                style={styles.fullImage}
+                resizeMode="contain"
+              />
+            </View>
+          </Modal>
+
+          </>
+          
         );
 
       case 'truckers':
@@ -484,7 +521,7 @@ const AdminDashboardNew = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => setIsDrawerOpen(true)} style={styles.menuButton}>
-            <IconSymbol name="line.3.horizontal" size={24} color="#071952" />
+            <IconSymbol name="menu" size={24} color="#071952" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{activeSection === 'map' ? 'Live Location' : 
             activeSection === 'ongoing' ? 'Ongoing Trips' :
@@ -962,6 +999,53 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 6,
   },
+  receiptThumbnail: {
+    width: 80,
+    height: 80,
+    borderRadius: 5,
+    marginTop: 5,
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  
+  
+  fullImage: {
+    width: '100%',
+    height: '80%',
+    borderRadius: 10,
+  },
+  
+  closeArea: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    zIndex: 2,
+    padding: 10,
+  },
+
+  modalCloseButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    zIndex: 1,
+  },
+  
+  modalCloseText: {
+    fontSize: 30,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  
 });
 
 

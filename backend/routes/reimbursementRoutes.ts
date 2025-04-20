@@ -1,12 +1,12 @@
 import express from "express";
 import {
-    getAllReimbursements,
-    createReimbursement,
-    getReimbursementsByTripId,
-    getReimbursementsByAdminId,
-    getReimbursementsByStatus,
-    approveReimbursement,     // ← pull in your new function
-    updateReimbursement  
+  getAllReimbursements,
+  createReimbursement,
+  getReimbursementsByTripId,
+  getReimbursementsByAdminId,
+  getReimbursementsByStatus,
+  approveReimbursement, // ← pull in your new function
+  updateReimbursement,
 } from "../controllers/reimursementController";
 
 const router = express.Router();

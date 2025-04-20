@@ -61,7 +61,7 @@ const TruckerDashboardNew = () => {
         );
         setPendingReimbursements(reimbursements.flat().filter(r => r.status === 'Pending'));
       } catch (error) {
-        console.error('Error fetching trucker dashboard data:', error);
+        // console.error('Error fetching trucker dashboard data:', error);
       } finally {
         setLoading(false);
       }
@@ -393,7 +393,7 @@ const TruckerDashboardNew = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => setIsDrawerOpen(true)} style={styles.menuButton}>
-            <IconSymbol name="line.3.horizontal" size={24} color="#071952" />
+            <IconSymbol name="menu" size={24} color="#071952" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
             {activeSection === 'map' ? 'Live Location' : 
