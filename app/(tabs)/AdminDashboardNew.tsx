@@ -23,7 +23,7 @@ import { Drawer } from 'react-native-drawer-layout';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import MapView, { Marker } from 'react-native-maps';   
 import { RootState } from '../../redux/store';
-import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById,    } from '../../services/api';
+import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById, approveReimbursement, modifyReimbursement   } from '../../services/api';
 import { Trip, Trucker, Reimbursement } from '../../services/api';
 import { Image } from 'react-native';
 
@@ -110,6 +110,31 @@ const AdminDashboardNew = () => {
     setEditComment('');
     setEditVisible(true);
   };
+
+  const saveModifiedReimbursement = async () => {
+     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+     try {
+       if (editingId == null) return;
+       const updated = await modifyReimbursement(editingId, {
+         amount: parseFloat(editAmt),
+         comments: editComment,
+       });
+  
+       // replace the one we edited in state
+       setReimbursements((prev) =>
+         prev.map((r) =>
+           r.reimbursement_id === updated.reimbursement_id ? updated : r
+         )
+       );
+  
+       // close modal & reset
+       setEditVisible(false);
+       setEditAmt("");
+       setEditComment("");
+     } catch (err) {
+       console.error("Modify failed", err);
+     }
+    };
 
   const renderDrawerContent = () => (
     <View style={styles.drawerContent}>
@@ -359,7 +384,7 @@ const AdminDashboardNew = () => {
                     style={[styles.actionBtn, styles.approveBtn]}
                     onPress={async () => {
                       try {
-                        // await approveReimbursement(item.reimbursement_id, admin.id);
+                        await approveReimbursement(item.reimbursement_id, admin.id);
                         LayoutAnimation.configureNext(
                           LayoutAnimation.Presets.easeInEaseOut
                         );
@@ -500,7 +525,7 @@ const AdminDashboardNew = () => {
 
                 <TouchableOpacity
                   style={[styles.actionBtn, styles.approveBtn]}
-                  // onPress={saveModifiedReimbursement}   {/* helper from earlier */}
+                  onPress={saveModifiedReimbursement}   // ◀ hook it up
                 >
                   <Text style={[styles.actionText, { color: '#fff' }]}>Save</Text>
                 </TouchableOpacity>
