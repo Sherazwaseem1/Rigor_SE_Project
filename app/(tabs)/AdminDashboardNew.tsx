@@ -425,14 +425,14 @@ const AdminDashboardNew = () => {
                     <View style={styles.truckerDetails}>
                       <Text style={styles.truckerName}>{trucker.name}</Text>
                       <Text style={styles.truckerId}>ID: #{trucker.trucker_id}</Text>
+                      <View style={[styles.statusBadge, 
+                        { backgroundColor: trucker.status === 'Active' ? '#E6F4EA' : '#FFF4E5' }]}>
+                        <Text style={[styles.statusBadgeText, 
+                          { color: trucker.status === 'Active' ? '#1E8E3E' : '#B95000' }]}>
+                          {trucker.status}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                  <View style={[styles.statusBadge, 
-                    { backgroundColor: trucker.status === 'Active' ? '#ECFDF5' : '#FEF3C7' }]}>
-                    <Text style={[styles.statusBadgeText, 
-                      { color: trucker.status === 'Active' ? '#047857' : '#9B403D' }]}>
-                      {trucker.status === 'Active' ? '🟢 Active' : '⏳ Inactive'}
-                    </Text>
                   </View>
                 </View>
                 <View style={styles.truckerContact}>
@@ -589,13 +589,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   statusBadge: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 0,
     paddingVertical: 6,
     borderRadius: 12,
   },
   statusBadgeText: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '500',
+    paddingHorizontal: 8
   },
   truckerContact: {
     marginTop: 8,
