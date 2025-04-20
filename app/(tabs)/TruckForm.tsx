@@ -176,15 +176,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: Math.max(screenHeight * 0.025, 20),
-    paddingHorizontal: Math.max(screenWidth * 0.05, 20),
+    paddingHorizontal: Math.max(screenWidth * 0.04, 16),
   },
   header: {
-    paddingHorizontal: Math.max(screenWidth * 0.02, 8),
     marginBottom: Math.max(screenHeight * 0.02, 15),
   },
   backButton: {
     paddingVertical: Math.max(screenHeight * 0.012, 10),
-    paddingHorizontal: Math.max(screenWidth * 0.025, 10),
   },
   backButtonContent: {
     flexDirection: 'row',
