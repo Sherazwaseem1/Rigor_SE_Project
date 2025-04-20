@@ -6,22 +6,71 @@ import { ThemedView } from '@/components/ThemedView';
 
 export default function WelcomeScreen() {
   const truckPosition = useRef(new Animated.Value(-150)).current;
+  const truckRotation = useRef(new Animated.Value(0)).current;
+  const truckScale = useRef(new Animated.Value(1)).current;
+  const buttonScale = useRef(new Animated.Value(1)).current;
+  const textOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    // Fade in text animation
+    Animated.timing(textOpacity, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+
     const moveAnimation = Animated.loop(
       Animated.sequence([
-        // Move right
-        Animated.timing(truckPosition, {
-          toValue: SCREEN_WIDTH - 100,
-          duration: 4000,
-          useNativeDriver: true,
-        }),
-        // Reset position
-        Animated.timing(truckPosition, {
-          toValue: -150,
-          duration: 0,
-          useNativeDriver: true,
-        })
+        // Move right with scale up
+        Animated.parallel([
+          Animated.timing(truckPosition, {
+            toValue: SCREEN_WIDTH - 235,
+            duration: 3000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(truckRotation, {
+            toValue: 0,
+            duration: 0,
+            useNativeDriver: true,
+          }),
+          Animated.sequence([
+            Animated.timing(truckScale, {
+              toValue: 1.1,
+              duration: 1500,
+              useNativeDriver: true,
+            }),
+            Animated.timing(truckScale, {
+              toValue: 1,
+              duration: 1500,
+              useNativeDriver: true,
+            })
+          ])
+        ]),
+        // Move left with scale up
+        Animated.parallel([
+          Animated.timing(truckPosition, {
+            toValue: -150,
+            duration: 3000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(truckRotation, {
+            toValue: 180,
+            duration: 0,
+            useNativeDriver: true,
+          }),
+          Animated.sequence([
+            Animated.timing(truckScale, {
+              toValue: 1.1,
+              duration: 1500,
+              useNativeDriver: true,
+            }),
+            Animated.timing(truckScale, {
+              toValue: 1,
+              duration: 1500,
+              useNativeDriver: true,
+            })
+          ])
+        ])
       ])
     );
 
@@ -29,9 +78,9 @@ export default function WelcomeScreen() {
     return () => moveAnimation.stop();
   }, []);
 
+
   return (
     <SafeAreaView style={styles.safeArea}>
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
     <ThemedView style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
@@ -41,41 +90,67 @@ export default function WelcomeScreen() {
         />
       </View>
       
-      <ThemedText style={styles.welcomeText} type="title">Welcome</ThemedText>
-      <ThemedText style={styles.subtitleText}>Where Every Mile Matters</ThemedText>
+      <Animated.View style={{ opacity: textOpacity }}>
+        <ThemedText style={styles.welcomeText} type="title">Welcome</ThemedText>
+        <ThemedText style={styles.subtitleText}>Where Every Mile Matters</ThemedText>
+      </Animated.View>
 
-      <View style={styles.animationContainer}>
+      <Animated.View style={[styles.truckContainer, { transform: [{ translateX: truckPosition }, { rotateY: truckRotation.interpolate({ inputRange: [0, 180], outputRange: ['0deg', '180deg'] }) }, { scale: truckScale }] }]}>
         <Image
-          source={require('../../assets/images/line_rm.png')}
-          style={styles.roadLine}
-          resizeMode="stretch"
+          source={require('../../assets/images/truck_only_rm.png')}
+          style={styles.truckImage}
+          resizeMode="contain"
         />
-        <Animated.View style={[styles.truckContainer, { transform: [{ translateX: truckPosition }] }]}>
-          <Image
-            source={require('../../assets/images/truck_only_rm.png')}
-            style={styles.truckImage}
-            resizeMode="contain"
-          />
-        </Animated.View>
-      </View>
+      </Animated.View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
           style={styles.createAccountButton}
-          onPress={() => router.push('/signupForm')}
+          onPress={() => {
+            Animated.sequence([
+              Animated.timing(buttonScale, {
+                toValue: 0.95,
+                duration: 100,
+                useNativeDriver: true
+              }),
+              Animated.timing(buttonScale, {
+                toValue: 1,
+                duration: 100,
+                useNativeDriver: true
+              })
+            ]).start(() => router.push('/signupForm'));
+          }}
+          activeOpacity={0.8}
         >
-          <ThemedText style={styles.createAccountButtonText}>Create an account</ThemedText>
+          <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+            <ThemedText style={styles.createAccountButtonText}>Create an account</ThemedText>
+          </Animated.View>
         </TouchableOpacity>
 
         <TouchableOpacity 
           style={styles.loginButton}
-          onPress={() => router.push('/loginForm')}
+          onPress={() => {
+            Animated.sequence([
+              Animated.timing(buttonScale, {
+                toValue: 0.95,
+                duration: 100,
+                useNativeDriver: true
+              }),
+              Animated.timing(buttonScale, {
+                toValue: 1,
+                duration: 100,
+                useNativeDriver: true
+              })
+            ]).start(() => router.push('/loginForm'));
+          }}
+          activeOpacity={0.8}
         >
-          <ThemedText style={styles.loginButtonText}>Log in</ThemedText>
+          <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+            <ThemedText style={styles.loginButtonText}>Log in</ThemedText>
+          </Animated.View>
         </TouchableOpacity>
       </View>
     </ThemedView>
-    </ScrollView>
     </SafeAreaView>
   );
 }
@@ -97,32 +172,20 @@ const normalize = (size:any) => {
 };
 
 const styles = StyleSheet.create({
-  animationContainer: {
+  truckContainer: {
     position: 'relative',
-    height: 150,
-    marginTop: Math.min(SCREEN_HEIGHT * 0.03, 24),
-    marginBottom: Math.min(SCREEN_HEIGHT * 0.03, 24),
+    height: SCREEN_HEIGHT * 0.15,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  roadLine: {
-    width: '100%',
-    height: 20,
-    position: 'absolute',
-    bottom: 25,
-  },
-  truckContainer: {
-    position: 'absolute',
-    bottom: 25,
     zIndex: 1,
+    flex: 0.2,
   },
   truckImage: {
-    width: 120,
-    height: 72,
+    width: SCREEN_WIDTH * 0.4,
+    height: SCREEN_HEIGHT * 0.1,
   },
   safeArea: {
     flex: 1,
-    
     backgroundColor: '#FFFFFF',
   },
   scrollContainer: {
@@ -131,18 +194,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: Math.min(SCREEN_WIDTH * 0.05, 24),
-    paddingTop: Platform.OS === 'ios' ? 0 : Math.min(SCREEN_HEIGHT * 0.02, 16),
-    paddingBottom: Math.min(SCREEN_HEIGHT * 0.02, 16),
+    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingTop: Platform.OS === 'ios' ? SCREEN_HEIGHT * 0.02 : SCREEN_HEIGHT * 0.04,
+    paddingBottom: SCREEN_HEIGHT * 0.02,
+    justifyContent: 'space-between',
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: Math.min(SCREEN_HEIGHT * 0.08, 80),
-    marginBottom: Math.min(SCREEN_HEIGHT * 0.05, 40),
+    flex: 0.3,
+    justifyContent: 'center',
   },
   logo: {
-    width: Math.min(SCREEN_WIDTH * 0.9, 420),
-    height: Math.min(SCREEN_HEIGHT * 0.28, 220),
+    width: SCREEN_WIDTH * 0.8,
+    height: SCREEN_HEIGHT * 0.15,
     maxWidth: '90%',
   },
   welcomeText: {
@@ -152,9 +216,9 @@ const styles = StyleSheet.create({
     marginTop: Math.min(SCREEN_HEIGHT * 0.05, 20),
     marginBottom: Math.min(SCREEN_HEIGHT * 0.02, 12),
     color: '#071952',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
+    textShadowColor: 'rgba(7, 25, 82, 0.4)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
   },
   subtitleText: {
     fontSize: normalize(18),
@@ -165,12 +229,12 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-    maxWidth: 500,
+    maxWidth: SCREEN_WIDTH * 0.9,
     alignSelf: 'center',
     display:'flex',
-    justifyContent: 'center',
-    gap: Math.min(SCREEN_HEIGHT * 0.02, 20),
-    marginTop: Math.min(SCREEN_HEIGHT * 0.05, 40),
+    justifyContent: 'flex-end',
+    gap: SCREEN_HEIGHT * 0.02,
+    flex: 0.3,
   },
   createAccountButton: {
     backgroundColor: '#071952',
