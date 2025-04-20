@@ -16,6 +16,7 @@ import {
   getAllLocations,                                          // NEW ► map data
   updateLocation,       
   completeTrip,
+  deleteLocation
 } from '../../services/api'; import { Trip, Reimbursement } from '../../services/api';
 
 const TruckerDashboardNew = () => {
@@ -267,6 +268,14 @@ const TruckerDashboardNew = () => {
                 try {
                   // 1) mark it completed in the DB
                   const updated = await completeTrip(ongoingTrip.trip_id);
+
+                  if (locationIdRef.current) {
+                    await deleteLocation(locationIdRef.current);
+                  }
+                  setLocations([]);
+                  locationIdRef.current = null;
+
+                  
                   // 2) remove from ongoing, add to past
                   setOngoingTrip(null);
                   setPastTrips(prev => [updated, ...prev]);
