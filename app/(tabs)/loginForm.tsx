@@ -23,7 +23,7 @@ const Login = () => {
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
     const [passwordError, setPasswordError] = React.useState('')
-    const [userType, setUserType] = React.useState('trucker'); // New state for dropdown
+    const [userType, setUserType] = React.useState(''); // New state for dropdown
     const [isPasswordVisible, setIsPasswordVisible] = React.useState(false); // Password visibility state
 
     const dispatch = useDispatch(); // Get Redux dispatch function
@@ -151,16 +151,16 @@ const Login = () => {
                 </View>
                 {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
-                {/* Admin/Trucker Dropdown */}
+                {/* Role Selection Dropdown */}
                 <View style={styles.dropdownContainer}>
-                    <Text style={styles.dropdownLabel}>Login as:</Text>
                     <Picker
                         selectedValue={userType}
                         onValueChange={(itemValue) => setUserType(itemValue)}
                         style={styles.picker}
                     >
-                        <Picker.Item label="Trucker" value="trucker" />
-                        <Picker.Item label="Admin" value="admin" />
+                        <Picker.Item label="Select Role" value="" enabled={false} style={{color: '#A0AEC0'}} />
+                        <Picker.Item label="Trucker" value="trucker" style={{color: '#202545'}} />
+                        <Picker.Item label="Admin" value="admin" style={{color: '#202545'}} />
                     </Picker>
                 </View>
 
@@ -194,7 +194,8 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: '#FFFFFF',
-        paddingTop: Platform.OS === 'ios' ? 40 : 20
+        paddingTop: Platform.OS === 'ios' ? 40 : 20,
+        paddingHorizontal: 15
     },
     scrollContainer: {
         flexGrow: 1
@@ -214,7 +215,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'flex-start',
-        marginBottom: 20,
+        marginTop: 20,
+        marginBottom: 10,
         zIndex: 1,
     },
     backButtonContent: {
@@ -340,31 +342,24 @@ const styles = StyleSheet.create({
     },
     dropdownContainer: {
         width: '100%',
-        marginBottom: Math.max(screenHeight * 0.03, 24),
+        marginBottom: Math.max(screenHeight * 0.02, 16),
         backgroundColor: '#FFFFFF',
         borderRadius: 12,
         borderWidth: 1,
         borderColor: '#E5E9F0',
         overflow: 'hidden',
-        paddingHorizontal: 16,
-        paddingTop: 16,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
         shadowRadius: 2,
         elevation: 1,
-    },
-    dropdownLabel: {
-        fontSize: Math.min(screenWidth * 0.04, 16),
-        color: '#071952',
-        marginBottom: 8,
+        height: Math.max(screenHeight * 0.065, 52),
     },
     picker: {
         width: '100%',
-        height: 50,
+        height: Math.max(screenHeight * 0.065, 52),
         backgroundColor: '#FFFFFF',
-        color: '#202545',
-        marginTop: -8,
-        marginBottom: 8,
+        color: ({ focused, value }) => value ? '#202545' : '#A0AEC0',
+        fontSize: Math.min(screenWidth * 0.04, 16),
     },
 })
