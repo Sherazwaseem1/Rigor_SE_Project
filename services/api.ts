@@ -4,8 +4,8 @@ import { Platform } from "react-native";
 // ✅ Set API URL based on platform (change IP if needed)
 const API_URL =
   Platform.OS === "web"
-    ? "http://localhost:5000/api"
-    : "http://10.130.10.171:5000/api"; // Replace with your IPv4 if necessary
+    ? "http://localhost:5001/api"
+    : "http://192.168.18.194:5001/api"; // Replace with your IPv4 if necessary
 
 // ✅ Trucker Interfaces
 export interface Trucker {
@@ -293,6 +293,21 @@ export const getReimbursementsByStatus = async (
   return response.data;
 };
 
+export const approveReimbursement = async (reimbursement_id: number, admin_id: number) =>
+  axios.patch<Reimbursement>(
+    `${API_URL}/reimbursements/${reimbursement_id}/approve`,
+    { admin_id }
+  ).then(r => r.data);
+
+export const modifyReimbursement = async (
+  reimbursement_id: number,
+  data: { amount?: number; comments?: string }
+) =>
+  axios.patch<Reimbursement>(
+    `${API_URL}/reimbursements/${reimbursement_id}`,
+    data
+  ).then(r => r.data);
+
 // ✅ Define TypeScript Interface for Trip
 export interface Trip {
   trip_id: number;
@@ -344,6 +359,17 @@ export const createTrip = async (
   return response.data;
 };
 
+// mark a trip completed
+export const completeTrip = async (trip_id: number): Promise<Trip> => {
+  try {
+    const response = await axios.patch<Trip>(`${API_URL}/trips/${trip_id}`, { 
+      status: 'Completed' 
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 // ✅ Define TypeScript Interface for Truck
 export interface Truck {
   truck_id: number;
