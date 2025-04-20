@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch, ScrollView, Platform } from 'react-native'
+import { Text, View, StyleSheet, TextInput, ActivityIndicator, Button, TouchableOpacity, Image, Dimensions, SafeAreaView, Switch, ScrollView, Platform, Animated } from 'react-native'
 import { ThemedView } from '@/components/ThemedView'
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
@@ -25,10 +25,13 @@ const Login = () => {
     const [passwordError, setPasswordError] = React.useState('')
     const [userType, setUserType] = React.useState('trucker'); // New state for dropdown
     const [isPasswordVisible, setIsPasswordVisible] = React.useState(false); // Password visibility state
+    const [error, setError] = React.useState('');
 
     const dispatch = useDispatch(); // Get Redux dispatch function
 
     const auth = FIREBASE_AUTH;
+
+    
 
     const validatePassword = (pass: string) => {
         if (pass.length < 6) {
@@ -44,6 +47,7 @@ const Login = () => {
         setPassword("");
         setPasswordError("");
         setUserType(""); 
+        setError("");
       };
 
     const signIn = async () => {
@@ -58,7 +62,7 @@ const Login = () => {
                 // Fetch admin data
                 userData = await getAdminByEmail(email); // Define the getAdminByEmail function
                 if (!userData) {
-                    // alert("Admin not found");
+                    setError("Admin not found");
                     return;
                 }
                 dispatch(setUser({
@@ -74,7 +78,7 @@ const Login = () => {
                 // Fetch trucker data
                 const truckerData = await getTruckerByEmail(email);
                 if (!truckerData) {
-                    // alert("Trucker not found");
+                    setError("Trucker not found");
                     return
                 }
                 dispatch(setUser({
@@ -89,8 +93,11 @@ const Login = () => {
                 router.push("/TruckerDashboardNew"); // Update route for trucker
             }
         } catch (error: any) {
-            console.error('Error signing in:', error);
-            // alert("ABEYY SALAY");
+            if (error.code === 'auth/invalid-credential') {
+                setError('Invalid email address or Password');
+            } else {
+                setError('An error occurred, please try again');
+            }            
         } finally {
             setLoading(false)
         }
@@ -105,10 +112,20 @@ const Login = () => {
                 <ThemedView style={styles.container}>
                 
                 {/* Back Button */}
-                <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                    <TouchableOpacity onPress={() => {
+                        handleClear();
+                        router.back()
+                    }} style={styles.backButton}>
                     <IconSymbol size={24} name="chevron.left" color="#333" />
                     <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
-                </TouchableOpacity>
+                    </TouchableOpacity>
+                    
+                {error ? (
+                <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>{error}</Text>
+                        </View>
+                    ) : null}
+
 
                 {/* Logo */}
                 <View style={styles.logoContainer}>
@@ -307,6 +324,7 @@ const styles = StyleSheet.create({
         fontSize: Math.min(screenWidth * 0.035, 14),
         alignSelf: 'flex-start',
         marginBottom: 8,
+
     },
     button: {
         width: '100%',
@@ -366,5 +384,21 @@ const styles = StyleSheet.create({
         color: '#202545',
         marginTop: -8,
         marginBottom: 8,
+    },
+    errorContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
+        backgroundColor: 'rgba(255, 0, 0, 0.2)', // Light red background
+        padding: 15,
+        borderRadius: 25, // Rounded edges
+        justifyContent: 'center', // Center text vertically
+        zIndex: 9999, // Ensure the error message is on top
+        position: 'absolute', // Position relative to the parent container
+        top: 70, // Adjust top position if needed to prevent overlap
+        left: 60,
+        right: 0,
+        width: '80%', // Control the width of the error message container
+        alignSelf: 'center', // Center the container horizontally
     },
 })

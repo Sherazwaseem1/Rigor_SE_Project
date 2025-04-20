@@ -19,6 +19,10 @@ import {
   deleteLocation
 } from '../../services/api'; import { Trip, Reimbursement } from '../../services/api';
 
+import { useDispatch } from "react-redux";
+import { resetUser } from "../../redux/slices/userSlice";
+import { persistor } from "../../redux/store";
+
 const TruckerDashboardNew = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const trucker = useSelector((state: RootState) => state.user);
@@ -28,6 +32,7 @@ const TruckerDashboardNew = () => {
   const [pendingReimbursements, setPendingReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
   // const [activeSection, setActiveSection] = useState('map');
+  const dispatch = useDispatch();
   const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements'>('map');   // MOD ► typed
   const isFocused = useIsFocused();
 
@@ -56,7 +61,7 @@ const TruckerDashboardNew = () => {
         );
         setPendingReimbursements(reimbursements.flat().filter(r => r.status === 'Pending'));
       } catch (error) {
-        console.error('Error fetching trucker dashboard data:', error);
+        // console.error('Error fetching trucker dashboard data:', error);
       } finally {
         setLoading(false);
       }
@@ -153,6 +158,12 @@ const TruckerDashboardNew = () => {
     };
   }, [ongoingTrip, activeSection]);   
 
+
+  const handleSignOut = () => {
+    dispatch(resetUser());      
+    persistor.purge();           
+  };
+
   const renderDrawerContent = () => (
     <View style={styles.drawerContent}>
       <View style={styles.profileSection}>
@@ -200,7 +211,10 @@ const TruckerDashboardNew = () => {
 
       <TouchableOpacity 
         style={[styles.drawerItem, styles.signOutItem]}
-        onPress={() => router.push('/')}
+        onPress={() => {
+          handleSignOut();
+          router.push('/')
+        }}
       >
         <Text style={[styles.drawerItemText, styles.signOutText]}>Sign Out</Text>
       </TouchableOpacity>
@@ -379,7 +393,7 @@ const TruckerDashboardNew = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => setIsDrawerOpen(true)} style={styles.menuButton}>
-            <IconSymbol name="line.3.horizontal" size={24} color="#071952" />
+            <IconSymbol name="menu" size={24} color="#071952" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
             {activeSection === 'map' ? 'Live Location' : 
