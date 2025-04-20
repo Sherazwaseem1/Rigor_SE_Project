@@ -35,7 +35,7 @@ const AdminDashboardNew = () => {
   const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
   // const [activeSection, setActiveSection] = useState('map');
-  const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements' | 'truckers'>('map');
+  const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements' | 'approved' | 'truckers'>('map');
   const isFocused = useIsFocused();
   const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
 
@@ -173,6 +173,15 @@ const AdminDashboardNew = () => {
       >
         <Text style={styles.drawerItemText}>Pending Reimbursements</Text>
       </TouchableOpacity>
+
+        {/* Approved */}
+      <TouchableOpacity
+        style={[styles.drawerItem, activeSection === 'approved' && styles.activeDrawerItem]}
+        onPress={() => { setActiveSection('approved'); setIsDrawerOpen(false); }}
+      >
+        <Text style={styles.drawerItemText}>Approved Reimbursements</Text>
+      </TouchableOpacity>
+
 
       <TouchableOpacity 
         style={[styles.drawerItem, activeSection === 'truckers' && styles.activeDrawerItem]}
@@ -412,6 +421,51 @@ const AdminDashboardNew = () => {
           </ScrollView>
         );
 
+        case 'approved': {
+          const approved = reimbursements.filter(r => r.status === 'Approved');
+          return (
+            <ScrollView>
+              {approved.map(item => (
+                <View key={item.reimbursement_id} style={[styles.card, styles.recentTripCard]}>
+                  <View style={styles.tripHeader}>
+                    <View style={styles.tripRoute}>
+                      <Text style={styles.routeText}>Reimbursement #{item.reimbursement_id}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.tripDetails}>
+                    <View style={styles.locationContainer}>
+                      <Text style={styles.locationLabel}>Trip ID</Text>
+                      <Text style={styles.locationText}>{item.trip_id}</Text>
+                    </View>
+                    <View style={styles.locationContainer}>
+                      <Text style={styles.locationLabel}>Amount</Text>
+                      <Text style={styles.locationText}>
+                        $ {parseFloat(item.amount.$numberDecimal).toFixed(2)}
+                      </Text>
+                    </View>
+                    {item.comments ? (
+                      <View style={styles.locationContainer}>
+                        <Text style={styles.locationLabel}>Comments</Text>
+                        <Text style={styles.locationText}>{item.comments}</Text>
+                      </View>
+                    ) : null}
+                  </View>
+                  <View style={styles.statusContainer}>
+                    <View style={styles.completedBadge}>
+                      <Text style={styles.completedBadgeText}>✓ Approved</Text>
+                    </View>
+                  </View>
+                </View>
+              ))}
+              {approved.length === 0 && (
+                <View style={[styles.card, styles.emptyCard]}>
+                  <Text style={styles.emptyText}>No approved reimbursements</Text>
+                </View>
+              )}
+            </ScrollView>
+          );
+        }
+
       case 'truckers':
         return (
           <ScrollView>
@@ -477,6 +531,7 @@ const AdminDashboardNew = () => {
             activeSection === 'ongoing' ? 'Ongoing Trips' :
             activeSection === 'recent' ? 'Recent Trips' :
             activeSection === 'reimbursements' ? 'Pending Reimbursements' :
+            activeSection === 'approved' ? 'Approved Reimbursements' :
             activeSection === 'truckers' ? 'Registered Truckers' :
             'Dashboard'}</Text>
         </View>
