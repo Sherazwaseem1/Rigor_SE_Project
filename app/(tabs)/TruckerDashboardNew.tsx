@@ -15,6 +15,7 @@ import {
   getReimbursementsByTripId,
   getAllLocations,                                          // NEW ► map data
   updateLocation,       
+  completeTrip,
 } from '../../services/api'; import { Trip, Reimbursement } from '../../services/api';
 
 const TruckerDashboardNew = () => {
@@ -260,6 +261,27 @@ const TruckerDashboardNew = () => {
             <Text style={styles.cardText}>📍 From: {ongoingTrip.start_location}</Text>
             <Text style={styles.cardText}>🏁 To: {ongoingTrip.end_location}</Text>
             <Text style={[styles.cardText, styles.statusText]}>Status: {ongoingTrip.status}</Text>
+            <TouchableOpacity
+              style={styles.completeBtn}
+              onPress={async () => {
+                try {
+                  // 1) mark it completed in the DB
+                  const updated = await completeTrip(ongoingTrip.trip_id);
+                  // 2) remove from ongoing, add to past
+                  setOngoingTrip(null);
+                  setPastTrips(prev => [updated, ...prev]);
+                  // 3) route to reimbursement form
+                  router.push({
+                    pathname: './Reimbursement_form',
+                    params: { trip_id: updated.trip_id },
+                  });
+                } catch (err) {
+                  console.error('Complete trip failed', err);
+                }
+              }}
+            >
+              <Text style={styles.completeText}>Complete Trip</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.card}>
@@ -654,6 +676,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: '#071952',
+  },
+  completeBtn: {
+    marginTop: 16,
+    backgroundColor: '#059669',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  completeText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });
 

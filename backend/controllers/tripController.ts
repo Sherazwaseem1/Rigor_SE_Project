@@ -122,3 +122,25 @@ export const createTrip = async (req: Request, res: Response): Promise<void> => 
 };
 
 
+// ─── ✅  Update a trip (PATCH /:trip_id) ───────────────────────────
+export const updateTrip = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const tripId = Number(req.params.trip_id);  // Use only trip_id as defined in route
+      const updates = req.body;
+      
+      const updated = await Trip.findOneAndUpdate(
+        { trip_id: tripId },
+        updates,
+        { new: true }
+      );
+      
+      if (!updated) {
+        res.status(404).json({ error: 'Trip not found' });
+        return;
+      }
+      
+      res.status(200).json(updated);
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to update trip', details: err });
+    }
+  };
