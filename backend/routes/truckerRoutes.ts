@@ -9,7 +9,6 @@ import {
     updateTruckerStatus,
     updateTruckerProfilePic,
     getTruckerProfilePic,
-    getTruckersWithoutTruck,
 } from "../controllers/truckerController";
 
 const router = express.Router();
@@ -24,7 +23,5 @@ router.delete("/:id", deleteTrucker);
 router.patch("/status/:id", updateTruckerStatus);
 router.patch('/profile-pic/:id', updateTruckerProfilePic);
 router.get('/profile-pic/:id', getTruckerProfilePic);
-router.get("/without-truck", getTruckersWithoutTruck);
-
 
 export default router;

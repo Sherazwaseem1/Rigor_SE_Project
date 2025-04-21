@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Trucker from "../models/trucker";
-import Truck from "../models/truck";      // Assuming Truck model is in the models directory
 
 // 🟢 Create a new trucker
 export const createTrucker = async (req: Request, res: Response): Promise<void> => {
@@ -168,28 +167,3 @@ export const getTruckerProfilePic = async (req: Request, res: Response): Promise
 };
 
 
-// Get truckers without truck
-export const getTruckersWithoutTruck = async (req: Request, res: Response) => {
-  try {
-    // Step 1: Get all truckers
-    const allTruckers = await Trucker.find();
-
-    // Step 2: Get all assigned_trucker_id values from Truck collection
-    const trucks = await Truck.find({ assigned_trucker_id: { $ne: null } }, 'assigned_trucker_id');
-
-    const assignedTruckerIds = trucks.map(truck => truck.assigned_trucker_id);
-
-    // Step 3: Filter truckers whose ID is not in the assignedTruckerIds
-    const unassignedTruckers = allTruckers.filter(trucker => !assignedTruckerIds.includes(trucker.trucker_id));
-
-    if (unassignedTruckers.length === 0) {
-      res.status(404).json({ message: "No truckers without assigned trucks found." });
-      return;
-    }
-
-    return res.status(200).json(unassignedTruckers);
-  } catch (error) {
-    console.error("Error fetching unassigned truckers:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-};
