@@ -636,7 +636,7 @@ const AdminDashboardNew = () => {
             activeSection === 'reimbursements' ? 'Pending Reimbursements' :
             activeSection === 'approved' ? 'Approved Reimbursements' :
             activeSection === 'truckers' ? 'Registered Truckers' :
-            'Dashboard'}</Text>
+            'Analytics'}</Text>
         </View>
         <View style={[styles.content, activeSection === 'map' && styles.contentMap]}>
           {renderContent()}
