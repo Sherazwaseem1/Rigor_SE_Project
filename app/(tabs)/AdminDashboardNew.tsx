@@ -531,11 +531,9 @@ const AdminDashboardNew = () => {
                       <Text style={styles.truckerId}>ID: #{trucker.trucker_id}</Text>
                     </View>
                   </View>
-                  <View style={[styles.statusBadge, 
-                    { backgroundColor: trucker.status === 'Active' ? '#ECFDF5' : '#FEF3C7' }]}>
-                    <Text style={[styles.statusBadgeText, 
-                      { color: trucker.status === 'Active' ? '#047857' : '#9B403D' }]}>
-                      {trucker.status === 'Active' ? '🟢 Active' : '⏳ Inactive'}
+                  <View style={[styles.statusBadge, { backgroundColor: trucker.status === 'Active' ? '#E6F4EA' : '#FFF4E5' }]}>
+                    <Text style={[styles.statusText, { color: trucker.status === 'Active' ? '#1E8E3E' : '#B95000' }]}>
+                      {trucker.status}
                     </Text>
                   </View>
                 </View>
@@ -573,6 +571,7 @@ const AdminDashboardNew = () => {
       drawerStyle={styles.drawer}
     >
       <SafeAreaView style={styles.container}>
+        
         <View style={styles.header}>
           <TouchableOpacity onPress={() => setIsDrawerOpen(true)} style={styles.menuButton}>
             <IconSymbol name="menu" size={24} color="#071952" />
@@ -659,11 +658,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   truckerInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginLeft: 'auto'
   },
   truckerAvatar: {
     width: 48,
@@ -694,13 +700,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   statusBadge: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 0,
     paddingVertical: 6,
     borderRadius: 12,
   },
   statusBadgeText: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '500',
+    paddingHorizontal: 8
   },
   truckerContact: {
     marginTop: 8,
@@ -968,6 +975,18 @@ const styles = StyleSheet.create({
   mapText: {
     fontSize: 16,
     color: '#071952',
+    textAlign: 'center',
+  },
+  // Add these styles to the StyleSheet
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '500',
     textAlign: 'center',
   },
   profileImageWrapper: {
