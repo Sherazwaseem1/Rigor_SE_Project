@@ -42,15 +42,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const auth = FIREBASE_AUTH;
 
-  const validatePassword = (pass: string) => {
-    if (pass.length < 6) {
-      setPasswordError('Password must be at least 6 characters long');
-      return false;
-    }
-    setPasswordError('');
-    return true;
-  };
-
   const handleClear = () => {
     setEmail('');
     setPassword('');
@@ -147,7 +138,6 @@ const Login = () => {
               autoCapitalize="none"
               onChangeText={(text) => {
                 setPassword(text);
-                validatePassword(text);
               }}
             />
             <TouchableOpacity style={styles.eyeIcon} onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
