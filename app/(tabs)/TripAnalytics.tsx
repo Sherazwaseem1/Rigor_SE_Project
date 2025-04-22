@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import { LineChart } from 'react-native-chart-kit';
+import { BarChart } from 'react-native-chart-kit';
 import { getAllTrips } from '../../services/api';
 import type { Trip } from '../../services/api';
 
@@ -20,6 +20,7 @@ const TripAnalytics = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [minTripCount, setMinTripCount] = useState<string>('0');
+  const [numRoutes, setNumRoutes] = useState<string>('5');
   const [filteredRoutes, setFilteredRoutes] = useState<{route: string, count: number}[]>([]);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const TripAnalytics = () => {
     processRoutes(trips);
   }, [minTripCount]);
 
-  // Process trip data for the line chart
+  // Process trip data for the bar chart of average distances
   const processTripsData = () => {
     if (!trips.length) return { labels: [], data: [] };
 
@@ -65,25 +66,31 @@ const TripAnalytics = () => {
       new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
     );
 
-    // Group trips by month
+    // Group trips by month and calculate average distances
     const tripsByMonth = sortedTrips.reduce((acc, trip) => {
       const date = new Date(trip.start_time);
       const monthYear = `${date.getMonth() + 1}/${date.getFullYear().toString().slice(2)}`;
       
       if (!acc[monthYear]) {
-        acc[monthYear] = 0;
+        acc[monthYear] = { totalDistance: 0, count: 0 };
       }
-      acc[monthYear]++;
+      acc[monthYear].totalDistance += trip.distance;
+      acc[monthYear].count++;
       return acc;
-    }, {} as Record<string, number>);
+    }, {} as Record<string, { totalDistance: number; count: number }>);
+
+    // Calculate averages
+    const monthlyAverages = Object.entries(tripsByMonth).map(([month, data]) => ({
+      month,
+      average: data.totalDistance / data.count
+    }));
 
     return {
-      labels: Object.keys(tripsByMonth),
-      data: Object.values(tripsByMonth)
+      labels: monthlyAverages.map(item => item.month),
+      data: monthlyAverages.map(item => Number(item.average.toFixed(2)))
     };
   };
 
-  const { labels, data } = processTripsData();
 
   return (
     <View style={styles.container}>
@@ -109,31 +116,38 @@ const TripAnalytics = () => {
           </View>
         ) : (
           <>
-            {/* Line Chart Section */}
+            {/* Longest Routes Section */}
             <View style={styles.chartContainer}>
-              <Text style={styles.chartTitle}>Trips Over Time</Text>
-              <LineChart
-                data={{
-                  labels,
-                  datasets: [{
-                    data: data.length ? data : [0],
-                  }],
-                }}
-                width={width - 32} // Account for padding
-                height={220}
-                chartConfig={{
-                  backgroundColor: '#FFFFFF',
-                  backgroundGradientFrom: '#FFFFFF',
-                  backgroundGradientTo: '#FFFFFF',
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => `rgba(7, 25, 82, ${opacity})`,
-                  style: {
-                    borderRadius: 16,
-                  },
-                }}
-                style={styles.chart}
-                bezier
-              />
+              <Text style={styles.chartTitle}>Longest Routes</Text>
+              <View style={styles.filterContainer}>
+                <Text style={styles.filterLabel}>Number of Routes:</Text>
+                <TextInput
+                  style={styles.filterInput}
+                  value={numRoutes}
+                  onChangeText={setNumRoutes}
+                  keyboardType="numeric"
+                  placeholder="0"
+                />
+              </View>
+              {trips.length > 0 ? (
+                trips
+                  .sort((a, b) => b.distance - a.distance)
+                  .slice(0, parseInt(numRoutes))
+                  .map((trip, index) => (
+                    <View key={index} style={styles.routeCard}>
+                      <View style={styles.routeInfo}>
+                        <Text style={styles.routeText}>
+                          {trip.start_location} → {trip.end_location}
+                        </Text>
+                        <Text style={styles.routeDistance}>
+                          {trip.distance} km
+                        </Text>
+                      </View>
+                    </View>
+                  ))
+              ) : (
+                <Text style={styles.noDataText}>No trip data available</Text>
+              )}
             </View>
 
             {/* Popular Routes Section */}
@@ -181,6 +195,7 @@ const styles = StyleSheet.create({
   filterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 16,
   },
   filterLabel: {
     fontSize: 14,
