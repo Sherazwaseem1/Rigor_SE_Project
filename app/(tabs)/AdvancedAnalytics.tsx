@@ -65,8 +65,11 @@ const AdvancedAnalytics = () => {
             key={index}
             style={styles.card}
             onPress={() => {
-              // Navigation logic to be implemented
-              console.log(`Navigating to ${card.title}`);
+              if (card.title === 'Trip Analytics') {
+                router.push('/TripAnalytics');
+              } else {
+                console.log(`Navigating to ${card.title}`);
+              }
             }}
           >
             <Text style={styles.cardIcon}>{card.icon}</Text>
