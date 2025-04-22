@@ -151,7 +151,7 @@ const AdminDashboardNew = () => {
     };
 
   const renderDrawerContent = () => (
-    <View style={styles.drawerContent}>
+    <ScrollView style={styles.drawerContent}>
       <View style={styles.profileSection}>
               {profilePicUrl ? (
           <View style={styles.profileImageWrapper}>
@@ -241,7 +241,7 @@ const AdminDashboardNew = () => {
       >
         <Text style={[styles.drawerItemText, styles.signOutText]}>Sign Out</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 
   const renderContent = () => {
