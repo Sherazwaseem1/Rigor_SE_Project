@@ -22,7 +22,8 @@ import {
   getTruckByTruckerId, 
   updateTruckerStatus,
   estimateTripCost,
-  createLocation
+  createLocation,
+  getTruckersWithoutTruck,
 } from "../../services/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -102,11 +103,32 @@ const TripAssignmentScreen: React.FC = () => {
   useEffect(() => {
     const fetchTruckers = async () => {
       try {
-        const truckerData = await getAllTruckers();
-        const activeTruckers = truckerData.filter(t => t.status === "Inactive");
-        setTruckers(activeTruckers);
-      } catch (error) {}
+        // Fetch all truckers
+        const truckerData = await getAllTruckers();        
+        // Filter inactive truckers
+        const inactiveTruckers = truckerData.filter(t => t.status === "Inactive");
+        
+        // Fetch truckers without trucks
+
+        console.log("Before this", inactiveTruckers)
+        const truckersWithoutTruck = await getTruckersWithoutTruck();
+        console.log("The truckerwithout", truckersWithoutTruck)
+        console.log("After this")
+        // Get truckers who are inactive and have a truck (i.e., all inactive minus those without trucks)
+        const truckersWithTruck = inactiveTruckers.filter(trucker => 
+          !truckersWithoutTruck.some(t => t.trucker_id === trucker.trucker_id)
+
+        );
+
+        console.log(truckersWithTruck);
+        
+        setTruckers(truckersWithTruck);
+      } catch (error) {
+        console.error("Error fetching truckers:", error);
+        Alert.alert("Error", "Could not fetch trucker data. Please try again.");
+      }
     };
+  
     fetchTruckers();
     handleClear();
   }, [isFocused]);

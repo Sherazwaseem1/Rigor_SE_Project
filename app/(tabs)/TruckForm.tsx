@@ -14,9 +14,13 @@ import { useForm } from "react-hook-form";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "../../hooks/useThemeColor";
-import { createTruck } from "../../services/api"; // Adjust the path if needed
+import { createTruck, getTruckersWithoutTruck, Trucker  } from "../../services/api"; // Adjust the path if needed
 import { router } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
+import { Picker } from "@react-native-picker/picker";
+import { useState } from 'react';
+
+
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -28,6 +32,11 @@ interface TruckFormData {
 }
 
 export default function TruckForm() {
+
+  const [truckers, setTruckers] = useState<Trucker[]>([]);
+  const [selectedTruckerId, setSelectedTruckerId] = useState<string | undefined>(undefined);
+
+  
   const backgroundColor = useThemeColor(
     { light: "#fff", dark: "#fff" },
     "background"
@@ -44,8 +53,22 @@ export default function TruckForm() {
 
   const isFocused = useIsFocused();
 
+  useEffect(() => {
+    const fetchTruckers = async () => {
+      try {
+        const data = await getTruckersWithoutTruck();
+        setTruckers(data);
+      } catch (error) {
+        console.error("Failed to fetch truckers:", error);
+      }
+    };
+  
+    if (isFocused) fetchTruckers();
+  }, [isFocused]);
+  
+
   const onSubmit = async (data: TruckFormData) => {
-    const capacityValue = Number(data.capacity);
+  const capacityValue = Number(data.capacity);
 
     if (isNaN(capacityValue) || capacityValue <= 0) {
       alert("Capacity must be a number greater than 0");
@@ -66,7 +89,7 @@ export default function TruckForm() {
     try {
       const response = await createTruck(submissionData);
       alert("Truck created successfully!");
-      router.push("/AdminDashboardNew"); // Navigate to AdminDashboardNew after successful submission
+      router.push("/AdminDashboardNew"); 
     } catch (error) {
       alert("Failed to create truck. Please try again.");
     }
@@ -148,16 +171,26 @@ export default function TruckForm() {
             </Text>
           )}
 
-          <Text style={[styles.label, { color: "#202545" }]}>
-            Assigned Trucker ID
-          </Text>
-          <TextInput
-            style={[styles.input, { color: textColor }]}
-            keyboardType="numeric"
-            placeholder="Enter assigned trucker ID"
-            placeholderTextColor="#666"
-            onChangeText={(text) => setValue("assigned_trucker_id", text)}
-          />
+        <Text style={[styles.label, { color: "#202545" }]}>Assign Trucker</Text>
+        <View style={[styles.input, { padding: 0 }]}>
+          <Picker
+            selectedValue={selectedTruckerId}
+            onValueChange={(itemValue) => {
+              setSelectedTruckerId(itemValue);
+              setValue("assigned_trucker_id", itemValue);
+            }}
+          >
+            <Picker.Item label="-- Select a trucker --" value={undefined} />
+            {truckers.map((trucker) => (
+              <Picker.Item
+                key={trucker.trucker_id}
+                label={`${trucker.name} - ${trucker.trucker_id}`}
+                value={trucker.trucker_id.toString()}
+              />
+            ))}
+          </Picker>
+        </View>
+
         </View>
 
         <TouchableOpacity
