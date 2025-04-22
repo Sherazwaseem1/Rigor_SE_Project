@@ -522,6 +522,14 @@ const AdminDashboardNew = () => {
                   </View>
                 </View>
               </View>
+              <View>
+                <TouchableOpacity 
+                  style={styles.advancedButton}
+                  onPress={() => router.push('/AdvancedAnalytics')}
+                >
+                  <Text style={styles.advancedButtonText}>Advanced Analytics</Text>
+                </TouchableOpacity>
+              </View>
             </ScrollView>
           );
 
@@ -697,6 +705,18 @@ const AdminDashboardNew = () => {
 };
 
 const styles = StyleSheet.create({
+  advancedButton: {
+    backgroundColor: '#088395',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  advancedButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   analyticsCard: {
     marginBottom: 16,
     padding: 16,
