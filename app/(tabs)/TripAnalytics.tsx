@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  TextInput,
 } from 'react-native';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -18,12 +19,15 @@ const { width } = Dimensions.get('window');
 const TripAnalytics = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
+  const [minTripCount, setMinTripCount] = useState<string>('0');
+  const [filteredRoutes, setFilteredRoutes] = useState<{route: string, count: number}[]>([]);
 
   useEffect(() => {
     const fetchTrips = async () => {
       try {
         const tripsData = await getAllTrips();
         setTrips(tripsData);
+        processRoutes(tripsData);
       } catch (error) {
         console.error('Error fetching trips:', error);
       } finally {
@@ -33,6 +37,24 @@ const TripAnalytics = () => {
 
     fetchTrips();
   }, []);
+
+  const processRoutes = (tripsData: Trip[]) => {
+    const routeCounts = tripsData.reduce((acc, trip) => {
+      const route = `${trip.start_location} → ${trip.end_location}`;
+      acc[route] = (acc[route] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const routes = Object.entries(routeCounts)
+      .map(([route, count]) => ({ route, count }))
+      .sort((a, b) => b.count - a.count);
+
+    setFilteredRoutes(routes.filter(route => route.count >= parseInt(minTripCount) || 0));
+  };
+
+  useEffect(() => {
+    processRoutes(trips);
+  }, [minTripCount]);
 
   // Process trip data for the line chart
   const processTripsData = () => {
@@ -116,22 +138,30 @@ const TripAnalytics = () => {
 
             {/* Popular Routes Section */}
             <View style={styles.routesContainer}>
-              <Text style={styles.sectionTitle}>Popular Routes</Text>
-              {trips.length > 0 ? (
-                trips.map((trip, index) => (
+              <View style={styles.routeHeader}>
+                <Text style={styles.sectionTitle}>Popular Routes</Text>
+                <View style={styles.filterContainer}>
+                  <Text style={styles.filterLabel}>Min Trips:</Text>
+                  <TextInput
+                    style={styles.filterInput}
+                    value={minTripCount}
+                    onChangeText={setMinTripCount}
+                    keyboardType="numeric"
+                    placeholder="0"
+                  />
+                </View>
+              </View>
+              {filteredRoutes.length > 0 ? (
+                filteredRoutes.map((route, index) => (
                   <View key={index} style={styles.routeCard}>
                     <View style={styles.routeInfo}>
-                      <Text style={styles.routeText}>
-                        {trip.start_location} → {trip.end_location}
-                      </Text>
-                      <Text style={styles.routeDate}>
-                        {new Date(trip.start_time).toLocaleDateString()}
-                      </Text>
+                      <Text style={styles.routeText}>{route.route}</Text>
+                      <Text style={styles.tripCount}>{route.count} trips</Text>
                     </View>
                   </View>
                 ))
               ) : (
-                <Text style={styles.noDataText}>No trip data available</Text>
+                <Text style={styles.noDataText}>No routes match the filter criteria</Text>
               )}
             </View>
           </>
@@ -142,6 +172,37 @@ const TripAnalytics = () => {
 };
 
 const styles = StyleSheet.create({
+  routeHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterLabel: {
+    fontSize: 14,
+    color: '#64748B',
+    marginRight: 8,
+  },
+  filterInput: {
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    width: 60,
+    fontSize: 14,
+    color: '#071952',
+    backgroundColor: '#FFFFFF',
+  },
+  tripCount: {
+    fontSize: 14,
+    color: '#64748B',
+    fontWeight: '500',
+  },
   container: {
     flex: 1,
     backgroundColor: '#EBF4F6',
