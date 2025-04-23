@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { BarChart } from 'react-native-chart-kit';
 import { getAllTrips } from '../../services/api';
 import type { Trip } from '../../services/api';
@@ -93,7 +94,8 @@ const TripAnalytics = () => {
 
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
       {/* Header with back button */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -182,6 +184,7 @@ const TripAnalytics = () => {
         )}
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 };
 
