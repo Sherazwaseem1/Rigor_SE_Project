@@ -66,28 +66,17 @@ export const getTruckByTruckerId = async (req: Request, res: Response): Promise<
 
 export const getTruckersWithoutTruck = async (req: Request, res: Response): Promise<void> => {
     try {
-      // Step 1: Get all truckers
       const allTruckers = await Trucker.find();
-      
-      // Step 2: Get all trucks with assigned truckers
       const assignedTrucks = await Truck.find({ assigned_trucker_id: { $ne: null } });
-      
-      // Step 3: Extract all assigned trucker IDs
       const assignedTruckerIds = assignedTrucks.map(truck => truck.assigned_trucker_id);
       
-      // Step 4: Filter out truckers who don't have assigned trucks
       const unassignedTruckers = allTruckers.filter(
         trucker => !assignedTruckerIds.includes(trucker.trucker_id)
       );
-      
-      if (unassignedTruckers.length === 0) {
-        res.status(404).json({ message: "No unassigned truckers found" });
-        return;
-      }
-      
+  
       res.status(200).json(unassignedTruckers);
     } catch (error) {
-      console.error("Error fetching unassigned truckers:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   };
+  
