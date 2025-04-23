@@ -38,7 +38,7 @@ const Login = () => {
     const [isPasswordVisible, setIsPasswordVisible] = React.useState(false); // Password visibility state
     const [error, setError] = React.useState('');
 
-  const pickerRef = useRef(null);
+  const pickerRef = useRef<Picker<string> | null>(null);
   const dispatch = useDispatch();
   const auth = FIREBASE_AUTH;
 
