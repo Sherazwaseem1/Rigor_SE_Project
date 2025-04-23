@@ -305,36 +305,49 @@ const TruckerDashboardNew = () => {
 
       case "ongoing":
         if (!ongoingTrip)
-          return <Text style={styles.cardText}>No ongoing trips</Text>;
+          return (
+            <View style={styles.contentWrapper}>
+              <Text style={styles.noContentText}>No ongoing trips</Text>
+            </View>
+          );
         return (
-          <View style={styles.card}>
-            <Text style={styles.cardText}>Trip ID: {ongoingTrip.trip_id}</Text>
-            <Text style={styles.cardText}>
-              From: {ongoingTrip.start_location}
-            </Text>
-            <Text style={styles.cardText}>To: {ongoingTrip.end_location}</Text>
-            <Text style={styles.statusText}>Status: {ongoingTrip.status}</Text>
-            <TouchableOpacity
-              style={styles.completeBtn}
-              onPress={async () => {
-                try {
-                  const updated = await completeTrip(ongoingTrip.trip_id);
-                  if (locationIdRef.current)
-                    await deleteLocation(locationIdRef.current);
-                  setLocations([]);
-                  setOngoingTrip(null);
-                  setPastTrips((prev) => [updated, ...prev]);
-                  router.push({
-                    pathname: "./Reimbursement_form",
-                    params: { trip_id: updated.trip_id },
-                  });
-                } catch (err) {
-                  console.error("Complete trip failed", err);
-                }
-              }}
-            >
-              <Text style={styles.completeText}>Complete Trip</Text>
-            </TouchableOpacity>
+          <View style={styles.contentWrapper}>
+            <View style={styles.card}>
+              <View style={styles.tripHeader}>
+                <Text style={styles.tripRoute}>
+                  {ongoingTrip.start_location} → {ongoingTrip.end_location}
+                </Text>
+              </View>
+              <View style={styles.tripDetails}>
+                <Text style={styles.cardText}>Trip ID: {ongoingTrip.trip_id}</Text>
+                <Text style={styles.cardText}>📍 Start: {ongoingTrip.start_location}</Text>
+                <Text style={styles.cardText}>🏁 End: {ongoingTrip.end_location}</Text>
+                <View style={styles.statusBadge}>
+                  <Text style={styles.statusText}>Status: {ongoingTrip.status}</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.completeBtn}
+                  onPress={async () => {
+                    try {
+                      const updated = await completeTrip(ongoingTrip.trip_id);
+                      if (locationIdRef.current)
+                        await deleteLocation(locationIdRef.current);
+                      setLocations([]);
+                      setOngoingTrip(null);
+                      setPastTrips((prev) => [updated, ...prev]);
+                      router.push({
+                        pathname: "./Reimbursement_form",
+                        params: { trip_id: updated.trip_id },
+                      });
+                    } catch (err) {
+                      console.error("Complete trip failed", err);
+                    }
+                  }}
+                >
+                  <Text style={styles.completeText}>Complete Trip</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         );
 
@@ -545,6 +558,35 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "cover",
+  },
+  contentWrapper: {
+    flex: 1,
+    padding: 16,
+  },
+  noContentText: {
+    fontSize: 15,
+    color: '#64748B',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  tripHeader: {
+    marginBottom: 12,
+  },
+  tripRoute: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#071952',
+  },
+  tripDetails: {
+    gap: 8,
+  },
+  statusBadge: {
+    backgroundColor: '#EBF4F6',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    marginTop: 4,
   },
 });
 
