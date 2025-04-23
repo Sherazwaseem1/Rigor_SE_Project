@@ -143,15 +143,13 @@ const FinancialAnalytics = () => {
               <View style={styles.chartContainer}>
                 <Text style={styles.chartTitle}>Reimbursement Amount Distribution</Text>
                 <PieChart
-                  data={amountDistribution
-                    .filter(data => data.amount > 0)
-                    .map(data => ({
-                      name: `${data.name}\n$${data.amount.toFixed(2)}`,
-                      population: data.amount,
-                      color: data.color,
-                      legendFontColor: '#071952',
-                      legendFontSize: 12
-                    }))}
+                  data={amountDistribution.map(data => ({
+                    name: `$${data.amount.toFixed(2)}`,
+                    population: data.amount,
+                    color: data.color,
+                    legendFontColor: '#071952',
+                    legendFontSize: 12
+                  }))}
                   width={width - 32}
                   height={220}
                   chartConfig={{
