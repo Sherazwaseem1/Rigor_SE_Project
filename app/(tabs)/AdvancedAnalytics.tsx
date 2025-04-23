@@ -8,6 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 
 const { width } = Dimensions.get('window');
@@ -42,7 +43,8 @@ const AdvancedAnalytics = () => {
   ];
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
       {/* Header with back button */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -83,6 +85,7 @@ const AdvancedAnalytics = () => {
         ))}
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 };
 
