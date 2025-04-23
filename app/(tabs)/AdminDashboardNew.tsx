@@ -616,7 +616,7 @@ const AdminDashboardNew = () => {
                 value={editComment}
                 onChangeText={setEditComment}
                 blurOnSubmit
-                onSubmitEditing={Keyboard.dismiss}   // ← 3
+                onSubmitEditing={Keyboard.dismiss}   
               />
 
               <View style={styles.modalActions}>
@@ -629,7 +629,7 @@ const AdminDashboardNew = () => {
 
                 <TouchableOpacity
                   style={[styles.actionBtn, styles.approveBtn]}
-                  onPress={saveModifiedReimbursement}   // ◀ hook it up
+                  onPress={saveModifiedReimbursement}   
                 >
                   <Text style={[styles.actionText, { color: '#fff' }]}>Save</Text>
                 </TouchableOpacity>
@@ -669,7 +669,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
-    marginLeft: 'auto'
+    marginLeft: 'auto',
+    alignSelf: 'flex-start',
+    // paddingHorizontal: 0,
   },
   truckerAvatar: {
     width: 48,
@@ -698,11 +700,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#64748B',
     fontWeight: '500',
-  },
-  statusBadge: {
-    paddingHorizontal: 0,
-    paddingVertical: 6,
-    borderRadius: 12,
   },
   statusBadgeText: {
     fontSize: 12,
@@ -840,6 +837,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 12,
     alignSelf: 'flex-start',
+    textAlign: 'center',
   },
   completedText: {
     color: '#059669',
@@ -975,18 +973,6 @@ const styles = StyleSheet.create({
   mapText: {
     fontSize: 16,
     color: '#071952',
-    textAlign: 'center',
-  },
-  // Add these styles to the StyleSheet
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '500',
     textAlign: 'center',
   },
   profileImageWrapper: {
