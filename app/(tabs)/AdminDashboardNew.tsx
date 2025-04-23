@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 import { router } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { Drawer } from 'react-native-drawer-layout';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Feather } from '@expo/vector-icons';
 import MapView, { Marker } from 'react-native-maps';   
 import { RootState } from '../../redux/store';
 import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById, approveReimbursement, modifyReimbursement   } from '../../services/api';
@@ -574,7 +574,7 @@ const AdminDashboardNew = () => {
         
         <View style={styles.header}>
           <TouchableOpacity onPress={() => setIsDrawerOpen(true)} style={styles.menuButton}>
-            <IconSymbol name="menu" size={24} color="#071952" />
+            <Feather name="menu" size={24} color="#071952" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{activeSection === 'map' ? 'Live Location' : 
             activeSection === 'ongoing' ? 'Ongoing Trips' :
