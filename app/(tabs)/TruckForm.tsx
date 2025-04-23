@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "../../hooks/useThemeColor";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { createTruck, getTruckersWithoutTruck, Trucker  } from "../../services/api"; // Adjust the path if needed
 import { router } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
@@ -96,7 +97,8 @@ export default function TruckForm() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
+    <SafeAreaView style={styles.container}>
+      <View style={[styles.container, { backgroundColor }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <TouchableOpacity
@@ -201,6 +203,7 @@ export default function TruckForm() {
         </TouchableOpacity>
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 }
 
