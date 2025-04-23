@@ -153,7 +153,8 @@ const TripAssignmentScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}
+      >
         <TouchableOpacity onPress={() => router.push('/AdminDashboardNew')} style={styles.backButton}>
           <IconSymbol name="chevron-left" size={20} color="#202545" />
           <Text style={styles.backLabel}>Back</Text>
