@@ -36,7 +36,6 @@ const AdvancedAnalytics = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        {/* Header with back button */}
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => router.push('/AdminDashboardNew')}
@@ -47,7 +46,6 @@ const AdvancedAnalytics = () => {
           <Text style={styles.headerTitle}>Advanced Analytics</Text>
         </View>
 
-        {/* Cards Container */}
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
