@@ -1,7 +1,3 @@
-// Rewritten TruckerDashboardNew.tsx with AdminDashboardNew styling
-// All logic is preserved, but layout, drawer, header, cards, fonts, colors, spacing updated
-// to match admin dashboard UI
-
 import React, { useEffect, useState, useRef } from "react";
 import {
   View,
@@ -50,11 +46,10 @@ const TruckerDashboardNew = () => {
     Reimbursement[]
   >([]);
   const [loading, setLoading] = useState(true);
-  // const [activeSection, setActiveSection] = useState('map');
   const dispatch = useDispatch();
   const [activeSection, setActiveSection] = useState<
     "map" | "ongoing" | "recent" | "reimbursements"
-  >("map"); // MOD ► typed
+  >("map"); 
 
   const [locations, setLocations] = useState<any[]>([]);
   const [locLoading, setLocLoading] = useState(true);
@@ -90,7 +85,6 @@ const TruckerDashboardNew = () => {
           reimbursements.flat().filter((r) => r.status === "Pending")
         );
       } catch (err) {
-        // console.error('Error loading dashboard data', err);
       } finally {
         setLoading(false);
       }
@@ -541,7 +535,7 @@ const styles = StyleSheet.create({
   },
   completeBtn: {
     marginTop: 16,
-    backgroundColor: "#059669",
+    backgroundColor: "#088395",
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
