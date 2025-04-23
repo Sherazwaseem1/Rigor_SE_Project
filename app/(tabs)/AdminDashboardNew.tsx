@@ -1231,11 +1231,16 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 12,
     alignSelf: 'flex-start',
+    marginLeft: 12,
+    minWidth: 80, 
+    alignItems: 'center', 
   },
   
   statusTextBase: {
     fontSize: 14,
     fontWeight: '600',
+    textAlign: 'center',
+
   },
   
   statusBadgeActive: {
