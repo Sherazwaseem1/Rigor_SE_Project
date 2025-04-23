@@ -29,17 +29,7 @@ const AdvancedAnalytics = () => {
       title: 'Financial Analytics',
       description: 'Revenue tracking, cost analysis, and reimbursement trends',
       icon: '💰',
-    },
-    {
-      title: 'Fleet Utilization',
-      description: 'Vehicle usage patterns, maintenance schedules, and efficiency metrics',
-      icon: '🚛',
-    },
-    {
-      title: 'Location-Based Analytics',
-      description: 'Geographic distribution of trips and popular routes analysis',
-      icon: '📍',
-    },
+    },    
   ];
 
   return (
