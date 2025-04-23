@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useIsFocused } from "@react-navigation/native";
 import { router } from "expo-router";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import DropDownPicker from "react-native-dropdown-picker";
 import IconSymbol from "react-native-vector-icons/FontAwesome";
 

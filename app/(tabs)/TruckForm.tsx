@@ -97,8 +97,7 @@ export default function TruckForm() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={[styles.container, { backgroundColor }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <TouchableOpacity
@@ -202,7 +201,6 @@ export default function TruckForm() {
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
       </ScrollView>
-    </View>
     </SafeAreaView>
   );
 }
