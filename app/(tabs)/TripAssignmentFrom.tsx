@@ -1,4 +1,3 @@
-// TripAssignmentScreen.tsx
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -53,8 +52,8 @@ const TripAssignmentScreen: React.FC = () => {
     end_location: "",
     start_time: new Date().toISOString(),
     status: "Scheduled",
-    distance: undefined,       // ← now undefined
-    expected_cost: undefined,  // ← now undefined
+    distance: undefined,    
+    expected_cost: undefined, 
   });
 
   const [estimatedCost, setEstimatedCost] = useState<string | null>(null);
