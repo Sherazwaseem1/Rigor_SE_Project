@@ -13,7 +13,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
 // Session timeout in milliseconds (10 seconds for demo)
-const SESSION_TIMEOUT = 10 * 1000;
+const SESSION_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
 
 // List of excluded routes (exact paths)
 const EXCLUDED_ROUTES = ['/', '/loginForm', '/signupForm'];

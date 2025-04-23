@@ -48,64 +48,71 @@ const Login = () => {
     setPasswordError('');
     setUserType('');
   };
-
   const signIn = async () => {
+    setError('');
+  
+    // ✅ Check for empty fields
+    if (!email.trim() || !password.trim()) {
+      setError("Email and password are required");
+      alert("Please enter both email and password");
+      return;
+    }
+  
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-        setLoading(true)
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-            let userData;
-            if (userType === 'admin') {
-                // Fetch admin data
-                userData = await getAdminByEmail(email); // Define the getAdminByEmail function
-                if (!userData) {
-                    setError("Admin not found");
-                    return;
-                }
-                dispatch(setUser({
-                    name: userData.name,  
-                    email: userData.email,
-                    id: userData.admin_id,  
-                    isAdmin: true,           
-                }));
-                // Navigate to admin dashboard
-                handleClear(); // Clear the form after successful login
-                router.push("/AdminDashboardNew"); // Update route for admin
-            } else {
-                // Fetch trucker data
-                const truckerData = await getTruckerByEmail(email);
-                if (!truckerData) {
-                    setError("Trucker not found");
-                    return
-                }
-                dispatch(setUser({
-                    name: truckerData.name,  
-                    email: truckerData.email,
-                    id: truckerData.trucker_id,   
-                    isAdmin: false,           
-                }));
-                // Navigate to trucker dashboard
-                handleClear();
-                // alert("Trucker INCOMING");
-                router.push("/TruckerDashboardNew"); // Update route for trucker
-            }
-        } catch (error: any) {
-            if (error.code === 'auth/invalid-credential') {
-                setError('Invalid email address or Password');
-            } else {
-                setError('An error occurred, please try again');
-            }            
-        } finally {
-            setLoading(false)
+  
+      let userData;
+      if (userType === 'admin') {
+        userData = await getAdminByEmail(email);
+        if (!userData) {
+          setError("Admin not found");
+          alert("Admin not found");
+          setLoading(false);
+          return;
         }
-    } catch(error: any){
-      console.log(error);
+  
+        dispatch(setUser({
+          name: userData.name,
+          email: userData.email,
+          id: userData.admin_id,
+          isAdmin: true,
+        }));
+  
+        handleClear();
+        router.push("/AdminDashboardNew");
+      } else {
+        const truckerData = await getTruckerByEmail(email);
+        if (!truckerData) {
+          setError("Trucker not found");
+          alert("Trucker not found");
+          setLoading(false);
+          return;
+        }
+  
+        dispatch(setUser({
+          name: truckerData.name,
+          email: truckerData.email,
+          id: truckerData.trucker_id,
+          isAdmin: false,
+        }));
+  
+        handleClear();
+        router.push("/TruckerDashboardNew");
+      }
+    } catch (error: any) {
+      if (error.code === 'auth/invalid-credential') {
+        setError('Invalid email address or password');
+        alert("Invalid email or password");
+      } else {
+        setError('An error occurred, please try again');
+        alert("An error occurred during login");
+      }
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <SafeAreaView style={styles.safeArea}>

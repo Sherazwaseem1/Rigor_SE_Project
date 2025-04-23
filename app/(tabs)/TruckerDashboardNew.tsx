@@ -75,7 +75,7 @@ const TruckerDashboardNew = () => {
         );
         setPendingReimbursements(reimbursements.flat().filter(r => r.status === 'Pending'));
       } catch (err) {
-        console.error('Error loading dashboard data', err);
+        // console.error('Error loading dashboard data', err);
       } finally {
         setLoading(false);
       }
