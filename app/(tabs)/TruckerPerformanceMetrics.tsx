@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  Dimensions,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, ActivityIndicator, Dimensions } from 'react-native';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { BarChart } from 'react-native-chart-kit';
@@ -27,38 +18,40 @@ const TruckerPerformanceMetrics = () => {
         const data = await getAllTruckers();
         setTruckers(data);
       } catch (error) {
-        console.error('Failed to fetch truckers:', error);
+        console.error("Failed to fetch truckers:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchTruckers();
   }, []);
 
   useEffect(() => {
-    const filtered = truckers.filter(
-      (trucker) => trucker.rating >= parseInt(minRating) || 0
-    );
-    setFilteredTruckers(filtered);
+    const filtered = truckers
+  .filter(trucker => trucker.rating >= parseInt(minRating) || 0)
+  .sort((a, b) => b.rating - a.rating);
+  setFilteredTruckers(filtered);
 
-    const activeCount = truckers.filter((t) => t.status === 'Active').length;
-    const inactiveCount = truckers.filter((t) => t.status === 'Inactive').length;
+
+    const activeCount = truckers.filter(t => t.status === 'Active').length;
+    const inactiveCount = truckers.filter(t => t.status === 'Inactive').length;
     setStatusData({ active: activeCount, inactive: inactiveCount });
   }, [minRating, truckers]);
 
-  if (loading) return <ActivityIndicator size="large" color="#071952" style={{ marginTop: 32 }} />;
+  if (loading) return <ActivityIndicator size="large" color="#007bff" style={{ flex: 1, justifyContent: 'center' }} />;
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.push('/AdvancedAnalytics')} style={styles.backButton}>
           <IconSymbol name="chevron.left" size={24} color="#071952" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Trucker Performance Metrics</Text>
       </View>
 
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Bar Chart */}
         <View style={styles.chartContainer}>
           <Text style={styles.sectionTitle}>Trucker Status Distribution</Text>
           <BarChart
@@ -74,24 +67,25 @@ const TruckerPerformanceMetrics = () => {
               backgroundGradientFrom: '#FFFFFF',
               backgroundGradientTo: '#FFFFFF',
               decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(7, 25, 82, ${opacity})`,
+              color: (opacity = 1) => `rgba(55, 183, 195, ${opacity})`,
               labelColor: () => '#64748B',
               propsForBars: {
                 strokeWidth: 1,
                 stroke: '#E2E8F0',
               },
+              barPercentage: 2,
             }}
             style={{ marginTop: 8 }}
+            animate
+            animationDuration={1200}
           />
         </View>
 
-        <View style={styles.chartContainer}>
-          <View style={styles.routeHeader}>
-            <Text style={styles.sectionTitle}>Trucker Ratings</Text>
-          </View>
-
-          <View style={styles.filterContainer}>
-            <Text style={styles.filterLabel}>Min Rating:</Text>
+        {/* Filter Section */}
+        <View style={styles.filterCard}>
+          <Text style={styles.sectionTitle}>Filter by Rating</Text>
+          <View style={styles.filterInputGroup}>
+            <Text style={styles.filterLabel}>Minimum Rating</Text>
             <TextInput
               style={styles.filterInput}
               value={minRating}
@@ -101,22 +95,17 @@ const TruckerPerformanceMetrics = () => {
               placeholderTextColor="#94A3B8"
             />
           </View>
-
-          {filteredTruckers.length > 0 ? (
-            filteredTruckers.map((trucker, index) => (
-              <View key={index} style={styles.card}>
-                <View style={styles.routeInfo}>
-                  <Text style={styles.truckerName}>{trucker.name}</Text>
-                  <Text style={styles.truckerRating}>⭐ {trucker.rating}</Text>
-                </View>
-              </View>
-            ))
-          ) : (
-            <Text style={{ fontSize: 14, color: '#64748B' }}>
-              No truckers match the filter criteria.
-            </Text>
-          )}
+        {filteredTruckers.map((trucker, index) => (
+          <View key={index} style={styles.card}>
+            <View style={styles.routeInfo}>
+              <Text style={styles.truckerName}>{trucker.name}</Text>
+              <Text style={styles.truckerRating}>⭐ {trucker.rating}</Text>
+            </View>
+          </View>
+        ))}
         </View>
+
+        {/* Truckers List */}
       </ScrollView>
     </View>
   );
@@ -153,41 +142,6 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 32,
   },
-  routeHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  filterLabel: {
-    marginRight: 8,
-    fontSize: 16,
-    color: '#64748B',
-  },
-  filterInput: {
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    padding: 8,
-    width: 100,
-    color: '#071952',
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
   chartContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
@@ -199,6 +153,51 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     alignItems: 'center',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#071952',
+  },
+  filterCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  filterInputGroup: {
+    marginTop: 12,
+    marginBottom: 20,
+  },
+  filterLabel: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 10,
+  },
+  filterInput: {
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    padding: 10,
+    color: '#071952',
+    fontSize: 14,
+    paddingbottom: 10
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   routeInfo: {
     flexDirection: 'row',
@@ -215,9 +214,5 @@ const styles = StyleSheet.create({
     color: '#37B7C3',
     fontWeight: '500',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#071952',
-  },
+
 });
