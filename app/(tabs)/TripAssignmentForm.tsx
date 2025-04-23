@@ -236,25 +236,60 @@ const TripAssignmentScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", padding: 16 },
-  backButton: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
-  backLabel: { marginLeft: 6, fontSize: 16, color: "#202545" },
-  logo: { width: 180, height: 100, alignSelf: "center", marginBottom: 16 },
-  title: { fontSize: 22, fontWeight: "600", textAlign: "center", marginBottom: 20, color: "#202545" },
-  label: { fontSize: 14, fontWeight: "500", marginTop: 12, color: "#202545" },
+  container: { flex: 1, backgroundColor: "#fff", padding: 20 },
+  header: { marginBottom: 16 },
+  backButton: { flexDirection: "row", alignItems: "center" },
+  backButtonContent: { flexDirection: "row", alignItems: "center" },
+  backLabel: { marginLeft: 8, fontSize: 16, color: "#202545", fontWeight: "500" },
+  logoContainer: { alignItems: "center", marginVertical: 24 },
+  logo: { width: 200, height: 120, alignSelf: "center" },
+  title: { fontSize: 24, fontWeight: "600", textAlign: "center", marginBottom: 32, color: "#202545" },
+  label: { fontSize: 16, fontWeight: "500", marginBottom: 8, color: "#202545" },
   pickerWrapper: {
-    borderWidth: 1, borderColor: "#ddd", borderRadius: 8, marginBottom: 12, overflow: "hidden"
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    marginBottom: 20,
+    overflow: "hidden",
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3
   },
-  picker: { height: 53, width: screenWidth - 32 },
+  picker: { height: 56, width: screenWidth - 40 },
   input: {
-    borderWidth: 1, borderColor: "#ddd", borderRadius: 8, padding: 12, marginBottom: 12
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    fontSize: 16,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3
   },
   button: {
-    backgroundColor: "#088395", borderRadius: 8, paddingVertical: 12,
-    alignItems: "center", flexDirection: "row", justifyContent: "center", marginVertical: 8
+    backgroundColor: "#088395",
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3
   },
-  buttonText: { color: "#fff", fontWeight: "600", fontSize: 16 },
+  buttonText: { color: "#fff", fontWeight: "600", fontSize: 18 },
   clearButton: { backgroundColor: "#FF3B30" },
+  errorText: { color: "#FF3B30", fontSize: 14, marginTop: -8, marginBottom: 12 }
 });
 
 export default TripAssignmentScreen;
