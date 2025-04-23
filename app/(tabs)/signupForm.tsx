@@ -121,6 +121,7 @@ const SignUp = () => {
             <ScrollView 
                 contentContainerStyle={styles.scrollContainer}
                 keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
             >
                 <ThemedView style={styles.container}>
                     
@@ -380,7 +381,7 @@ const styles = StyleSheet.create({
     picker: {
         width: '100%',
         height: 52,
-        color: '#071952'
+        color: '#000000'
     },
     signUpText: {
         fontSize: 16,
