@@ -314,8 +314,8 @@ const TruckerDashboardNew = () => {
               </View>
               <View style={styles.tripDetails}>
                 <Text style={styles.cardText}>Trip ID: {ongoingTrip.trip_id}</Text>
-                <Text style={styles.cardText}>📍 Start: {ongoingTrip.start_location}</Text>
-                <Text style={styles.cardText}>🏁 End: {ongoingTrip.end_location}</Text>
+                <Text style={styles.cardText}>Start: {ongoingTrip.start_location}</Text>
+                <Text style={styles.cardText}>End: {ongoingTrip.end_location}</Text>
                 <View style={styles.statusBadge}>
                   <Text style={styles.statusText}>Status: {ongoingTrip.status}</Text>
                 </View>
