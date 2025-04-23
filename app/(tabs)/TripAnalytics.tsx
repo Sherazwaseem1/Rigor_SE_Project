@@ -229,7 +229,9 @@ const TripAnalytics = () => {
                   <View key={index} style={styles.routeCard}>
                     <View style={styles.routeInfo}>
                       <Text style={styles.routeText}>{route.route}</Text>
-                      <Text style={styles.tripCount}>{route.count} trips</Text>
+                      <Text style={styles.tripCount}>
+                        {route.count} {route.count === 1 ? 'trip' : 'trips'}
+                      </Text>
                     </View>
                   </View>
                 ))
