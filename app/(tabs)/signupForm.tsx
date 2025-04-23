@@ -17,13 +17,13 @@ const SignUp = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [repeatPassword, setRepeatPassword] = useState('');  // New state for repeat password
+    const [repeatPassword, setRepeatPassword] = useState(''); 
     const [phoneNumber, setPhoneNumber] = useState('');
     const [age, setAge] = useState('');
     const [gender, setGender] = useState('');
     const [loading, setLoading] = useState(false);
     const [passwordError, setPasswordError] = useState('');
-    const [passwordMatchError, setPasswordMatchError] = useState('');  // New error state for password mismatch
+    const [passwordMatchError, setPasswordMatchError] = useState('');  
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isRepeatPasswordVisible, setIsRepeatPasswordVisible] = useState(false);
@@ -64,12 +64,12 @@ const SignUp = () => {
 
     const onPasswordChange = (text: string) => {
         setPassword(text);
-        validatePassword(text);  // This ensures the password is validated on change
+        validatePassword(text);  
     };
     
     const onRepeatPasswordChange = (text: string) => {
         setRepeatPassword(text);
-        validatePasswordMatch(text);  // Validate match every time the repeat password changes
+        validatePasswordMatch(text);  
     };
 
     const validatePasswordMatch = (repeatPassword: string) => {
@@ -95,9 +95,6 @@ const SignUp = () => {
             
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             console.log('User signed up:', userCredential.user);
-            // alert('Check your emails');
-
-            //TODO: MAKE SURE TRUCKER_ID IS MAX + 1
             const newTrucker:NewTrucker = {
                 name,
                 phone_number: phoneNumber,
@@ -114,7 +111,6 @@ const SignUp = () => {
             router.push("/loginForm");
         } catch (error: any) {
             console.error('Error signing up:', error);
-            // alert(error.message);
         } finally {
             setLoading(false);
         }
@@ -128,10 +124,9 @@ const SignUp = () => {
             >
                 <ThemedView style={styles.container}>
                     
-                    {/* Back Button */}
                     <TouchableOpacity style={styles.backButton} onPress={() => { 
                         handleClear();
-                        router.back(); // Navigate back to the previous screen
+                        router.back(); 
                     } }>
                         <View style={styles.backButtonContent}>
                             <IconSymbol size={24} name="chevron.left" color="#333" />
@@ -179,7 +174,7 @@ const SignUp = () => {
                         style={[styles.input, passwordMatchError ? styles.inputError : null, { paddingRight: 50 }]}
                         placeholder="Repeat Password"
                         autoCapitalize="none"
-                        onChangeText={onRepeatPasswordChange}  // Trigger validation on each change
+                        onChangeText={onRepeatPasswordChange}  
                     />
                     <TouchableOpacity 
                         style={styles.eyeIcon} 
@@ -198,7 +193,7 @@ const SignUp = () => {
                     
                     <TextInput value={age} style={styles.input} placeholder="Age" keyboardType="numeric" onChangeText={setAge} />
                     
-                    {/* Gender Dropdown */}
+
                     <View style={styles.pickerContainer}>
                         <Picker
                             selectedValue={gender}
@@ -212,7 +207,6 @@ const SignUp = () => {
                         </Picker>
                     </View>
 
-                    {/* Loading Indicator or Button */}
                     {loading ? (
                         <ActivityIndicator size="large" color="#0000ff" />
                     ) : (
@@ -235,7 +229,7 @@ const SignUp = () => {
 };
 
 export default SignUp;
-//styling
+
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
