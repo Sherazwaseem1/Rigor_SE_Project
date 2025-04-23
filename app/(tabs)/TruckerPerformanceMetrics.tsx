@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Activi
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { BarChart } from 'react-native-chart-kit';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getAllTruckers, Trucker } from '../../services/api';
 
 const TruckerPerformanceMetrics = () => {
@@ -41,7 +42,7 @@ const TruckerPerformanceMetrics = () => {
   if (loading) return <ActivityIndicator size="large" color="#007bff" style={{ flex: 1, justifyContent: 'center' }} />;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push('/AdvancedAnalytics')} style={styles.backButton}>
@@ -107,7 +108,7 @@ const TruckerPerformanceMetrics = () => {
 
         {/* Truckers List */}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
