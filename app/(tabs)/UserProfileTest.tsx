@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { RootState } from '@/redux/store';
 import {
@@ -108,7 +108,8 @@ const UserProfileTest = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => router.push(isAdmin ? '/AdminDashboardNew' : '/TruckerDashboardNew')}
@@ -146,6 +147,7 @@ const UserProfileTest = () => {
         )}
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 };
 

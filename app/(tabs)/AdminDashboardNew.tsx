@@ -39,7 +39,7 @@ const AdminDashboardNew = () => {
   const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
   // const [activeSection, setActiveSection] = useState('map');
-  const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements' | 'approved' | 'truckers'>('map');
+  const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements' | 'approved' | 'truckers' | 'analytics'>('map');
   const isFocused = useIsFocused();
   const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
   const dispatch = useDispatch();
@@ -151,7 +151,7 @@ const AdminDashboardNew = () => {
     };
 
   const renderDrawerContent = () => (
-    <View style={styles.drawerContent}>
+    <ScrollView style={styles.drawerContent}>
       <View style={styles.profileSection}>
               {profilePicUrl ? (
           <View style={styles.profileImageWrapper}>
@@ -226,6 +226,13 @@ const AdminDashboardNew = () => {
       </TouchableOpacity>
       
       <TouchableOpacity 
+        style={[styles.drawerItem, activeSection === 'analytics' && styles.activeDrawerItem]}
+        onPress={() => { setActiveSection('analytics'); setIsDrawerOpen(false); }}
+      >
+        <Text style={styles.drawerItemText}>Analytics</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
         style={styles.drawerItem}
         onPress={() => router.push('/UserProfileTest')}
       >
@@ -241,7 +248,7 @@ const AdminDashboardNew = () => {
       >
         <Text style={[styles.drawerItemText, styles.signOutText]}>Sign Out</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 
   const renderContent = () => {
@@ -471,6 +478,61 @@ const AdminDashboardNew = () => {
           
         );
 
+        case 'analytics':
+          return (
+            <ScrollView>
+              <View style={[styles.card, styles.analyticsCard]}>
+                <Text style={styles.sectionTitle}>Trip Statistics</Text>
+                <View style={styles.statRow}>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>{trips.filter(t => t.status === 'Completed').length}</Text>
+                    <Text style={styles.statLabel}>Completed Trips</Text>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>{trips.filter(t => t.status === 'Scheduled').length}</Text>
+                    <Text style={styles.statLabel}>Ongoing Trips</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={[styles.card, styles.analyticsCard]}>
+                <Text style={styles.sectionTitle}>Reimbursement Overview</Text>
+                <View style={styles.statRow}>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>{reimbursements.filter(r => r.status === 'Pending').length}</Text>
+                    <Text style={styles.statLabel}>Pending</Text>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>{reimbursements.filter(r => r.status === 'Approved').length}</Text>
+                    <Text style={styles.statLabel}>Approved</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={[styles.card, styles.analyticsCard]}>
+                <Text style={styles.sectionTitle}>Fleet Status</Text>
+                <View style={styles.statRow}>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>{truckers.filter(t => t.status === 'Active').length}</Text>
+                    <Text style={styles.statLabel}>Active Truckers</Text>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>{truckers.filter(t => t.status === 'Inactive').length}</Text>
+                    <Text style={styles.statLabel}>Available Truckers</Text>
+                  </View>
+                </View>
+              </View>
+              <View>
+                <TouchableOpacity 
+                  style={styles.advancedButton}
+                  onPress={() => router.push('/AdvancedAnalytics')}
+                >
+                  <Text style={styles.advancedButtonText}>Advanced Analytics</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          );
+
         case 'approved': {
           const approved = reimbursements.filter(r => r.status === 'Approved');
           return (
@@ -582,7 +644,7 @@ const AdminDashboardNew = () => {
             activeSection === 'reimbursements' ? 'Pending Reimbursements' :
             activeSection === 'approved' ? 'Approved Reimbursements' :
             activeSection === 'truckers' ? 'Registered Truckers' :
-            'Dashboard'}</Text>
+            'Analytics'}</Text>
         </View>
         <View style={[styles.content, activeSection === 'map' && styles.contentMap]}>
           {renderContent()}
@@ -643,6 +705,42 @@ const AdminDashboardNew = () => {
 };
 
 const styles = StyleSheet.create({
+  advancedButton: {
+    backgroundColor: '#088395',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  advancedButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  analyticsCard: {
+    marginBottom: 16,
+    padding: 16,
+  },
+  statRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 12,
+  },
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#088395',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: '#64748B',
+    textAlign: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: '#EBF4F6',
