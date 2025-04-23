@@ -213,7 +213,7 @@ const AdminDashboardNew = () => {
 
       <TouchableOpacity 
         style={styles.drawerItem}
-        onPress={() => router.push('/TripAssignmentFrom')}
+        onPress={() => router.push('/TripAssignmentForm')}
       >
         <Text style={styles.drawerItemText}>Assign Trips</Text>
       </TouchableOpacity>
