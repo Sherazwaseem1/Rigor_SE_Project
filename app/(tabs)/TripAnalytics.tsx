@@ -11,7 +11,7 @@ import {
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BarChart } from 'react-native-chart-kit';
+import { BarChart, PieChart } from 'react-native-chart-kit';
 import { getAllTrips } from '../../services/api';
 import type { Trip } from '../../services/api';
 
@@ -23,6 +23,7 @@ const TripAnalytics = () => {
   const [minTripCount, setMinTripCount] = useState<string>('0');
   const [numRoutes, setNumRoutes] = useState<string>('5');
   const [filteredRoutes, setFilteredRoutes] = useState<{route: string, count: number}[]>([]);
+  const [tripStatusData, setTripStatusData] = useState<{ name: string; count: number; color: string }[]>([]);
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -30,6 +31,7 @@ const TripAnalytics = () => {
         const tripsData = await getAllTrips();
         setTrips(tripsData);
         processRoutes(tripsData);
+        processTripStatus(tripsData);
       } catch (error) {
         console.error('Error fetching trips:', error);
       } finally {
@@ -57,6 +59,30 @@ const TripAnalytics = () => {
   useEffect(() => {
     processRoutes(trips);
   }, [minTripCount]);
+
+  const processTripStatus = (tripsData: Trip[]) => {
+    const statusCounts = tripsData.reduce(
+      (acc, trip) => {
+        if (trip.status === 'Completed') acc.completed++;
+        else if (trip.status === 'Scheduled') acc.scheduled++;
+        return acc;
+      },
+      { completed: 0, scheduled: 0 }
+    );
+
+    setTripStatusData([
+      {
+        name: 'Completed',
+        count: statusCounts.completed,
+        color: '#088395'
+      },
+      {
+        name: 'Scheduled',
+        count: statusCounts.scheduled,
+        color: '#37B7C3'
+      }
+    ]);
+  };
 
   // Process trip data for the bar chart of average distances
   const processTripsData = () => {
@@ -118,6 +144,37 @@ const TripAnalytics = () => {
           </View>
         ) : (
           <>
+            {/* Trip Status Distribution */}
+            <View style={styles.chartContainer}>
+              <Text style={styles.chartTitle}>Trip Status Distribution</Text>
+              {tripStatusData.length > 0 && (
+                <PieChart
+                  data={tripStatusData.map(data => ({
+                    name: data.name,
+                    population: data.count,
+                    color: data.color,
+                    legendFontColor: '#071952',
+                    legendFontSize: 12
+                  }))}
+                  width={width - 32}
+                  height={220}
+                  chartConfig={{
+                    backgroundColor: '#FFFFFF',
+                    backgroundGradientFrom: '#FFFFFF',
+                    backgroundGradientTo: '#FFFFFF',
+                    color: (opacity = 1) => `rgba(7, 25, 82, ${opacity})`,
+                    style: {
+                      borderRadius: 16
+                    }
+                  }}
+                  accessor="population"
+                  backgroundColor="transparent"
+                  paddingLeft="15"
+                  absolute
+                />
+              )}
+            </View>
+
             {/* Longest Routes Section */}
             <View style={styles.chartContainer}>
               <Text style={styles.chartTitle}>Longest Routes</Text>
