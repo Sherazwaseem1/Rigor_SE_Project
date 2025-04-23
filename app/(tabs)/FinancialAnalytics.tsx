@@ -1,0 +1,279 @@
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
+import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { PieChart } from 'react-native-chart-kit';
+import { getAllReimbursements } from '@/services/api';
+
+const { width } = Dimensions.get('window');
+
+interface Reimbursement {
+  reimbursement_id: string;
+  trip_id: string;
+  amount: { $numberDecimal: string };
+  status: string;
+  receipt_url: string;
+}
+
+const FinancialAnalytics = () => {
+  const [loading, setLoading] = useState(true);
+  const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
+  const [statusDistribution, setStatusDistribution] = useState<{ name: string; count: number; color: string }[]>([]);
+  const [amountDistribution, setAmountDistribution] = useState<{ name: string; amount: number; color: string }[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllReimbursements();
+        setReimbursements(data);
+
+        // Process status distribution
+        const statusCounts = data.reduce(
+          (acc, reimbursement) => {
+            acc[reimbursement.status] = (acc[reimbursement.status] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        );
+
+        setStatusDistribution([
+          {
+            name: 'Pending',
+            count: statusCounts['Pending'] || 0,
+            color: '#071952'
+          },
+          {
+            name: 'Approved',
+            count: statusCounts['Approved'] || 0,
+            color: '#088395'
+          }
+        ]);
+
+        // Process amount distribution
+        const amountSums = data.reduce(
+          (acc, reimbursement) => {
+            const amount = parseFloat(reimbursement.amount.$numberDecimal);
+            acc[reimbursement.status] = (acc[reimbursement.status] || 0) + amount;
+            return acc;
+          },
+          {} as Record<string, number>
+        );
+
+        setAmountDistribution([
+          {
+            name: 'Pending',
+            amount: amountSums['Pending'] || 0,
+            color: '#071952'
+          },
+          {
+            name: 'Approved',
+            amount: amountSums['Approved'] || 0,
+            color: '#088395'
+          }
+        ]);
+      } catch (error) {
+        console.error('Error fetching reimbursement data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        {/* Header with back button */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => router.push('/AdvancedAnalytics')}
+            style={styles.backButton}
+          >
+            <IconSymbol name="chevron.left" size={24} color="#071952" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Financial Analytics</Text>
+        </View>
+
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {loading ? (
+            <ActivityIndicator size="large" color="#088395" />
+          ) : (
+            <>
+              {/* Status Distribution Chart */}
+              <View style={styles.chartContainer}>
+                <Text style={styles.chartTitle}>Reimbursement Status Distribution</Text>
+                <PieChart
+                  data={statusDistribution.map(data => ({
+                    name: data.name,
+                    population: data.count,
+                    color: data.color,
+                    legendFontColor: '#071952',
+                    legendFontSize: 12
+                  }))}
+                  width={width - 32}
+                  height={220}
+                  chartConfig={{
+                    backgroundColor: '#FFFFFF',
+                    backgroundGradientFrom: '#FFFFFF',
+                    backgroundGradientTo: '#FFFFFF',
+                    color: (opacity = 1) => `rgba(7, 25, 82, ${opacity})`,
+                  }}
+                  accessor="population"
+                  backgroundColor="transparent"
+                  paddingLeft="15"
+                  absolute
+                />
+              </View>
+
+              {/* Amount Distribution Chart */}
+              <View style={styles.chartContainer}>
+                <Text style={styles.chartTitle}>Reimbursement Amount Distribution</Text>
+                <PieChart
+                  data={amountDistribution
+                    .filter(data => data.amount > 0)
+                    .map(data => ({
+                      name: `${data.name}\n$${data.amount.toFixed(2)}`,
+                      population: data.amount,
+                      color: data.color,
+                      legendFontColor: '#071952',
+                      legendFontSize: 12
+                    }))}
+                  width={width - 32}
+                  height={220}
+                  chartConfig={{
+                    backgroundColor: '#FFFFFF',
+                    backgroundGradientFrom: '#FFFFFF',
+                    backgroundGradientTo: '#FFFFFF',
+                    color: (opacity = 1) => `rgba(7, 25, 82, ${opacity})`,
+                  }}
+                  accessor="population"
+                  backgroundColor="transparent"
+                  paddingLeft="15"
+                  absolute
+                />
+              </View>
+
+              {/* Summary Statistics */}
+              <View style={styles.statsContainer}>
+                <Text style={styles.statsTitle}>Summary Statistics</Text>
+                <View style={styles.statsRow}>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statLabel}>Total Reimbursements</Text>
+                    <Text style={styles.statValue}>{reimbursements.length}</Text>
+                  </View>
+                  <View style={styles.statCard}>
+                    <Text style={styles.statLabel}>Total Amount</Text>
+                    <Text style={styles.statValue}>
+                      ${reimbursements.reduce((sum, r) => sum + parseFloat(r.amount.$numberDecimal), 0).toFixed(2)}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </>
+          )}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#EBF4F6',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    marginLeft: 16,
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#071952',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 32,
+  },
+  chartContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  chartTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#071952',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  statsContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+  },
+  statsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#071952',
+    marginBottom: 16,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    padding: 12,
+    marginHorizontal: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#64748B',
+    marginBottom: 4,
+  },
+  statValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#071952',
+  },
+});
+
+export default FinancialAnalytics;
