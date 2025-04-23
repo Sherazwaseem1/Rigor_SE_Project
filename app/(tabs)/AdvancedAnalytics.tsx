@@ -17,28 +17,18 @@ const AdvancedAnalytics = () => {
   const analyticsCards = [
     {
       title: 'Trip Analytics',
-      description: 'Detailed insights into trip performance, routes, and patterns',
+      description: 'Detailed insights into trip performance and routes',
       icon: '📊',
     },
     {
       title: 'Trucker Performance Metrics',
-      description: 'Comprehensive analysis of trucker ratings and efficiency',
+      description: 'Analysis of trucker ratings and efficiency',
       icon: '👨‍💼',
     },
     {
       title: 'Financial Analytics',
-      description: 'Revenue tracking, cost analysis, and reimbursement trends',
+      description: 'Cost analysis and reimbursement trends',
       icon: '💰',
-    },
-    {
-      title: 'Fleet Utilization',
-      description: 'Vehicle usage patterns, maintenance schedules, and efficiency metrics',
-      icon: '🚛',
-    },
-    {
-      title: 'Location-Based Analytics',
-      description: 'Geographic distribution of trips and popular routes analysis',
-      icon: '📍',
     },
   ];
 
