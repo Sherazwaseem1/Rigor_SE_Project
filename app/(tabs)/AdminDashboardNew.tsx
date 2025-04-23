@@ -55,7 +55,7 @@ const AdminDashboardNew = () => {
 
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
-
+  const [truckerFilter, setTruckerFilter] = useState<'all' | 'active' | 'inactive'>('all');
 
   useEffect(() => {
     if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -579,9 +579,34 @@ const AdminDashboardNew = () => {
         }
 
       case 'truckers':
+        const filteredTruckers = truckers.filter(trucker => 
+          truckerFilter === 'all' ? true : 
+          truckerFilter === 'active' ? trucker.status === 'Active' : 
+          trucker.status === 'Inactive'
+        );
         return (
           <ScrollView>
-            {truckers.map(trucker => (
+            <View style={styles.filterContainer}>
+              <TouchableOpacity 
+                style={[styles.filterButton, truckerFilter === 'all' && styles.filterButtonActive]}
+                onPress={() => setTruckerFilter('all')}
+              >
+                <Text style={[styles.filterButtonText, truckerFilter === 'all' && styles.filterButtonTextActive]}>All</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.filterButton, truckerFilter === 'active' && styles.filterButtonActive]}
+                onPress={() => setTruckerFilter('active')}
+              >
+                <Text style={[styles.filterButtonText, truckerFilter === 'active' && styles.filterButtonTextActive]}>Active</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.filterButton, truckerFilter === 'inactive' && styles.filterButtonActive]}
+                onPress={() => setTruckerFilter('inactive')}
+              >
+                <Text style={[styles.filterButtonText, truckerFilter === 'inactive' && styles.filterButtonTextActive]}>Inactive</Text>
+              </TouchableOpacity>
+            </View>
+            {filteredTruckers.map(trucker => (
               <View key={trucker.trucker_id} style={[styles.card, styles.truckerCard]}>
                 <View style={styles.truckerHeader}>
                   <View style={styles.truckerInfo}>
@@ -705,6 +730,33 @@ const AdminDashboardNew = () => {
 };
 
 const styles = StyleSheet.create({
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  filterButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
+  },
+  filterButtonActive: {
+    backgroundColor: '#088395',
+    borderColor: '#088395',
+  },
+  filterButtonText: {
+    fontSize: 14,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  filterButtonTextActive: {
+    color: '#FFFFFF',
+  },
   advancedButton: {
     backgroundColor: '#088395',
     padding: 12,
