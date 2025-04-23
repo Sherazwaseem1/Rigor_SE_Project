@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     },
     picker: {
         width: '100%',
-        height: 50,
+        height: 52,
         color: '#071952'
     },
     signUpText: {
