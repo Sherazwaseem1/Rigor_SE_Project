@@ -63,7 +63,8 @@ const AdvancedAnalytics = () => {
                 if (card.title === 'Trucker Performance Metrics') {
                 router.push('/TruckerPerformanceMetrics');
               } else {
-                console.log(`Navigating to ${card.title}`);
+                if (card.title === 'Financial Analytics') {
+                router.push('/FinancialAnalytics');
               }
               }
             }}
