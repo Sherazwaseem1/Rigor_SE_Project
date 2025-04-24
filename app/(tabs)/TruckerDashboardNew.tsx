@@ -315,6 +315,8 @@ const TruckerDashboardNew = () => {
               onPress={async () => {
                 try {
                   const updated = await completeTrip(ongoingTrip.trip_id);
+                  const updatedStatus = "Inactive"; // or any other status you want to set
+                  const updateResponse = await updateTruckerStatus(ongoingTrip.trucker_id, updatedStatus);
                   if (locationIdRef.current)
                     await deleteLocation(locationIdRef.current);
                   setLocations([]);
