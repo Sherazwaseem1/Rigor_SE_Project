@@ -148,9 +148,7 @@ export const updateAdmin = async (
   return response.data;
 };
 
-export const deleteAdmin = async (
-  id: number
-): Promise<{ message: string }> => {
+export const deleteAdmin = async (id: number): Promise<{ message: string }> => {
   const response = await axios.delete<{ message: string }>(
     `${API_URL}/admins/${id}`
   );
@@ -158,9 +156,7 @@ export const deleteAdmin = async (
 };
 
 export const getAdminByEmail = async (email: string): Promise<Admin> => {
-  const response = await axios.get<Admin>(
-    `${API_URL}/admins/email/${email}`
-  );
+  const response = await axios.get<Admin>(`${API_URL}/admins/email/${email}`);
   return response.data;
 };
 
@@ -293,20 +289,24 @@ export const getReimbursementsByStatus = async (
   return response.data;
 };
 
-export const approveReimbursement = async (reimbursement_id: number, admin_id: number) =>
-  axios.patch<Reimbursement>(
-    `${API_URL}/reimbursements/${reimbursement_id}/approve`,
-    { admin_id }
-  ).then(r => r.data);
+export const approveReimbursement = async (
+  reimbursement_id: number,
+  admin_id: number
+) =>
+  axios
+    .patch<Reimbursement>(
+      `${API_URL}/reimbursements/${reimbursement_id}/approve`,
+      { admin_id }
+    )
+    .then((r) => r.data);
 
 export const modifyReimbursement = async (
   reimbursement_id: number,
   data: { amount?: number; comments?: string }
 ) =>
-  axios.patch<Reimbursement>(
-    `${API_URL}/reimbursements/${reimbursement_id}`,
-    data
-  ).then(r => r.data);
+  axios
+    .patch<Reimbursement>(`${API_URL}/reimbursements/${reimbursement_id}`, data)
+    .then((r) => r.data);
 
 // ✅ Define TypeScript Interface for Trip
 export interface Trip {
@@ -315,7 +315,7 @@ export interface Trip {
   truck_id: number;
   start_location: string;
   end_location: string;
-  start_time: string; 
+  start_time: string;
   end_time?: string;
   status: string;
   distance: number;
@@ -323,7 +323,6 @@ export interface Trip {
   trip_rating?: number;
   expected_cost?: number;
 }
-
 
 // ✅ Trip APIs
 export const getAllTrips = async (): Promise<Trip[]> => {
@@ -362,8 +361,8 @@ export const createTrip = async (
 // mark a trip completed
 export const completeTrip = async (trip_id: number): Promise<Trip> => {
   try {
-    const response = await axios.patch<Trip>(`${API_URL}/trips/${trip_id}`, { 
-      status: 'Completed' 
+    const response = await axios.patch<Trip>(`${API_URL}/trips/${trip_id}`, {
+      status: "Completed",
     });
     return response.data;
   } catch (error) {
@@ -408,7 +407,9 @@ export const getTruckByTruckerId = async (truckerId: number) => {
 };
 
 export const getTruckersWithoutTruck = async (): Promise<Trucker[]> => {
-  const response = await axios.get<Trucker[]>(`${API_URL}/trucks/without-truck`);
+  const response = await axios.get<Trucker[]>(
+    `${API_URL}/trucks/without-truck`
+  );
   return response.data;
 };
 
@@ -422,10 +423,36 @@ export const estimateTripCost = async (
   end_location: string,
   distance: number
 ): Promise<TripCostEstimate> => {
-  const response = await axios.post<TripCostEstimate>(`${API_URL}/llm/estimate`, {
-    start_location,
-    end_location,
-    distance,
-  });
+  const response = await axios.post<TripCostEstimate>(
+    `${API_URL}/llm/estimate`,
+    {
+      start_location,
+      end_location,
+      distance,
+    }
+  );
+  return response.data;
+};
+
+// Email API Call
+
+export interface EmailResponse {
+  success: boolean;
+  message: string;
+}
+
+export const sendEmailNotification = async (
+  to: string,
+  subject: string,
+  text: string // Keeping the name "text" but passing HTML content
+): Promise<EmailResponse> => {
+  const response = await axios.post<EmailResponse>(
+    `${API_URL}/email/send-email`,
+    {
+      to,
+      subject,
+      html: text, // Pass the content as "html" to the API
+    }
+  );
   return response.data;
 };

@@ -25,6 +25,7 @@ import {
   estimateTripCost,
   createLocation,
   getTruckersWithoutTruck,
+  sendEmailNotification
 } from "../../services/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -134,7 +135,64 @@ const TripAssignmentScreen: React.FC = () => {
 
       const created = await createTrip(newTrip);
       await updateTruckerStatus(selectedTruckerId, "Active");
+      
+      // Get the trucker info for email
+      const assignedTrucker = truckers.find(t => t.trucker_id === selectedTruckerId);
+      
+      if (assignedTrucker) {
+        const emailHTML = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; background-color: #f9f9f9;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+            <div style="background-color: #088395; padding: 20px; color: #ffffff; text-align: center;">
+              <h2 style="margin: 0; font-size: 24px;">🚚 New Trip Assigned!</h2>
+            </div>
+            <div style="padding: 20px;">
+              <p style="font-size: 16px;">Dear <strong>${assignedTrucker.name}</strong>,</p>
+              <p style="font-size: 16px;">You’ve been assigned a new trip. Here are the details:</p>
+              
+              <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 15px;">
+                <tr>
+                  <td style="padding: 10px; border: 1px solid #ddd; background-color: #f2f2f2;"><strong>Start Location</strong></td>
+                  <td style="padding: 10px; border: 1px solid #ddd;">${form.start_location}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border: 1px solid #ddd; background-color: #f2f2f2;"><strong>End Location</strong></td>
+                  <td style="padding: 10px; border: 1px solid #ddd;">${form.end_location}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border: 1px solid #ddd; background-color: #f2f2f2;"><strong>Distance</strong></td>
+                  <td style="padding: 10px; border: 1px solid #ddd;">${form.distance} km</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border: 1px solid #ddd; background-color: #f2f2f2;"><strong>Start Time</strong></td>
+                  <td style="padding: 10px; border: 1px solid #ddd;">${form.start_time}</td>
+                </tr>
+              </table>
+        
+              <p style="margin-top: 20px; font-size: 16px;">
+                Please make sure to prepare for your trip and reach out if you have any questions.
+              </p>
+        
+              <p style="color: #888; font-size: 14px; margin-top: 30px;">
+                — Rigor Logistics Admin Panel
+              </p>
+            </div>
+          </div>
+        </div>
+        `;
+        try {
+          await sendEmailNotification(
+            assignedTrucker.email,
+            "🚚 New Trip Assigned | Rigor Logistics",
+            emailHTML
+          );
+        } catch {
+          console.log("Failed to send email notification");
+        }
+      }
+      
       Alert.alert("Success", "Trip assigned successfully!");
+      
 
       await createLocation({
         location_id: Date.now(),
@@ -219,7 +277,7 @@ const TripAssignmentScreen: React.FC = () => {
         />
 
         <TouchableOpacity style={styles.button} onPress={handleGetCostEstimate}>
-          <Text style={styles.buttonText}>{isLoadingCost ? "Calculating..." : "Get Cost Estimate"}</Text>
+          <Text style={styles.buttonText}>{isLoadingCost ? "Calculating..." : "Get Cost Estimate By AI"}</Text>
           {isLoadingCost && <ActivityIndicator style={{ marginLeft: 8 }} />}
         </TouchableOpacity>
 

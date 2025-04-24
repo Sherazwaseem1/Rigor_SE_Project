@@ -25,6 +25,7 @@ import {
   completeTrip,
   deleteLocation,
   getTruckerProfilePic,
+  updateTruckerStatus,
 } from "../../services/api";
 
 import { RootState } from "../../redux/store";
