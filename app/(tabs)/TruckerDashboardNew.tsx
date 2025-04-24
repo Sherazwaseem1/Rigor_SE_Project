@@ -71,7 +71,6 @@ const TruckerDashboardNew = () => {
         const truckerData = await getTruckerByEmail(trucker.email);
 
         const profilePicResponse = await getTruckerProfilePic(trucker.id);
-        console.log(profilePicResponse)
         setProfilePicUrl(profilePicResponse?.profile_pic_url || null);
 
         setRating(truckerData.rating || 0);
