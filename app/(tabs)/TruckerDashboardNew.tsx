@@ -1,7 +1,3 @@
-// Rewritten TruckerDashboardNew.tsx with AdminDashboardNew styling
-// All logic is preserved, but layout, drawer, header, cards, fonts, colors, spacing updated
-// to match admin dashboard UI
-
 import React, { useEffect, useState, useRef } from "react";
 import {
   View,
