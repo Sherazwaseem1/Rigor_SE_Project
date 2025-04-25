@@ -24,7 +24,7 @@ export const createTruck = async (req: Request, res: Response): Promise<void> =>
             res.status(400).json({ error: "assigned_trucker_id must be a number" });
             return;
         }
-e
+
         const maxTruck = await Truck.findOne().sort({ truck_id: -1 }); 
         const newTruckId = maxTruck ? maxTruck.truck_id + 1 : 1; 
         const newTruck = new Truck({
