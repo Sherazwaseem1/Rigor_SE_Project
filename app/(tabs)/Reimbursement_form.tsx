@@ -40,7 +40,7 @@ const ReimbursementFormScreen: React.FC = () =>
     admin_id: user.id,
   });
 
-  const handleInputChange = (key: keyof typeof form, value: any) => {
+  const handleInputChange = (key: keyof typeof form, value) => {
     if (key === "amount") {
       value = parseFloat(value) || 0;
     }
@@ -78,7 +78,7 @@ const ReimbursementFormScreen: React.FC = () =>
       uri: photoUri,
       type: "image/jpeg",
       name: `upload_${Date.now()}.jpg`,
-    } as any);
+    });
     data.append("upload_preset", UPLOAD_PRESET);
     data.append("cloud_name", "dx7hrymxn");
 
@@ -128,7 +128,7 @@ const ReimbursementFormScreen: React.FC = () =>
       const response = await createReimbursement(reimbursementData);
       Alert.alert("Success", "Reimbursement request submitted successfully!");
       router.push("/TruckerDashboardNew");
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage = error?.response?.data?.error || "Failed to submit reimbursement.";
       Alert.alert("Error", errorMessage);
     }
