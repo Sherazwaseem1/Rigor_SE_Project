@@ -6,9 +6,7 @@ export default function ImagePickerComponent() {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  // Replace with your Cloudinary info
   const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dx7hrymxn/image/upload';
-  //CLOUDINARY_URL=cloudinary://<your_api_key>:<your_api_secret>@dx7hrymxn
   const UPLOAD_PRESET = 'Rigor-code';
 
   const pickImageFromGallery = async (): Promise<void> => {
