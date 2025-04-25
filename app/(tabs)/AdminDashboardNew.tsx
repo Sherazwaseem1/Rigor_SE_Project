@@ -39,7 +39,8 @@ const AdminDashboardNew = () => {
   const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
   // const [activeSection, setActiveSection] = useState('map');
-  const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements' | 'approved' | 'truckers' | 'analytics'>('map');
+  const [activeSection, setActiveSection] = useState<'map' | 'trips' | 'reimbursements' | 'approved' | 'truckers' | 'analytics'>('map');
+  const [tripFilter, setTripFilter] = useState<'all' | 'ongoing' | 'recent'>('all');
   const isFocused = useIsFocused();
   const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
   const dispatch = useDispatch();
@@ -175,10 +176,10 @@ const AdminDashboardNew = () => {
       </TouchableOpacity>
       
       <TouchableOpacity 
-        style={[styles.drawerItem, activeSection === 'ongoing' && styles.activeDrawerItem]}
-        onPress={() => { setActiveSection('ongoing'); setIsDrawerOpen(false); }}
+        style={[styles.drawerItem, activeSection === 'trips' && styles.activeDrawerItem]}
+        onPress={() => { setActiveSection('trips'); setIsDrawerOpen(false); }}
       >
-        <Text style={styles.drawerItemText}>Ongoing Trips</Text>
+        <Text style={styles.drawerItemText}>Trips</Text>
       </TouchableOpacity>
       
       <TouchableOpacity 
@@ -218,12 +219,7 @@ const AdminDashboardNew = () => {
         <Text style={styles.drawerItemText}>Assign Trips</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={[styles.drawerItem, activeSection === 'recent' && styles.activeDrawerItem]}
-        onPress={() => { setActiveSection('recent'); setIsDrawerOpen(false); }}
-      >
-        <Text style={styles.drawerItemText}>Recent Trips</Text>
-      </TouchableOpacity>
+
       
       <TouchableOpacity 
         style={[styles.drawerItem, activeSection === 'analytics' && styles.activeDrawerItem]}
@@ -297,11 +293,38 @@ const AdminDashboardNew = () => {
           </MapView>
         );
       
-      case 'ongoing':
-        const ongoingTrips = trips.filter(trip => trip.status === 'Scheduled');
+      case 'trips':
+        let filteredTrips = trips;
+        if (tripFilter === 'ongoing') {
+          filteredTrips = trips.filter(trip => trip.status === 'Scheduled');
+        } else if (tripFilter === 'recent') {
+          filteredTrips = trips.filter(trip => trip.status === 'Completed');
+        }
+
         return (
           <ScrollView>
-            {ongoingTrips.map(trip => (
+            <View style={styles.filterContainer}>
+              <TouchableOpacity 
+                style={[styles.filterButton, tripFilter === 'all' && styles.activeFilter]}
+                onPress={() => setTripFilter('all')}
+              >
+                <Text style={[styles.filterText, tripFilter === 'all' && styles.activeFilterText]}>All</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.filterButton, tripFilter === 'ongoing' && styles.activeFilter]}
+                onPress={() => setTripFilter('ongoing')}
+              >
+                <Text style={[styles.filterText, tripFilter === 'ongoing' && styles.activeFilterText]}>Ongoing</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.filterButton, tripFilter === 'recent' && styles.activeFilter]}
+                onPress={() => setTripFilter('recent')}
+              >
+                <Text style={[styles.filterText, tripFilter === 'recent' && styles.activeFilterText]}>Recent</Text>
+              </TouchableOpacity>
+            </View>
+
+            {filteredTrips.map(trip => (
               <View key={trip.trip_id} style={[styles.card, styles.recentTripCard]}>
                 <View style={styles.tripHeader}>
                   <View style={styles.tripRoute}>
@@ -322,54 +345,21 @@ const AdminDashboardNew = () => {
                   </View>
                 </View>
                 <View style={styles.statusContainer}>
-                  <View style={[styles.completedBadge, { backgroundColor: '#FEF3C7' }]}>
-                    <Text style={[styles.completedBadgeText, { color: '#9B403D' }]}>In Progress</Text>
+                  <View style={[styles.completedBadge, trip.status === 'Scheduled' && { backgroundColor: '#FEF3C7' }]}>
+                    <Text 
+                      style={[styles.completedBadgeText, 
+                        trip.status === 'Scheduled' && { color: '#9B403D' }
+                      ]}
+                    >
+                      {trip.status === 'Scheduled' ? 'In Progress' : 'Completed'}
+                    </Text>
                   </View>
                 </View>
               </View>
             ))}
-            {ongoingTrips.length === 0 && (
+            {filteredTrips.length === 0 && (
               <View style={[styles.card, styles.emptyCard]}>
-                <Text style={styles.emptyText}>No ongoing trips</Text>
-              </View>
-            )}
-          </ScrollView>
-        );
-      
-      case 'recent':
-        const completedTrips = trips.filter(trip => trip.status === 'Completed');
-        return (
-          <ScrollView>
-            {completedTrips.map(trip => (
-              <View key={trip.trip_id} style={[styles.card, styles.recentTripCard]}>
-                <View style={styles.tripHeader}>
-                  <View style={styles.tripRoute}>
-                    <Text style={styles.routeText}>{trip.start_location} → {trip.end_location}</Text>
-                  </View>
-                  <View style={styles.tripIdBadge}>
-                    <Text style={styles.tripIdText}>#{trip.trip_id}</Text>
-                  </View>
-                </View>
-                <View style={styles.tripDetails}>
-                  <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Start Location</Text>
-                    <Text style={styles.locationText}>{trip.start_location}</Text>
-                  </View>
-                  <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Destination</Text>
-                    <Text style={styles.locationText}>{trip.end_location}</Text>
-                  </View>
-                </View>
-                <View style={styles.statusContainer}>
-                  <View style={styles.completedBadge}>
-                    <Text style={styles.completedBadgeText}>Completed</Text>
-                  </View>
-                </View>
-              </View>
-            ))}
-            {completedTrips.length === 0 && (
-              <View style={[styles.card, styles.emptyCard]}>
-                <Text style={styles.emptyText}>No recent trips available</Text>
+                <Text style={styles.emptyText}>No {tripFilter === 'all' ? '' : tripFilter} trips available</Text>
               </View>
             )}
           </ScrollView>
@@ -730,6 +720,31 @@ const AdminDashboardNew = () => {
 };
 
 const styles = StyleSheet.create({
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: '#fff',
+    marginBottom: 8,
+  },
+  filterButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#f3f4f6',
+  },
+  activeFilter: {
+    backgroundColor: '#088395',
+  },
+  filterText: {
+    fontSize: 14,
+    color: '#4b5563',
+    fontWeight: '500',
+  },
+  activeFilterText: {
+    color: '#ffffff',
+  },
   filterContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
