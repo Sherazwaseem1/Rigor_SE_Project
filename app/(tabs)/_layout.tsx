@@ -9,6 +9,7 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useRef, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -97,8 +98,9 @@ export default function TabLayout() {
   if (!pathname) return null;
 
   return (
-    <TouchableWithoutFeedback onPress={handleUserActivity}>
-      <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <TouchableWithoutFeedback onPress={handleUserActivity}>
+        <View style={{ flex: 1 }}>
         {/* Logout modal */}
         {showLogoutModal && !isExcluded && (
           <View style={styles.overlay}>
@@ -124,8 +126,9 @@ export default function TabLayout() {
           <Tabs.Screen name="index" />
           {/* Add other tabs as needed */}
         </Tabs>
-      </View>
-    </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 }
 
