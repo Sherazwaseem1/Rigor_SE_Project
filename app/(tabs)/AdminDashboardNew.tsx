@@ -654,8 +654,7 @@ const AdminDashboardNew = () => {
             <Feather name="menu" size={24} color="#071952" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{activeSection === 'map' ? 'Live Location' : 
-            activeSection === 'ongoing' ? 'Ongoing Trips' :
-            activeSection === 'recent' ? 'Recent Trips' :
+            activeSection === 'trips' ? 'Trips' :
             activeSection === 'reimbursements' ? 'Pending Reimbursements' :
             activeSection === 'approved' ? 'Approved Reimbursements' :
             activeSection === 'truckers' ? 'Registered Truckers' :
