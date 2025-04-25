@@ -105,7 +105,7 @@ const Login = () => {
         handleClear();
         router.push("/TruckerDashboardNew");
       }
-    } catch (error: any) {
+    } catch (error) {
       if (error.code === 'auth/invalid-credential') {
         setError('Invalid email address or password');
         alert("Invalid email or password");

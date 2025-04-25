@@ -68,7 +68,7 @@ const AdvancedAnalytics = () => {
               }}
             >
               <Feather
-                name={card.icon as any}
+                name={card.icon}
                 size={32}
                 color="#071952"
                 style={styles.cardIcon}
