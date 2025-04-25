@@ -220,7 +220,7 @@ const AdminDashboardNew = () => {
 
       <TouchableOpacity 
         style={styles.drawerItem}
-        onPress={() => router.push('/TripAssignmentFrom')}
+        onPress={() => router.push('/TripAssignmentForm')}
       >
         <Text style={styles.drawerItemText}>Assign Trips</Text>
       </TouchableOpacity>
@@ -681,11 +681,18 @@ const AdminDashboardNew = () => {
                       <Text style={styles.truckerId}>ID: #{trucker.trucker_id}</Text>
                     </View>
                   </View>
-                  <View style={[styles.statusBadge, { backgroundColor: trucker.status === 'Active' ? '#E6F4EA' : '#FFF4E5' }]}>
-                    <Text style={[styles.statusText, { color: trucker.status === 'Active' ? '#1E8E3E' : '#B95000' }]}>
+                  <View style={[
+                    styles.statusBadgeBase,
+                    trucker.status === 'Active' ? styles.statusBadgeActive : styles.statusBadgeInactive
+                  ]}>
+                    <Text style={[
+                      styles.statusTextBase,
+                      trucker.status === 'Active' ? styles.statusTextActive : styles.statusTextInactive
+                    ]}>
                       {trucker.status}
                     </Text>
                   </View>
+
                 </View>
                 <View style={styles.truckerContact}>
                   <View style={styles.contactItem}>
@@ -889,6 +896,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   statusBadge: {
+    backgroundColor:'#FFF4E5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
@@ -1258,8 +1269,20 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   approveBtn: { backgroundColor: '#047857' },           // NEW green
-  modifyBtn: { backgroundColor: '#EBF4F6' },            // NEW neutral
-  actionText: { fontWeight: '600', color: '#071952' }, 
+  modifyBtn: {
+    backgroundColor: '#EBF4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  // NEW neutral
+  actionText: {
+    fontWeight: '600',
+    fontSize: 14,
+  },
+               
   modalBackdrop: {                         // NEW
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.4)',
@@ -1337,6 +1360,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  statusBadgeBase: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    marginLeft: 12,
+    minWidth: 80, 
+    alignItems: 'center', 
+  },
+  
+  statusTextBase: {
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+
+  },
+  
+  statusBadgeActive: {
+    backgroundColor: '#E6F4EA',
+  },
+  statusTextActive: {
+    color: '#1E8E3E',
+  },
+  
+  statusBadgeInactive: {
+    backgroundColor: '#FFF4E5',
+  },
+  statusTextInactive: {
+    color: '#B95000',
+  },
+  
   
 });
 
