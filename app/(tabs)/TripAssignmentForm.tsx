@@ -167,7 +167,7 @@ const TripAssignmentScreen: React.FC = () => {
               </table>
         
               <p style="margin-top: 20px; font-size: 16px;">
-                Please make sure to prepare for your trip and reach out if you have any questions.
+                Please make sure to prepare for your trip and reach out if you have some questions.
               </p>
         
               <p style="color: #888; font-size: 14px; margin-top: 30px;">
