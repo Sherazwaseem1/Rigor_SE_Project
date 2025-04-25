@@ -37,7 +37,7 @@ import { Trip, Reimbursement } from "../../services/util";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../../redux/slices/userSlice";
 import { persistor } from "../../redux/store";
-import { Image } from "react-native";
+import { Image, RefreshControl } from "react-native";
 
 const TruckerDashboardNew = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -62,6 +62,7 @@ const TruckerDashboardNew = () => {
   const firstLocLoad = useRef(true);
   const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
 
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -177,6 +178,39 @@ const TruckerDashboardNew = () => {
       }
     };
   }, [ongoingTrip, activeSection]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      if (activeSection === "map") {
+        if (!ongoingTrip) {
+          setLocations([]);
+          return;
+        }
+        const allLocs = await getAllLocations();
+        const tripLoc = allLocs.filter((l) => l.trip_id === ongoingTrip.trip_id);
+        setLocations(tripLoc);
+      } else if (activeSection === "ongoing" || activeSection === "recent" || activeSection === "reimbursements") {
+        const tripsData = await getTripsByTruckerId(trucker.id);
+        const completedTrips = tripsData.filter((t) => t.status === "Completed");
+        const activeTrip = tripsData.find((t) => t.status === "Scheduled");
+  
+        const reimbursements = await Promise.all(
+          tripsData.map((t) => getReimbursementsByTripId(t.trip_id))
+        );
+  
+        setPastTrips(completedTrips);
+        setOngoingTrip(activeTrip || null);
+        setPendingReimbursements(
+          reimbursements.flat().filter((r) => r.status === "Pending")
+        );
+      }
+    } catch (err) {
+      console.error("Refresh failed:", err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const handleSignOut = () => {
     dispatch(resetUser());
@@ -412,7 +446,11 @@ const TruckerDashboardNew = () => {
 
       case "recent":
         return (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             {pastTrips.map((trip) => (
               <View key={trip.trip_id} style={styles.card}>
                 <Text style={styles.cardText}>
@@ -435,7 +473,12 @@ const TruckerDashboardNew = () => {
                 <Text style={styles.emptyCardText}>No pending reimbursements</Text>
               </View>
             ) : (
-              <ScrollView contentContainerStyle={{ paddingBottom: 16 }}>
+              <ScrollView
+                contentContainerStyle={{ paddingBottom: 16 }}
+                refreshControl={
+                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+              >
                 {pendingReimbursements.map((r) => (
                   <View key={r.reimbursement_id} style={[styles.card, styles.reimbursementCard]}>
                     ...

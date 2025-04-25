@@ -15,31 +15,20 @@ import {
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
-} from "react-native";
-import axios from "axios";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
-import { router } from "expo-router";
-import { useIsFocused } from "@react-navigation/native";
-import { Drawer } from "react-native-drawer-layout";
-import { Feather } from "@expo/vector-icons";
-import MapView, { Marker } from "react-native-maps";
-import { RootState } from "../../redux/store";
-import {
-  getAllTrips,
-  getAllTruckers,
-  getAllReimbursements,
-  getAdminProfileImage,
-  getAllLocations,
-  getLocationById,
-  approveReimbursement,
-  modifyReimbursement,
-  updateTripRating,
-  updateTruckerRating,
-  getTripsByTruckerId,
-} from "../../services/api";
-import { Trip, Trucker, Reimbursement, Location } from "../../services/util";
-import { Image } from "react-native";
+  RefreshControl,
+} from 'react-native';
+import axios from 'axios';  
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
+import { router } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
+import { Drawer } from 'react-native-drawer-layout';
+import { Feather } from '@expo/vector-icons';
+import MapView, { Marker } from 'react-native-maps';   
+import { RootState } from '../../redux/store';
+import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById, approveReimbursement, modifyReimbursement, updateTripRating, updateTruckerRating, getTripsByTruckerId   } from '../../services/api';
+import { Trip, Trucker, Reimbursement, Location } from '../../services/util';
+import { Image } from 'react-native';
 
 import { useDispatch } from "react-redux";
 import { resetUser } from "../../redux/slices/userSlice";
@@ -80,6 +69,8 @@ const AdminDashboardNew = () => {
   const [isRatingVisible, setIsRatingVisible] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
   const [rating, setRating] = useState<number>(0);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (
@@ -133,7 +124,58 @@ const AdminDashboardNew = () => {
     fetchLocations();
   }, [activeSection, admin, isFocused]);
 
-  const openModify = (item: Reimbursement) => {
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      switch (activeSection) {
+        case 'map':
+          if (admin.isAdmin) {
+            const locs = await getAllLocations();
+            setLocations(locs);
+          } else {
+            const loc = await getLocationById(admin.id);
+            setLocations([loc]);
+          }
+          break;
+  
+        case 'trips': {
+          const tripsData = await getAllTrips();
+          setTrips(tripsData);
+          break;
+        }
+  
+        case 'reimbursements': {
+          const data = await getAllReimbursements();
+          setReimbursements(data);
+          break;
+        }
+  
+        case 'truckers': {
+          const data = await getAllTruckers();
+          setTruckers(data);
+          break;
+        }
+  
+        case 'analytics': {
+          const [t, r, tr] = await Promise.all([
+            getAllTrips(),
+            getAllReimbursements(),
+            getAllTruckers(),
+          ]);
+          setTrips(t);
+          setReimbursements(r);
+          setTruckers(tr);
+          break;
+        }
+      }
+    } catch (err) {
+      console.warn('Refresh failed:', err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  
+  const openModify = (item: Reimbursement) => {       
     setEditingId(item.reimbursement_id);
     setEditAmt(parseFloat(item.amount.$numberDecimal).toString());
     setEditComment("");
@@ -355,7 +397,11 @@ const AdminDashboardNew = () => {
         }
 
         return (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <View style={styles.filterContainer}>
               <TouchableOpacity
                 style={[
@@ -869,7 +915,11 @@ const AdminDashboardNew = () => {
             : trucker.status === "Inactive"
         );
         return (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <View style={styles.filterContainer}>
               <TouchableOpacity
                 style={[
