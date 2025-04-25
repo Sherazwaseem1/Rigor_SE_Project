@@ -56,6 +56,9 @@ const AdminDashboardNew = () => {
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
 
+  const [isRatingVisible, setIsRatingVisible] = useState(false);
+  const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
+  const [rating, setRating] = useState<number>(0);
 
   useEffect(() => {
     if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -433,20 +436,9 @@ const AdminDashboardNew = () => {
 
                   <TouchableOpacity
                     style={[styles.actionBtn, styles.approveBtn]}
-                    onPress={async () => {
-                      try {
-                        await approveReimbursement(item.reimbursement_id, admin.id);
-                        LayoutAnimation.configureNext(
-                          LayoutAnimation.Presets.easeInEaseOut
-                        );
-                        setReimbursements(prev =>
-                          prev.map(r =>
-                            r.reimbursement_id === item.reimbursement_id
-                            ? { ...r, status: 'Approved' }
-                            : r
-                          )
-                        );
-                      } catch (err) { console.error(err); }
+                    onPress={() => {
+                      setSelectedTripId(item.trip_id);
+                      setIsRatingVisible(true);
                     }}
                     >
                     <Text style={[styles.actionText, { color: '#fff' }]}>Approve</Text>
@@ -472,6 +464,70 @@ const AdminDashboardNew = () => {
                 resizeMode="contain"
               />
             </View>
+          </Modal>
+          <Modal
+            transparent
+            visible={isRatingVisible}
+            animationType="fade"
+            onRequestClose={() => setIsRatingVisible(false)}
+          >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View style={styles.modalBackdrop}>
+                <View style={styles.modalCard}>
+                  <Text style={styles.modalTitle}>Rate this Trip</Text>
+
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 12 }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                        <Text style={{ fontSize: 28, color: star <= rating ? '#FFD700' : '#E5E7EB' }}>
+                          ★
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+
+                  <View style={styles.modalActions}>
+                    <TouchableOpacity
+                      style={[styles.actionBtn, styles.modifyBtn]}
+                      onPress={() => setIsRatingVisible(false)}
+                    >
+                      <Text style={styles.actionText}>Cancel</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.actionBtn, styles.approveBtn]}
+                      onPress={async () => {
+                        try {
+                          const trip = trips.find(t => t.trip_id === selectedTripId);
+                          if (!trip) return;
+
+                          await approveReimbursement(
+                            reimbursements.find(r => r.trip_id === selectedTripId)!.reimbursement_id,
+                            admin.id
+                          );
+
+                          // await updateTruckerRating(trip.trucker_id, rating);
+
+                          setReimbursements(prev =>
+                            prev.map(r =>
+                              r.trip_id === selectedTripId ? { ...r, status: 'Approved' } : r
+                            )
+                          );
+                        } catch (err) {
+                          console.error("Approval or rating update failed", err);
+                        } finally {
+                          setIsRatingVisible(false);
+                          setRating(0);
+                          setSelectedTripId(null);
+                        }
+                      }}
+                    >
+                      <Text style={[styles.actionText, { color: '#fff' }]}>Submit</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
           </Modal>
 
           </>
