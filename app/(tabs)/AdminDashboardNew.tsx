@@ -797,7 +797,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     paddingVertical: 10,
     paddingHorizontal: 16,
-    backgroundColor: '#fff',
     marginBottom: 8,
   },
   filterButton: {
@@ -805,6 +804,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     backgroundColor: '#f3f4f6',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   activeFilter: {
     backgroundColor: '#088395',
@@ -816,21 +817,6 @@ const styles = StyleSheet.create({
   },
   activeFilterText: {
     color: '#ffffff',
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    gap: 8,
-  },
-  filterButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    backgroundColor: '#FFFFFF',
   },
   filterButtonActive: {
     backgroundColor: '#088395',
