@@ -110,7 +110,6 @@ const TruckerDashboardNew = () => {
         setLocations(tripLoc);
         if (tripLoc.length) locationIdRef.current = tripLoc[0].location_id;
       } catch (err) {
-        console.error("Error fetching locations", err);
         setLocations([]);
       } finally {
         if (firstLocLoad.current) {
@@ -159,7 +158,6 @@ const TruckerDashboardNew = () => {
                 timestamp: new Date(),
               });
             } catch (err) {
-              console.warn("updateLocation failed", err);
             }
           }
         }
@@ -336,7 +334,6 @@ const TruckerDashboardNew = () => {
                         params: { trip_id: updated.trip_id },
                       });
                     } catch (err) {
-                      console.error("Complete trip failed", err);
                     }
                   }}
                 >

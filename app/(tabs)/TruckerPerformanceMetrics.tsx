@@ -19,7 +19,6 @@ const TruckerPerformanceMetrics = () => {
         const data = await getAllTruckers();
         setTruckers(data);
       } catch (error) {
-        console.error("Failed to fetch truckers:", error);
       } finally {
         setLoading(false);
       }

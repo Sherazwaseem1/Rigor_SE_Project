@@ -186,7 +186,6 @@ const TripAssignmentScreen: React.FC = () => {
             emailHTML
           );
         } catch {
-          console.log("Failed to send email notification");
         }
       }
       
