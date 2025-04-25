@@ -55,7 +55,7 @@ const UserProfileTest = () => {
       uri,
       type: 'image/jpeg',
       name: `upload_${Date.now()}.jpg`,
-    } as any);
+    });
     data.append('upload_preset', UPLOAD_PRESET);
 
     try {

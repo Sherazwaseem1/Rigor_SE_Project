@@ -119,7 +119,7 @@ const SignUp = () => {
             await createTrucker(newTrucker);
             handleClear(); 
             router.push("/loginForm");
-        } catch (error: any) {
+        } catch (error) {
         } finally {
             setLoading(false);
         }

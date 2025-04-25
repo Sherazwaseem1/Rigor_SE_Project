@@ -210,7 +210,7 @@ const TruckerDashboardNew = () => {
             activeSection === section && styles.activeDrawerItem,
           ]}
           onPress={() => {
-            setActiveSection(section as any);
+            setActiveSection(section);
             setIsDrawerOpen(false);
           }}
         >

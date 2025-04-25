@@ -164,7 +164,7 @@ const getScale = () => {
   return Math.min(Math.max(scale, MIN_SCALE), MAX_SCALE);
 };
 
-const normalize = (size:any) => {
+const normalize = (size:int) => {
   const scale = getScale();
   const newSize = size * scale;
   return Math.round(PixelRatio.roundToNearestPixel(newSize));
