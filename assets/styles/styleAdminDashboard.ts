@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
       fontSize: 12,
       fontWeight: '500',
       color: '#64748B',
+      marginTop: 3,
       marginBottom: 4,
     },
     locationText: {
