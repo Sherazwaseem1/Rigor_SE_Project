@@ -1,13 +1,11 @@
 import axios from "axios";
 import { Platform } from "react-native";
 
-// ✅ Set API URL based on platform (change IP if needed)
 const API_URL =
   Platform.OS === "web"
     ? "http://localhost:5000/api"
-    : "http://10.130.10.171:5000/api"; // Replace with your IPv4 if necessary
+    : "http://10.130.149.167:5000/api"; 
 
-// ✅ Trucker Interfaces
 export interface Trucker {
   trucker_id: number;
   name: string;
@@ -17,7 +15,7 @@ export interface Trucker {
   status: string;
   age: number;
   gender: string;
-  profile_pic_url?: string | null; // ✅ NEW FIELD
+  profile_pic_url?: string | null; 
 }
 
 export interface NewTrucker {
@@ -28,10 +26,9 @@ export interface NewTrucker {
   status: string;
   age: number;
   gender: string;
-  profile_pic_url?: string | null; // ✅ NEW FIELD (optional for creation)
+  profile_pic_url?: string | null; 
 }
 
-// ✅ Trucker APIs
 export const getAllTruckers = async (): Promise<Trucker[]> => {
   const response = await axios.get<Trucker[]>(`${API_URL}/truckers`);
   return response.data;
@@ -92,7 +89,6 @@ export const updateTruckerStatus = async (
   return response.data;
 };
 
-// 🆕 Update trucker's profile image
 export const updateTruckerProfilePic = async (
   truckerId: number,
   profile_pic_url: string
@@ -104,7 +100,7 @@ export const updateTruckerProfilePic = async (
   return response.data;
 };
 
-// 🆕 Get trucker's profile image
+
 export const getTruckerProfilePic = async (truckerId: number) => {
   const response = await axios.get<{ profile_pic_url: string | null }>(
     `${API_URL}/truckers/profile-pic/${truckerId}`
@@ -123,16 +119,13 @@ export const updateTruckerRating = async (
   return response.data;
 };
 
-// ✅ Define TypeScript interfaces
 export interface Admin {
   admin_id: number;
   name: string;
   email: string;
   phone_number: string;
-  profile_pic_url?: string; // Optional field for profile pic
+  profile_pic_url?: string;
 }
-
-// ✅ Admin APIs
 
 export const getAllAdmins = async (): Promise<Admin[]> => {
   const response = await axios.get<Admin[]>(`${API_URL}/admins`);
@@ -171,7 +164,6 @@ export const getAdminByEmail = async (email: string): Promise<Admin> => {
   return response.data;
 };
 
-// 🆕 Get admin profile image by ID
 export const getAdminProfileImage = async (
   id: number
 ): Promise<{ profile_pic_url: string | null }> => {
@@ -181,7 +173,6 @@ export const getAdminProfileImage = async (
   return response.data;
 };
 
-// ✅ Match PATCH method
 export const updateAdminProfileImage = async (
   id: number,
   profile_pic_url: string
@@ -193,16 +184,14 @@ export const updateAdminProfileImage = async (
   return response.data;
 };
 
-// ✅ Define TypeScript Interface for Location
 export interface Location {
   location_id: number;
-  trip_id: number; // Now a number instead of ObjectId
+  trip_id: number;
   latitude: number;
   longitude: number;
   timestamp: Date;
 }
 
-// ✅ Location APIs
 export const getAllLocations = async (): Promise<Location[]> => {
   const response = await axios.get<Location[]>(`${API_URL}/locations`);
   return response.data;
@@ -247,7 +236,7 @@ export interface Reimbursement {
   reimbursement_id: number;
   trip_id: number;
   amount: {
-    $numberDecimal: string; // MongoDB stores Decimal128 as an object
+    $numberDecimal: string;
   };
   receipt_url: string;
   status: string;
@@ -255,7 +244,6 @@ export interface Reimbursement {
   admin_id: number;
 }
 
-// ✅ Reimbursement APIs
 export const getAllReimbursements = async (): Promise<Reimbursement[]> => {
   const response = await axios.get<Reimbursement[]>(
     `${API_URL}/reimbursements`
@@ -264,7 +252,7 @@ export const getAllReimbursements = async (): Promise<Reimbursement[]> => {
 };
 
 export const createReimbursement = async (
-  reimbursementData: Omit<Reimbursement, "reimbursement_id"> // Exclude reimbursement_id for creation
+  reimbursementData: Omit<Reimbursement, "reimbursement_id"> 
 ): Promise<Reimbursement> => {
   const response = await axios.post<Reimbursement>(
     `${API_URL}/reimbursements`,
@@ -319,7 +307,6 @@ export const modifyReimbursement = async (
     .patch<Reimbursement>(`${API_URL}/reimbursements/${reimbursement_id}`, data)
     .then((r) => r.data);
 
-// ✅ Define TypeScript Interface for Trip
 export interface Trip {
   trip_id: number;
   trucker_id: number;
@@ -335,7 +322,6 @@ export interface Trip {
   expected_cost?: number;
 }
 
-// ✅ Trip APIs
 export const getAllTrips = async (): Promise<Trip[]> => {
   const response = await axios.get<Trip[]>(`${API_URL}/trips`);
   return response.data;
@@ -369,7 +355,6 @@ export const createTrip = async (
   return response.data;
 };
 
-// mark a trip completed
 export const completeTrip = async (trip_id: number): Promise<Trip> => {
   try {
     const response = await axios.patch<Trip>(`${API_URL}/trips/${trip_id}`, {
@@ -382,29 +367,25 @@ export const completeTrip = async (trip_id: number): Promise<Trip> => {
 };
 
 export const updateTripRating = async (trip_id: number, rating: number): Promise<Trip> => {
-  // Assuming API_URL ends without a trailing slash
   const response = await axios.patch<Trip>(`${API_URL}/trips/${trip_id}/rating`, {
     rating,
   });
   return response.data;
 };
 
-// ✅ Define TypeScript Interface for Truck
 export interface Truck {
   truck_id: number;
   license_plate: string;
   chassis_number: string;
   capacity: number;
-  assigned_trucker_id?: number; // Optional
+  assigned_trucker_id?: number; 
 }
 
-// ✅ Truck APIs
 export const getAllTrucks = async (): Promise<Truck[]> => {
   const response = await axios.get<Truck[]>(`${API_URL}/trucks`);
   return response.data;
 };
 
-// ✅ Define the type for truck creation request (without truck_id)
 export interface CreateTruckRequest {
   license_plate: string;
   chassis_number: string;
@@ -412,7 +393,6 @@ export interface CreateTruckRequest {
   assigned_trucker_id?: number;
 }
 
-// ✅ Update API function to exclude `truck_id` from request
 export const createTruck = async (
   truckData: CreateTruckRequest
 ): Promise<Truck> => {
@@ -433,7 +413,6 @@ export const getTruckersWithoutTruck = async (): Promise<Trucker[]> => {
   return response.data;
 };
 
-// ✅ Update LLM API call
 export interface TripCostEstimate {
   estimated_cost: string;
 }
@@ -454,8 +433,6 @@ export const estimateTripCost = async (
   return response.data;
 };
 
-// Email API Call
-
 export interface EmailResponse {
   success: boolean;
   message: string;
@@ -464,14 +441,14 @@ export interface EmailResponse {
 export const sendEmailNotification = async (
   to: string,
   subject: string,
-  text: string // Keeping the name "text" but passing HTML content
+  text: string 
 ): Promise<EmailResponse> => {
   const response = await axios.post<EmailResponse>(
     `${API_URL}/email/send-email`,
     {
       to,
       subject,
-      html: text, // Pass the content as "html" to the API
+      html: text,
     }
   );
   return response.data;
