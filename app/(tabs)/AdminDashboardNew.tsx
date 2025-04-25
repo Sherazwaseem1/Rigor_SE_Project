@@ -139,7 +139,6 @@ const AdminDashboardNew = () => {
        setEditAmt("");
        setEditComment("");
      } catch (err) {
-       console.error("Modify failed", err);
      }
   };
   
@@ -508,7 +507,6 @@ const AdminDashboardNew = () => {
                             )
                           );
                         } catch (err) {
-                          console.error("Approval or rating update failed", err);
                         } finally {
                           setIsRatingVisible(false);
                           setRating(0);
