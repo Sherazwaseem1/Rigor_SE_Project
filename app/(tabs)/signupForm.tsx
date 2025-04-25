@@ -239,7 +239,7 @@ export default SignUp;
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#fff',
     },
     scrollContainer: {
         flexGrow: 1,
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: '#EBF4F6',
+        backgroundColor: '#fff',
         paddingHorizontal: Math.min(screenWidth * 0.05, 24),
         paddingTop: Platform.OS === 'ios' ? 0 : Math.min(screenHeight * 0.02, 16),
         paddingBottom: Math.min(screenHeight * 0.02, 16),
