@@ -2,7 +2,7 @@ import express from "express";
 import { 
     getAllTruckers, 
     getTruckerById, 
-    getTruckerByEmail,  // ✅ Import the new function
+    getTruckerByEmail,  
     createTrucker, 
     updateTrucker, 
     deleteTrucker,
@@ -14,7 +14,6 @@ import {
 
 const router = express.Router();
 
-// ✅ Define routes
 router.get("/", getAllTruckers);
 router.get("/:id", getTruckerById);
 router.get("/email/:email", getTruckerByEmail); 

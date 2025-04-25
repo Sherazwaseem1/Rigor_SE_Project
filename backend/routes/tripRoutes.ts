@@ -16,7 +16,7 @@ router.get("/trucker/:trucker_id", getTripsByTruckerId);
 router.get("/admin/:admin_id", getTripsByAdminId);
 router.get("/status/:status", getTripsByStatus);
 router.post("/", createTrip);
-router.patch('/:trip_id', updateTrip);   // ← new route
+router.patch('/:trip_id', updateTrip);  
 router.patch("/:trip_id/rating", rateTrip);
 
 

@@ -9,6 +9,5 @@ router.get("/", getAllTrucks);
 router.post("/", createTruck);
 router.get("/without-truck", getTruckersWithoutTruck);
 
-// ✅ Export the router
 export default router;
     
