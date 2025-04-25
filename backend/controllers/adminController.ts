@@ -113,7 +113,6 @@ export const updateAdminProfilePic = async (req: Request, res: Response): Promis
 
         res.status(200).json(updatedAdmin);
     } catch (error) {
-        console.error("Error updating admin profile picture:", error);
         res.status(500).json({ error: "Failed to update profile picture", details: error });
     }
 };
