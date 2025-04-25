@@ -26,6 +26,9 @@ import {
   deleteLocation,
   getTruckerProfilePic,
   updateTruckerStatus,
+  getAdminById,
+  getTruckerById,
+  sendEmailNotification,
 } from "../../services/api";
 
 import { RootState } from "../../redux/store";
@@ -323,14 +326,77 @@ const TruckerDashboardNew = () => {
                   style={styles.completeBtn}
                   onPress={async () => {
                     try {
+                      console.log("Completing")
                       const updated = await completeTrip(ongoingTrip.trip_id);
-                      const updatedStatus = "Inactive"; // or any other status you want to set
-                      const updateResponse = await updateTruckerStatus(ongoingTrip.trucker_id, updatedStatus);
+                      const updatedStatus = "Inactive";
+
+                      await updateTruckerStatus(ongoingTrip.trucker_id, updatedStatus);
                       if (locationIdRef.current)
                         await deleteLocation(locationIdRef.current);
+
                       setLocations([]);
                       setOngoingTrip(null);
                       setPastTrips((prev) => [updated, ...prev]);
+
+                      // ✉️ Send email to the admin
+                      try {
+                        const adminData = await getAdminById(ongoingTrip.assigned_by_admin_id);
+                        const adminEmail = adminData.email;
+
+                        const truckerData = await getTruckerById(ongoingTrip.trucker_id);
+
+                        const emailHTML = `
+                          <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; background-color: #f9f9f9;">
+                            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                              <div style="background-color: #088395; padding: 20px; color: #ffffff; text-align: center;">
+                                <h2 style="margin: 0; font-size: 24px;">✅ Trip Completed!</h2>
+                              </div>
+                              <div style="padding: 20px;">
+                                <p style="font-size: 16px;">Dear Admin,</p>
+                                <p style="font-size: 16px;">
+                                  Trucker <strong>${truckerData.name}</strong> has successfully completed their assigned trip. Below are the trip details:
+                                </p>
+
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 15px;">
+                                  <tr>
+                                    <td style="padding: 10px; border: 1px solid #ddd; background-color: #f2f2f2;"><strong>Trip ID</strong></td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">${ongoingTrip.trip_id}</td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding: 10px; border: 1px solid #ddd; background-color: #f2f2f2;"><strong>Trucker</strong></td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">${truckerData.name}</td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding: 10px; border: 1px solid #ddd; background-color: #f2f2f2;"><strong>Start Location</strong></td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">${ongoingTrip.start_location}</td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding: 10px; border: 1px solid #ddd; background-color: #f2f2f2;"><strong>End Location</strong></td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">${ongoingTrip.end_location}</td>
+                                  </tr>
+                                </table>
+
+                                <p style="margin-top: 20px; font-size: 16px;">
+                                  Kindly review and approve their reimbursement request in the admin panel.
+                                </p>
+
+                                <p style="color: #888; font-size: 14px; margin-top: 30px;">
+                                  — Rigor Logistics Notification System
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        `;
+
+                        await sendEmailNotification(
+                          adminEmail,
+                          "Trip Completed - Reimbursement Request",
+                          emailHTML,
+                        );
+                      } catch (emailErr) {
+                        console.error("Failed to send email notification:", emailErr);
+                      }
+
                       router.push({
                         pathname: "./Reimbursement_form",
                         params: { trip_id: updated.trip_id },
