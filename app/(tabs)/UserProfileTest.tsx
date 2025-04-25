@@ -1,6 +1,3 @@
-// Rewritten UserProfileTest.tsx styled like the dashboards (Admin & Trucker)
-// Consistent layout, colors, typography, shadows, and spacing
-
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -110,7 +107,7 @@ const UserProfileTest = () => {
     );
   }
 
-  if (!userData) return null; // ✅ Fixes the "possibly null" TS error
+  if (!userData) return null; 
 
   return (
     <SafeAreaView style={styles.container}>
