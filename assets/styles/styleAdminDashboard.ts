@@ -1,0 +1,594 @@
+import { StyleSheet, Dimensions, PixelRatio, Platform } from 'react-native';
+
+const styles = StyleSheet.create({
+    filterContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      marginBottom: 8,
+    },
+    filterButton: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+      backgroundColor: '#f3f4f6',
+      borderWidth: 1,
+      borderColor: '#E2E8F0',
+    },
+    activeFilter: {
+      backgroundColor: '#088395',
+    },
+    filterText: {
+      fontSize: 14,
+      color: '#4b5563',
+      fontWeight: '500',
+    },
+    activeFilterText: {
+      color: '#ffffff',
+    },
+    filterButtonActive: {
+      backgroundColor: '#088395',
+      borderColor: '#088395',
+    },
+    filterButtonText: {
+      fontSize: 14,
+      color: '#64748B',
+      fontWeight: '500',
+    },
+    filterButtonTextActive: {
+      color: '#FFFFFF',
+    },
+    advancedButton: {
+      backgroundColor: '#088395',
+      padding: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+      marginTop: 16,
+    },
+    advancedButtonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    analyticsCard: {
+      marginBottom: 16,
+      padding: 16,
+    },
+    statRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      marginTop: 12,
+    },
+    statItem: {
+      alignItems: 'center',
+      flex: 1,
+    },
+    statNumber: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#088395',
+      marginBottom: 4,
+    },
+    statLabel: {
+      fontSize: 14,
+      color: '#64748B',
+      textAlign: 'center',
+    },
+    container: {
+      flex: 1,
+      backgroundColor: '#EBF4F6',
+    },
+    truckerCard: {
+      backgroundColor: '#FFFFFF',
+      borderRadius: 16,
+      padding: 20,
+      marginHorizontal: 16,
+      marginVertical: 8,
+    },
+    truckerHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    truckerInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1
+    },
+    statusBadge: {
+      backgroundColor:'#FFF4E5',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 12,
+      marginLeft: 'auto',
+      alignSelf: 'flex-start',
+    },
+    truckerAvatar: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: '#088395',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 12,
+    },
+    avatarText: {
+      color: '#FFFFFF',
+      fontSize: 20,
+      fontWeight: '600',
+    },
+    truckerDetails: {
+      flex: 1,
+    },
+    truckerName: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: '#071952',
+      marginBottom: 4,
+    },
+    truckerId: {
+      fontSize: 14,
+      color: '#64748B',
+      fontWeight: '500',
+    },
+    statusBadgeText: {
+      fontSize: 12,
+      fontWeight: '500',
+      paddingHorizontal: 8
+    },
+    truckerContact: {
+      marginTop: 8,
+      backgroundColor: '#EBF4F6',
+      borderRadius: 12,
+      padding: 16,
+    },
+    contactItem: {
+      marginBottom: 8,
+    },
+    contactLabel: {
+      fontSize: 12,
+      color: '#64748B',
+      marginBottom: 4,
+      fontWeight: '500',
+    },
+    contactValue: {
+      fontSize: 15,
+      color: '#1E293B',
+      fontWeight: '500',
+    },
+    recentTripCard: {
+      backgroundColor: '#FFFFFF',
+      borderRadius: 16,
+      padding: 20,
+      marginBottom: 16,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: '#E2E8F0',
+    },
+    tripHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    tripRoute: {
+      flex: 1,
+      marginRight: 12,
+    },
+    routeText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#071952',
+    },
+    tripIdBadge: {
+      backgroundColor: '#EBF4F6',
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: 12,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: '#071952',
+      marginBottom: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: '#E2E8F0',
+      paddingBottom: 6,
+    },
+    tripIdText: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: '#088395',
+    },
+    tripDetails: {
+      marginBottom: 16,
+    },
+    locationContainer: {
+      marginBottom: 12,
+    },
+    locationLabel: {
+      fontSize: 12,
+      fontWeight: '500',
+      color: '#64748B',
+      marginBottom: 4,
+    },
+    locationText: {
+      fontSize: 15,
+      color: '#1E293B',
+      fontWeight: '500',
+    },
+    statusContainer: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+    },
+    completedBadge: {
+      backgroundColor: '#ECFDF5',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 12,
+    },
+    completedBadgeText: {
+      color: '#047857',
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    emptyCard: {
+      alignItems: 'center',
+      padding: 40,
+    },
+    emptyText: {
+      fontSize: 16,
+      color: '#64748B',
+      fontWeight: '500',
+    },
+    card: {
+      backgroundColor: '#FFFFFF',
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 12,
+      marginHorizontal: 16,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+      borderWidth: 1,
+      borderColor: 'rgba(0, 0, 0, 0.05)',
+      transform: [{ translateY: -2 }],
+    },
+    cardText: {
+      fontSize: 14,
+      color: '#1F2937',
+      marginBottom: 8,
+      fontWeight: '500',
+    },
+    statusText: {
+      color: '#088395',
+      fontWeight: '600',
+      fontSize: 14,
+      marginTop: 4,
+      backgroundColor: '#EBF4F6',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 12,
+      alignSelf: 'flex-start',
+      textAlign: 'center',
+    },
+    completedText: {
+      color: '#059669',
+      backgroundColor: '#ECFDF5',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 12,
+      fontWeight: '600',
+      fontSize: 14,
+      marginTop: 4,
+      alignSelf: 'flex-start',
+    },
+    pendingText: {
+      color: '#D97706',
+      backgroundColor: '#FEF2F2',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 12,
+      fontWeight: '600',
+      fontSize: 14,
+      marginTop: 4,
+      alignSelf: 'flex-start',
+    },
+    hourglassIcon: {
+      marginRight: 4,
+    },
+    drawer: {
+      backgroundColor: '#FFFFFF',
+      width: '80%',
+    },
+    drawerContent: {
+      flex: 1,
+      padding: 20,
+    },
+    profileSection: {
+      alignItems: 'center',
+      marginBottom: 30,
+      paddingVertical: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: '#E2E8F0',
+    },
+    profileIcon: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      backgroundColor: '#088395',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    profileIconText: {
+      fontSize: 32,
+      color: '#FFFFFF',
+      fontWeight: 'bold',
+    },
+    profileName: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: '#071952',
+      marginBottom: 5,
+    },
+    role: {
+      fontSize: 14,
+      color: '#37B7C3',
+      fontWeight: '500',
+    },
+    drawerItem: {
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+      marginBottom: 8,
+    },
+    activeDrawerItem: {
+      backgroundColor: '#EBF4F6',
+    },
+    drawerItemText: {
+      fontSize: 16,
+      color: '#071952',
+      fontWeight: '500',
+    },
+    signOutItem: {
+      marginTop: 'auto',
+      marginHorizontal: 16,
+      marginBottom: 24,
+      backgroundColor: '#FF3B30',
+      borderRadius: 12,
+      borderWidth: 0,
+      shadowColor: '#FF3B30',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      elevation: 3,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 16,
+    },
+    signOutText: {
+      color: '#FFFFFF',
+      fontWeight: '600',
+      fontSize: 16,
+      textAlign: 'center',
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      backgroundColor: '#FFFFFF',
+      borderBottomWidth: 1,
+      borderBottomColor: '#E2E8F0',
+    },
+    menuButton: {
+      padding: 8,
+    },
+    headerTitle: {
+      marginLeft: 16,
+      fontSize: 20,
+      fontWeight: '600',
+      color: '#071952',
+    },
+    content: {
+      flex: 1,
+      padding: 16,
+    },
+    mapPlaceholder: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#FFFFFF',
+      borderRadius: 16,
+      padding: 20,
+      marginBottom: 16,
+    },
+    mapText: {
+      fontSize: 16,
+      color: '#071952',
+      textAlign: 'center',
+    },
+    profileImageWrapper: {
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+      overflow: 'hidden',
+      marginBottom: 10,
+    },
+    profileImage: {
+      width: '100%',
+      height: '100%',
+      resizeMode: 'cover',
+    },
+    map: { flex: 1, borderRadius: 16 },
+    loaderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    contentMap: {       
+      padding: 0,
+    },
+    noTripsBanner: {
+      position: 'absolute',
+      top: 20,
+      alignSelf: 'center',
+      backgroundColor: '#071952',     
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      borderRadius: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    mapWrapper: {
+      flex: 1,
+    },
+    noTripsText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    actionRow: {                                       
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginTop: 12,
+    },
+    actionBtn: {                                    
+      paddingVertical: 8,
+      paddingHorizontal: 14,
+      borderRadius: 8,
+      marginLeft: 8,
+    },
+    approveBtn: { backgroundColor: '#047857' },
+    modifyBtn: {
+      backgroundColor: '#EBF4F6',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 8,
+      paddingHorizontal: 14,
+      borderRadius: 8,
+    },
+    actionText: {
+      fontWeight: '600',
+      fontSize: 14,
+    },
+                 
+    modalBackdrop: {                         
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.4)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalCard: {                             
+      width: '85%',
+      backgroundColor: '#fff',
+      borderRadius: 16,
+      padding: 20,
+    },
+    modalTitle: {                            
+      fontSize: 18,
+      fontWeight: '600',
+      color: '#071952',
+      marginBottom: 12,
+    },
+    modalInput: {                            
+      borderWidth: 1,
+      borderColor: '#E2E8F0',
+      borderRadius: 8,
+      padding: 10,
+      marginBottom: 12,
+      fontSize: 15,
+    },
+    modalActions: {                          
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginTop: 6,
+    },
+    receiptThumbnail: {
+      width: 80,
+      height: 80,
+      borderRadius: 5,
+      marginTop: 5,
+    },
+    modalBackground: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.9)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    
+    
+    fullImage: {
+      width: '100%',
+      height: '80%',
+      borderRadius: 10,
+    },
+    
+    closeArea: {
+      position: 'absolute',
+      top: 40,
+      right: 20,
+      zIndex: 2,
+      padding: 10,
+    },
+  
+    modalCloseButton: {
+      position: 'absolute',
+      top: 40,
+      right: 20,
+      zIndex: 1,
+    },
+    
+    modalCloseText: {
+      fontSize: 30,
+      color: '#fff',
+      fontWeight: 'bold',
+    },
+    rowBetween: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    statusBadgeBase: {
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 12,
+      alignSelf: 'flex-start',
+      marginLeft: 12,
+      minWidth: 80, 
+      alignItems: 'center', 
+    },
+    
+    statusTextBase: {
+      fontSize: 14,
+      fontWeight: '600',
+      textAlign: 'center',
+  
+    },
+    
+    statusBadgeActive: {
+      backgroundColor: '#E6F4EA',
+    },
+    statusTextActive: {
+      color: '#1E8E3E',
+    },
+    
+    statusBadgeInactive: {
+      backgroundColor: '#FFF4E5',
+    },
+    statusTextInactive: {
+      color: '#B95000',
+    },
+    
+    
+  });
+
+export default styles;
