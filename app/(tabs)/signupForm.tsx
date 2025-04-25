@@ -282,9 +282,9 @@ const styles = StyleSheet.create({
         elevation: 8,
     },
     logo: {
-        width: Math.min(screenWidth * 0.9, 420),
-        height: Math.min(screenHeight * 0.28, 220),
-        maxWidth: '90%',
+        width: Math.min(screenWidth * 0.7, 300),
+        height: Math.min(screenHeight * 0.2, 160),
+        maxWidth: '80%',
         resizeMode: 'contain',
     },
     subtitleText: {
