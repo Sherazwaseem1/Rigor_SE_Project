@@ -336,12 +336,12 @@ const AdminDashboardNew = () => {
                 </View>
                 <View style={styles.tripDetails}>
                   <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Start Location</Text>
-                    <Text style={styles.locationText}>{trip.start_location}</Text>
+                    <Text style={styles.locationLabel}>Trucker Id</Text>
+                    <Text style={styles.locationText}>{trip.trucker_id}</Text>
                   </View>
                   <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Destination</Text>
-                    <Text style={styles.locationText}>{trip.end_location}</Text>
+                    <Text style={styles.locationLabel}>Distance</Text>
+                    <Text style={styles.locationText}>{`${trip.distance} km`}</Text>
                   </View>
                 </View>
                 <View style={styles.statusContainer}>
