@@ -88,7 +88,6 @@ const AdminDashboardNew = () => {
         const profilePicResponse = await getAdminProfileImage(admin.id);
         setProfilePicUrl(profilePicResponse?.profile_pic_url || null);
       } catch (error) {
-        // console.error('Error fetching admin dashboard data:', error);
       } finally {
         setLoading(false);
       }
@@ -110,7 +109,6 @@ const AdminDashboardNew = () => {
           setLocations([loc]);
         }
       } catch (err) {
-        // console.error('Error fetching locations:', err);
         setLocations([]);
       } finally {
         setLocLoading(false);
@@ -148,7 +146,6 @@ const AdminDashboardNew = () => {
        setEditAmt("");
        setEditComment("");
      } catch (err) {
-       console.error("Modify failed", err);
      }
   };
   
@@ -521,7 +518,6 @@ const AdminDashboardNew = () => {
                             )
                           );
                         } catch (err) {
-                          console.error("Approval or rating update failed", err);
                         } finally {
                           setIsRatingVisible(false);
                           setRating(0);
