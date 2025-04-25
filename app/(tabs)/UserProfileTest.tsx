@@ -1,6 +1,3 @@
-// Rewritten UserProfileTest.tsx styled like the dashboards (Admin & Trucker)
-// Consistent layout, colors, typography, shadows, and spacing
-
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -46,7 +43,6 @@ const UserProfileTest = () => {
         const data: Trucker | Admin = isAdmin ? await getAdminById(id) : await getTruckerById(id);
         setUserData(data);
       } catch (err) {
-        console.error('Error fetching user:', err);
       } finally {
         setLoading(false);
       }
@@ -71,7 +67,6 @@ const UserProfileTest = () => {
       const json = await res.json();
       return json.secure_url || null;
     } catch (err) {
-      console.error('Upload error:', err);
       return null;
     }
   };
@@ -99,7 +94,6 @@ const UserProfileTest = () => {
             : await updateTruckerProfilePic(id, uploadedUrl);
           setUserData(updated);
         } catch (err) {
-          console.error('Update profile pic failed:', err);
         }
       }
     }
@@ -113,7 +107,7 @@ const UserProfileTest = () => {
     );
   }
 
-  if (!userData) return null; // ✅ Fixes the "possibly null" TS error
+  if (!userData) return null; 
 
   return (
     <SafeAreaView style={styles.container}>

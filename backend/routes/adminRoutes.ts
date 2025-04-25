@@ -18,7 +18,7 @@ router.post("/", createAdmin);
 router.put("/:id", updateAdmin);
 router.delete("/:id", deleteAdmin);
 router.get("/email/:email", getAdminByEmail);
-router.patch("/profile-pic/:adminId", updateAdminProfilePic); // ✅ New route
+router.patch("/profile-pic/:adminId", updateAdminProfilePic); 
 router.get("/profile-pic/:id", getAdminProfilePic);
 
 export default router;

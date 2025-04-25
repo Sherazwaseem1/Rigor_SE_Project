@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// Define TypeScript interface
 interface ITrucker extends Document {
   trucker_id: number;
   name: string;
@@ -13,7 +12,6 @@ interface ITrucker extends Document {
   profile_pic_url?: string | null; 
 }
 
-// Define Mongoose schema
 const TruckerSchema = new Schema<ITrucker>({
   trucker_id: { type: Number, unique: true, required: true },
   name: { type: String, required: true },

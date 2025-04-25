@@ -10,8 +10,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "../redux/store";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -23,7 +21,6 @@ export default function RootLayout() {
   });
 
 
-  // ✅ Hide splash screen once fonts are loaded
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();

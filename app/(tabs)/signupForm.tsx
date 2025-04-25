@@ -104,7 +104,6 @@ const SignUp = () => {
         try {
             
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            console.log('User signed up:', userCredential.user);
             const newTrucker:NewTrucker = {
                 name,
                 phone_number: phoneNumber,
@@ -116,11 +115,9 @@ const SignUp = () => {
             };
     
             await createTrucker(newTrucker);
-            console.log('Trucker entry created:', newTrucker);
             handleClear(); 
             router.push("/loginForm");
         } catch (error: any) {
-            console.error('Error signing up:', error);
         } finally {
             setLoading(false);
         }
@@ -145,13 +142,11 @@ const SignUp = () => {
                         </View>
                     </TouchableOpacity>
 
-                    {/* Logo */}
                     <View style={styles.logoContainer}>
                         <Image source={require('../../assets/images/truck.png')} style={styles.logo} />
                         <Text style={styles.subtitleText}>Where Every Mile Matters</Text>
                     </View>
 
-                    {/* Input Fields */}
                     <TextInput value={name} style={styles.input} placeholder="Full Name" onChangeText={setName} />
                     
                     <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail} />

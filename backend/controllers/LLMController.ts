@@ -1,8 +1,7 @@
-// controller/estimate.ts
 import { Request, Response } from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI("AIzaSyDaygCJ4NhbRdIC_NTDEXCHAiUemlmpF10"); // Use env for production
+const genAI = new GoogleGenerativeAI("AIzaSyDaygCJ4NhbRdIC_NTDEXCHAiUemlmpF10");
 
 export const estimateTripCostWithLLM = async (req: Request, res: Response) => {
   const { start_location, end_location, distance } = req.body;
@@ -20,7 +19,6 @@ Reply with only a single number. No currency sign. No explanation. Just the numb
 
     res.status(200).json({ estimated_cost: estimatedCost });
   } catch (error) {
-    console.error("Gemini error:", error);
     res.status(500).json({ error: "Failed to estimate trip cost" });
   }
 };

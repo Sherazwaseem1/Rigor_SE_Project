@@ -1,15 +1,11 @@
 import { Request, Response } from "express";
 import Trucker from "../models/trucker";
 
-// 🟢 Create a new trucker
+
 export const createTrucker = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Step 1: Find the max trucker_id
     const lastTrucker = await Trucker.findOne().sort({ trucker_id: -1 });
-    // Step 2: Determine the new trucker_id
     const newId = lastTrucker ? lastTrucker.trucker_id + 1 : 1;
-
-    // Step 3: Create and save the new trucker with the new ID
     const newTrucker = new Trucker({
       ...req.body,
       trucker_id: newId,
@@ -22,7 +18,6 @@ export const createTrucker = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-// 🔵 Get all truckers
 export const getAllTruckers = async (req: Request, res: Response): Promise<void> => {
   try {
     const truckers = await Trucker.find();
@@ -32,22 +27,19 @@ export const getAllTruckers = async (req: Request, res: Response): Promise<void>
   }
 };
 
-// 🟣 Get a single trucker by ID
 export const getTruckerById = async (req: Request, res: Response): Promise<void> => {
   try {
     const trucker = await Trucker.findOne({ trucker_id: Number(req.params.id) });
     if (!trucker) {
       res.status(404).json({ error: "Trucker not found" });
-      return; // ✅ Explicit return to stop execution
+      return;
     }
     res.status(200).json(trucker);
   } catch (error) {
-    console.error("Error fetching trucker:", error);
     res.status(500).json({ error: "Error fetching trucker", details: error });
   }
 };
 
-// 🟡 Get a trucker by email
 export const getTruckerByEmail = async (req: Request, res: Response): Promise<void> => {
   try {
     const trucker = await Trucker.findOne({ email: req.params.email });
@@ -64,7 +56,6 @@ export const getTruckerByEmail = async (req: Request, res: Response): Promise<vo
 };
 
 
-// 🟠 Update a trucker
 export const updateTrucker = async (req: Request, res: Response): Promise<void> => {
   try {
     const updatedTrucker = await Trucker.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -78,7 +69,6 @@ export const updateTrucker = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-// 🔴 Delete a trucker
 export const deleteTrucker = async (req: Request, res: Response): Promise<void> => {
   try {
     const deletedTrucker = await Trucker.findOneAndDelete({ trucker_id: Number(req.params.id) });
@@ -92,8 +82,6 @@ export const deleteTrucker = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-
-// 🟩 Update trucker status by trucker_id
 export const updateTruckerStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const { status } = req.body;
@@ -121,7 +109,6 @@ export const updateTruckerStatus = async (req: Request, res: Response): Promise<
   }
 };
 
-// 🟦 Update trucker profile picture URL by trucker_id
 export const updateTruckerProfilePic = async (req: Request, res: Response): Promise<void> => {
   try {
     const truckerId = Number(req.params.id);
@@ -167,7 +154,7 @@ export const getTruckerProfilePic = async (req: Request, res: Response): Promise
 };
 
 
-// 🟧 Update trucker rating by trucker_id
+
 export const updateTruckerRating = async (req: Request, res: Response): Promise<void> => {
   try {
     const truckerId = Number(req.params.id);

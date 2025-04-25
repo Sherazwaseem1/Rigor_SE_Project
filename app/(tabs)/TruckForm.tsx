@@ -15,7 +15,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "../../hooks/useThemeColor";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { createTruck, getTruckersWithoutTruck, Trucker  } from "../../services/api"; // Adjust the path if needed
+import { createTruck, getTruckersWithoutTruck, Trucker  } from "../../services/api"; 
 import { router } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
@@ -60,7 +60,6 @@ export default function TruckForm() {
         const data = await getTruckersWithoutTruck();
         setTruckers(data);
       } catch (error) {
-        console.error("Failed to fetch truckers:", error);
       }
     };
   
@@ -85,7 +84,6 @@ export default function TruckForm() {
         : {}),
     };
 
-    console.log("Form data to submit:", submissionData);
 
     try {
       const response = await createTruck(submissionData);

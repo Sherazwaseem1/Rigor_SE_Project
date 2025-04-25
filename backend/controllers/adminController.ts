@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Admin from "../models/admin";
 
-// 🟢 Get all admins
 export const getAllAdmins = async (req: Request, res: Response): Promise<void> => {
     try {
         const admins = await Admin.find();
@@ -11,7 +10,7 @@ export const getAllAdmins = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-// 🟣 Get an admin by admin_id
+
 export const getAdminById = async (req: Request, res: Response): Promise<void> => {
     try {
         const admin = await Admin.findOne({ admin_id: Number(req.params.id) });
@@ -27,7 +26,7 @@ export const getAdminById = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-// 🟣 Get an admin by email
+
 export const getAdminByEmail = async (req: Request, res: Response): Promise<void> => {
     try {
         const admin = await Admin.findOne({ email: req.params.email });
@@ -43,10 +42,9 @@ export const getAdminByEmail = async (req: Request, res: Response): Promise<void
     }
 };
 
-// 🟢 Create a new admin
+
 export const createAdmin = async (req: Request, res: Response): Promise<void> => {
     try {
-        // Get the highest current admin_id
         const latestAdmin = await Admin.findOne().sort({ admin_id: -1 });
         const nextId = latestAdmin ? latestAdmin.admin_id + 1 : 1;
 
@@ -62,7 +60,6 @@ export const createAdmin = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-// 🟠 Update an admin by admin_id
 export const updateAdmin = async (req: Request, res: Response): Promise<void> => {
     try {
         const updatedAdmin = await Admin.findOneAndUpdate(
@@ -82,7 +79,6 @@ export const updateAdmin = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-// 🔴 Delete an admin by admin_id
 export const deleteAdmin = async (req: Request, res: Response): Promise<void> => {
     try {
         const deletedAdmin = await Admin.findOneAndDelete({ admin_id: Number(req.params.id) });
@@ -98,7 +94,6 @@ export const deleteAdmin = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-// 🟡 Update admin profile picture
 export const updateAdminProfilePic = async (req: Request, res: Response): Promise<void> => {
     
     const { adminId } = req.params;
@@ -118,12 +113,11 @@ export const updateAdminProfilePic = async (req: Request, res: Response): Promis
 
         res.status(200).json(updatedAdmin);
     } catch (error) {
-        console.error("Error updating admin profile picture:", error);
         res.status(500).json({ error: "Failed to update profile picture", details: error });
     }
 };
 
-// 🟡 Get admin profile picture by admin_id
+
 export const getAdminProfilePic = async (req: Request, res: Response): Promise<void> => {
     try {
         const admin = await Admin.findOne(

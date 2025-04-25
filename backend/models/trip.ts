@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// Define TypeScript interface
 interface ITrip extends Document {
     trip_id: number;
     trucker_id: number;
@@ -16,8 +15,6 @@ interface ITrip extends Document {
     expected_cost?: number; 
 }
 
-
-// Define Mongoose schema
 const TripSchema = new Schema<ITrip>({
     trip_id: { type: Number, unique: true, required: true },
     trucker_id: { type: Number, required: true }, 
@@ -33,7 +30,5 @@ const TripSchema = new Schema<ITrip>({
     expected_cost: { type: Number } 
 });
 
-
-// Export model
 const Trip = mongoose.model<ITrip>("Trip", TripSchema);
 export default Trip;

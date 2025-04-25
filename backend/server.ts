@@ -22,12 +22,10 @@ app.use(cors({ origin: "*" }));
 
 connectDB();
 
-// Health check route
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "API is running..." });
 });
 
-// CRUD OPERATIONS Routes
 app.use("/api/truckers", truckerRoutes);
 app.use("/api/admins", adminRoutes);
 app.use("/api/reimbursements", reimbursementRoutes);

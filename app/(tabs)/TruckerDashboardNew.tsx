@@ -113,7 +113,6 @@ const TruckerDashboardNew = () => {
         setLocations(tripLoc);
         if (tripLoc.length) locationIdRef.current = tripLoc[0].location_id;
       } catch (err) {
-        console.error("Error fetching locations", err);
         setLocations([]);
       } finally {
         if (firstLocLoad.current) {
@@ -162,7 +161,6 @@ const TruckerDashboardNew = () => {
                 timestamp: new Date(),
               });
             } catch (err) {
-              console.warn("updateLocation failed", err);
             }
           }
         }
@@ -328,9 +326,8 @@ const TruckerDashboardNew = () => {
                     try {
                       console.log("Completing")
                       const updated = await completeTrip(ongoingTrip.trip_id);
-                      const updatedStatus = "Inactive";
-
-                      await updateTruckerStatus(ongoingTrip.trucker_id, updatedStatus);
+                      const updatedStatus = "Inactive"; 
+                      const updateResponse = await updateTruckerStatus(ongoingTrip.trucker_id, updatedStatus);
                       if (locationIdRef.current)
                         await deleteLocation(locationIdRef.current);
 
@@ -402,7 +399,6 @@ const TruckerDashboardNew = () => {
                         params: { trip_id: updated.trip_id },
                       });
                     } catch (err) {
-                      console.error("Complete trip failed", err);
                     }
                   }}
                 >
@@ -699,10 +695,10 @@ const styles = StyleSheet.create({
   },
   emptyReimbursementWrapper: {
     flex: 1,
-    backgroundColor: '#EFFFFF',  // light cyan background
+    backgroundColor: '#EFFFFF', 
     alignItems: 'center',
     padding: 16,
-    paddingTop: 40, // adjust this number as needed
+    paddingTop: 40, 
   },
   
   emptyCard: {
