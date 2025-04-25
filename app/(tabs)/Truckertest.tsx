@@ -25,7 +25,6 @@ const TruckersScreen = () => {
       const data = await getAllTruckers();
       setTruckers(data);
     } catch (error) {
-      console.error("Failed to load truckers:", error);
     }
   };
 

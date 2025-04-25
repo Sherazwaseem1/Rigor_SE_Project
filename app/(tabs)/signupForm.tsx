@@ -104,7 +104,6 @@ const SignUp = () => {
         try {
             
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            console.log('User signed up:', userCredential.user);
             const newTrucker:NewTrucker = {
                 name,
                 phone_number: phoneNumber,
@@ -116,11 +115,9 @@ const SignUp = () => {
             };
     
             await createTrucker(newTrucker);
-            console.log('Trucker entry created:', newTrucker);
             handleClear(); 
             router.push("/loginForm");
         } catch (error: any) {
-            console.error('Error signing up:', error);
         } finally {
             setLoading(false);
         }

@@ -60,7 +60,6 @@ export default function TruckForm() {
         const data = await getTruckersWithoutTruck();
         setTruckers(data);
       } catch (error) {
-        console.error("Failed to fetch truckers:", error);
       }
     };
   
@@ -85,7 +84,6 @@ export default function TruckForm() {
         : {}),
     };
 
-    console.log("Form data to submit:", submissionData);
 
     try {
       const response = await createTruck(submissionData);

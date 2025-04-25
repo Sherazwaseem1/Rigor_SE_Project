@@ -33,7 +33,6 @@ const TripAnalytics = () => {
         processRoutes(tripsData);
         processTripStatus(tripsData);
       } catch (error) {
-        console.error('Error fetching trips:', error);
       } finally {
         setLoading(false);
       }

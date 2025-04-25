@@ -43,7 +43,6 @@ const UserProfileTest = () => {
         const data: Trucker | Admin = isAdmin ? await getAdminById(id) : await getTruckerById(id);
         setUserData(data);
       } catch (err) {
-        console.error('Error fetching user:', err);
       } finally {
         setLoading(false);
       }
@@ -68,7 +67,6 @@ const UserProfileTest = () => {
       const json = await res.json();
       return json.secure_url || null;
     } catch (err) {
-      console.error('Upload error:', err);
       return null;
     }
   };
@@ -96,7 +94,6 @@ const UserProfileTest = () => {
             : await updateTruckerProfilePic(id, uploadedUrl);
           setUserData(updated);
         } catch (err) {
-          console.error('Update profile pic failed:', err);
         }
       }
     }

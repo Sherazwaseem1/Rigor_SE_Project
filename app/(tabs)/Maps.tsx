@@ -22,7 +22,6 @@ const Maps: React.FC = () => {
           setLocations(allLocations);
         }
       } catch (error) {
-        console.error("Error fetching locations:", error);
       } finally {
         setLoading(false);
       }
