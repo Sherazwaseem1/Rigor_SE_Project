@@ -244,23 +244,17 @@ export default SignUp;
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
-        paddingTop: Platform.OS === 'ios' ? 40 : 20,
-        paddingHorizontal: 15
+        backgroundColor: '#fff',
     },
     scrollContainer: {
         flexGrow: 1
     },
     container: {
         flex: 1,
-        padding: Math.max(screenWidth * 0.06, 24),
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        paddingTop: 0,
-        paddingBottom: Math.max(screenHeight * 0.06, 48),
-        borderRadius: 20,
-        minHeight: screenHeight * 0.9
+        backgroundColor: '#fff',
+        paddingHorizontal: Math.min(screenWidth * 0.05, 24),
+        paddingTop: Platform.OS === 'ios' ? 0 : Math.min(screenHeight * 0.02, 16),
+        paddingBottom: Math.min(screenHeight * 0.02, 16),
     },
     backButton: {
         flexDirection: 'row',
@@ -305,6 +299,7 @@ const styles = StyleSheet.create({
     logo: {
         width: Math.min(screenWidth * 0.7, 300),
         height: Math.min(screenHeight * 0.2, 160),
+        maxWidth: '80%',
         resizeMode: 'contain',
         transform: [{ scale: 0.95 }],
         opacity: 0.95
@@ -339,10 +334,10 @@ const styles = StyleSheet.create({
     },
     eyeIcon: {
         position: 'absolute',
-        bottom: 20,
-        right: 6,
-        padding: 10,
-        zIndex: 1
+        right: 15,
+        top: '50%',
+        transform: [{ translateY: -12 }],
+        zIndex: 1,
     },
     inputError: {
         borderColor: '#FF3B30'
