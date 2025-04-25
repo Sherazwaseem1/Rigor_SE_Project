@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
+import strict from "node:assert/strict";
 
-const genAI = new GoogleGenerativeAI("AIzaSyDaygCJ4NhbRdIC_NTDEXCHAiUemlmpF10");
+dotenv.config();
 
+const genAI = new GoogleGenerativeAI(process.env.GOOGLEAPI_KEY as string) ;
+// "AIzaSyDaygCJ4NhbRdIC_NTDEXCHAiUemlmpF10"
 export const estimateTripCostWithLLM = async (req: Request, res: Response) => {
   const { start_location, end_location, distance } = req.body;
 
