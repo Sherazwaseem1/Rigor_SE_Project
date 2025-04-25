@@ -124,7 +124,6 @@ export const approveReimbursement = async (req: Request, res: Response): Promise
     }
 };
   
-  /* ─── ✅  Modify reimbursement  (PATCH  /:id)  ------------------- */
 /* ─── ✅  Modify reimbursement  (PATCH  /:id)  ------------------- */
 export const updateReimbursement = async (req: Request, res: Response): Promise<void> => {
     try {

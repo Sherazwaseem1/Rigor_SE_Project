@@ -130,14 +130,18 @@ const UserProfileTest = () => {
 
         <View style={styles.profileCard}>
           <View style={styles.imageWrapper}>
-            <Image
-              source={
-                userData.profile_pic_url
-                  ? { uri: userData.profile_pic_url }
-                  : require('../../assets/images/prof.png')
-              }
-              style={styles.profileImage}
-            />
+          {userData?.profile_pic_url ? (
+              <Image
+                source={{ uri: userData.profile_pic_url }}
+                style={styles.profileImage}
+              />
+            ) : (
+              <View style={styles.profileIcon}>
+                <Text style={styles.profileIconText}>
+                  {userData?.name?.[0] || "?"}
+                </Text>
+              </View>
+            )}
             <TouchableOpacity style={styles.imageOverlayButton} onPress={handleImagePick}>
               <Text style={styles.imageOverlayText}>+</Text>
             </TouchableOpacity>
@@ -224,6 +228,16 @@ const styles = StyleSheet.create({
   },
   infoLabel: { fontSize: 13, color: '#64748B', marginBottom: 4, fontWeight: '500' },
   infoText: { fontSize: 15, color: '#071952', marginBottom: 12, fontWeight: '600' },
+  profileIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#088395",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  profileIconText: { fontSize: 32, color: "#FFFFFF", fontWeight: "bold" },
 });
 
 export default UserProfileTest;

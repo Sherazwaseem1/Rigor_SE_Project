@@ -35,8 +35,6 @@ const FinancialAnalytics = () => {
       try {
         const data = await getAllReimbursements();
         setReimbursements(data);
-
-        // Process status distribution
         const statusCounts = data.reduce(
           (acc, reimbursement) => {
             acc[reimbursement.status] = (acc[reimbursement.status] || 0) + 1;
@@ -57,8 +55,6 @@ const FinancialAnalytics = () => {
             color: '#088395'
           }
         ]);
-
-        // Process amount distribution
         const amountSums = data.reduce(
           (acc, reimbursement) => {
             const amount = parseFloat(reimbursement.amount.$numberDecimal);
@@ -93,7 +89,6 @@ const FinancialAnalytics = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        {/* Header with back button */}
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => router.push('/AdvancedAnalytics')}
@@ -113,7 +108,6 @@ const FinancialAnalytics = () => {
             <ActivityIndicator size="large" color="#088395" />
           ) : (
             <>
-              {/* Status Distribution Chart */}
               <View style={styles.chartContainer}>
                 <Text style={styles.chartTitle}>Reimbursement Status Distribution</Text>
                 <PieChart
@@ -138,8 +132,6 @@ const FinancialAnalytics = () => {
                   absolute
                 />
               </View>
-
-              {/* Amount Distribution Chart */}
               <View style={styles.chartContainer}>
                 <Text style={styles.chartTitle}>Reimbursement Amount ($) Distribution</Text>
                 <PieChart
@@ -164,8 +156,6 @@ const FinancialAnalytics = () => {
                   absolute
                 />
               </View>
-
-              {/* Summary Statistics */}
               <View style={styles.statsContainer}>
                 <Text style={styles.statsTitle}>Summary Statistics</Text>
                 <View style={styles.statsRow}>

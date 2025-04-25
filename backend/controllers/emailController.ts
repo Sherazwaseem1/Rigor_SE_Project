@@ -15,10 +15,10 @@ const transporter = nodemailer.createTransport({
 
 // Exported controller
 export const sendEmail = async (req: Request, res: Response) => {
-  const { to, subject, text } = req.body;
+  const { to, subject, html } = req.body;
 
-  if (!to || !subject || !text) {
-    return res.status(400).json({ error: 'Missing required fields.' });  // ✅ return added
+  if (!to || !subject || !html) {
+     res.status(400).json({ error: 'Missing required fields.' });  // ✅ return added
   }
 
   try {
@@ -26,12 +26,12 @@ export const sendEmail = async (req: Request, res: Response) => {
       from: "dheetcoders25@gmail.com",
       to,
       subject,
-      text,
+      html,
     });
 
-    return res.status(200).json({ message: 'Email sent successfully.' });  // ✅ return added
+    res.status(200).json({ message: 'Email sent successfully.' });  // ✅ return added
   } catch (error) {
     console.error('Email send failed:', error);
-    return res.status(500).json({ error: 'Failed to send email.' });  // ✅ return added
+     res.status(500).json({ error: 'Failed to send email.' });  // ✅ return added
   }
 };
