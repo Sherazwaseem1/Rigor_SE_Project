@@ -4,8 +4,8 @@ import { Platform } from "react-native";
 // ✅ Set API URL based on platform (change IP if needed)
 const API_URL =
   Platform.OS === "web"
-    ? "http://localhost:5000/api"
-    : "http://10.130.10.171:5000/api"; // Replace with your IPv4 if necessary
+    ? "http://localhost:5001/api"
+    : "http://192.168.18.194:5001/api"; // Replace with your IPv4 if necessary
 
 // ✅ Trucker Interfaces
 export interface Trucker {
@@ -108,6 +108,17 @@ export const updateTruckerProfilePic = async (
 export const getTruckerProfilePic = async (truckerId: number) => {
   const response = await axios.get<{ profile_pic_url: string | null }>(
     `${API_URL}/truckers/profile-pic/${truckerId}`
+  );
+  return response.data;
+};
+
+export const updateTruckerRating = async (
+  truckerId: number,
+  rating: number
+): Promise<Trucker> => {
+  const response = await axios.patch<Trucker>(
+    `${API_URL}/truckers/rating/${truckerId}`,
+    { rating }
   );
   return response.data;
 };
@@ -369,6 +380,15 @@ export const completeTrip = async (trip_id: number): Promise<Trip> => {
     throw error;
   }
 };
+
+export const updateTripRating = async (trip_id: number, rating: number): Promise<Trip> => {
+  // Assuming API_URL ends without a trailing slash
+  const response = await axios.patch<Trip>(`${API_URL}/trips/${trip_id}/rating`, {
+    rating,
+  });
+  return response.data;
+};
+
 // ✅ Define TypeScript Interface for Truck
 export interface Truck {
   truck_id: number;
