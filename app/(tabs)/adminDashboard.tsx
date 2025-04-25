@@ -839,7 +839,7 @@ const adminDashboard = () => {
             <View>
               <TouchableOpacity
                 style={styles.advancedButton}
-                onPress={() => router.push("/AdvancedAnalytics")}
+                onPress={() => router.push("/advancedAnalytics")}
               >
                 <Text style={styles.advancedButtonText}>
                   Advanced Analytics
