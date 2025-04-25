@@ -496,8 +496,6 @@ const AdminDashboardNew = () => {
                           const avgRating = ratedTrips.length > 0
                           ? ratedTrips.reduce((sum, trip) => sum + (trip.trip_rating || 0), 0) / ratedTrips.length
                           : 1;
-
-                          console.log("Average rating now: ", avgRating);
                           
                           await updateTruckerRating(trip.trucker_id, parseFloat(avgRating.toFixed(1)));
                           
