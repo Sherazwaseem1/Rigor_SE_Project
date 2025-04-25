@@ -488,17 +488,13 @@ const AdminDashboardNew = () => {
                           await updateTripRating(trip.trip_id, rating);
 
                           const allTruckerTrips = await getTripsByTruckerId(trip.trucker_id);
-                          const completedTripsWithRatings = allTruckerTrips.filter(
-                            (t) => t.status === "Completed" && t.trip_rating != null
-                          );
+                          const completedTrips = allTruckerTrips.filter(t => t.status === "Completed");
 
-                          const allRated = allTruckerTrips
-                                            .filter((t) => t.status === "Completed")
-                                            .every((t) => t.trip_rating != null);
-                          
-                          if (allRated && completedTripsWithRatings.length > 0) {
-                            const avgRating = completedTripsWithRatings.reduce((acc, t) => acc + (t.trip_rating || 0), 0) /completedTripsWithRatings.length;
-                            await updateTruckerRating(trip.trucker_id, parseFloat(avgRating.toFixed(2)));
+                          const allRated = completedTrips.every(t => t.trip_rating != null);
+
+                          if (allRated && completedTrips.length > 0) {
+                            const avgRating = completedTrips.reduce((acc, t) => acc + (t.trip_rating || 0), 0) / completedTrips.length;
+                            await updateTruckerRating(trip.trucker_id, parseFloat(avgRating.toFixed(1)));
                           }
 
                           setReimbursements(prev =>
