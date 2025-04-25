@@ -527,7 +527,11 @@ const AdminDashboardNew = () => {
         );
         return (
           <>
-            <ScrollView>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+            >
               {pendingReimbursements.map((item) => (
                 <View
                   key={item.reimbursement_id}
@@ -768,7 +772,11 @@ const AdminDashboardNew = () => {
 
       case "analytics":
         return (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <View style={[styles.card, styles.analyticsCard]}>
               <Text style={styles.sectionTitle}>Trip Statistics</Text>
               <View style={styles.statRow}>
@@ -844,7 +852,11 @@ const AdminDashboardNew = () => {
       case "approved": {
         const approved = reimbursements.filter((r) => r.status === "Approved");
         return (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             {approved.map((item) => (
               <View
                 key={item.reimbursement_id}
