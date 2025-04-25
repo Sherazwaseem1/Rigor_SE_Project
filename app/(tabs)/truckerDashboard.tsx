@@ -580,7 +580,7 @@ const truckerDashboard = () => {
         </View>
       </SafeAreaView>
     </Drawer>
-  );
+  ); 
 };
 
 
