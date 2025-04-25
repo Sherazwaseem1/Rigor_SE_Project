@@ -235,6 +235,37 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: '500',
     },
+    reimbursementHeader: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 12,
+    },
+
+    reimbursementDate: {
+        fontSize: 13,
+        color: "#64748B",
+        fontWeight: "500",
+    },
+
+    receiptWrapper: {
+        marginTop: 12,
+    },
+
+    receiptLabel: {
+        fontSize: 14,
+        color: "#64748B",
+        marginBottom: 4,
+        fontWeight: "500",
+    },
+
+    receiptImage: {
+        width: "100%",
+        height: 180,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: "#CBD5E1",
+    },
 
 });
 

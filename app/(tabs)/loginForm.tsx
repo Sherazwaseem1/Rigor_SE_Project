@@ -104,7 +104,7 @@ const Login = () => {
         }));
   
         handleClear();
-        router.push("/truckerDashboardNew");
+        router.push("/truckerDashboard");
       }
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {

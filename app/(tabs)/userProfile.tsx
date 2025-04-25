@@ -114,7 +114,7 @@ const userProfile = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={() => router.push(isAdmin ? '/adminDashboard' : '/truckerDashboardNew')}
+            onPress={() => router.push(isAdmin ? '/adminDashboard' : '/truckerDashboard')}
             style={styles.menuButton}
           >
             <IconSymbol name="chevron.left" size={24} color="#071952" />

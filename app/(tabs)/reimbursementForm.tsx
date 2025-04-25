@@ -129,7 +129,7 @@ const ReimbursementFormScreen: React.FC = () =>
     try {
       const response = await createReimbursement(reimbursementData);
       Alert.alert("Success", "Reimbursement request submitted successfully!");
-      router.push("/truckerDashboardNew");
+      router.push("/truckerDashboard");
     } catch (error) {
       const errorMessage = "Failed to submit reimbursement.";
       Alert.alert("Error", errorMessage);
