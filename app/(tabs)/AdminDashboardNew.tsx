@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
-  LayoutAnimation,              // NEW ► for smooth removal
-  UIManager,                    // NEW ► Android enablement
+  LayoutAnimation,        
+  UIManager,                
   Platform,
-  Modal,                    // NEW ► modal prompt
+  Modal,           
   TextInput, 
-  Keyboard,                    // ← 1
+  Keyboard,                
   TouchableWithoutFeedback,
 } from 'react-native';
 import axios from 'axios';  
@@ -38,7 +38,6 @@ const AdminDashboardNew = () => {
   const [truckers, setTruckers] = useState<Trucker[]>([]);
   const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
-  // const [activeSection, setActiveSection] = useState('map');
   const [activeSection, setActiveSection] = useState<'map' | 'trips' | 'reimbursements' | 'approved' | 'truckers' | 'analytics'>('map');
   const [tripFilter, setTripFilter] = useState<'all' | 'ongoing' | 'recent'>('all');
   const isFocused = useIsFocused();
@@ -48,10 +47,10 @@ const AdminDashboardNew = () => {
   const [locations, setLocations] = useState<any[]>([]);
   const [locLoading, setLocLoading] = useState(true);
 
-  const [editVisible, setEditVisible]       = useState(false);   // NEW
-  const [editAmt, setEditAmt]               = useState('');      // NEW
-  const [editComment, setEditComment]       = useState('');      // NEW
-  const [editingId, setEditingId]           = useState<number>(); // NEW
+  const [editVisible, setEditVisible]       = useState(false);  
+  const [editAmt, setEditAmt]               = useState('');     
+  const [editComment, setEditComment]       = useState('');    
+  const [editingId, setEditingId]           = useState<number>();
 
 
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
@@ -83,12 +82,9 @@ const AdminDashboardNew = () => {
         setTrips(tripsData);
         setTruckers(truckersData);
         setReimbursements(reimbursementsData);
-  
-        // fetch profile picture
         const profilePicResponse = await getAdminProfileImage(admin.id);
         setProfilePicUrl(profilePicResponse?.profile_pic_url || null);
       } catch (error) {
-        // console.error('Error fetching admin dashboard data:', error);
       } finally {
         setLoading(false);
       }
@@ -99,7 +95,7 @@ const AdminDashboardNew = () => {
 
   useEffect(() => {
     const fetchLocations = async () => {
-      if (activeSection !== 'map') return;          // only when needed
+      if (activeSection !== 'map') return;       
       setLocLoading(true);
       try {
         if (admin.isAdmin) {
@@ -110,7 +106,6 @@ const AdminDashboardNew = () => {
           setLocations([loc]);
         }
       } catch (err) {
-        // console.error('Error fetching locations:', err);
         setLocations([]);
       } finally {
         setLocLoading(false);
@@ -120,7 +115,7 @@ const AdminDashboardNew = () => {
     fetchLocations();
   }, [activeSection, admin, isFocused]);
   
-  const openModify = (item: Reimbursement) => {                 // NEW
+  const openModify = (item: Reimbursement) => {       
     setEditingId(item.reimbursement_id);
     setEditAmt(parseFloat(item.amount.$numberDecimal).toString());
     setEditComment('');
@@ -135,15 +130,11 @@ const AdminDashboardNew = () => {
          amount: parseFloat(editAmt),
          comments: editComment,
        });
-  
-       // replace the one we edited in state
        setReimbursements((prev) =>
          prev.map((r) =>
            r.reimbursement_id === updated.reimbursement_id ? updated : r
          )
        );
-  
-       // close modal & reset
        setEditVisible(false);
        setEditAmt("");
        setEditComment("");
@@ -268,18 +259,15 @@ const AdminDashboardNew = () => {
         if (locations.length === 0) {
           return (
              <View style={styles.mapWrapper}>
-               {/* empty map so the screen still shows a map */}
                <MapView
                  style={styles.map}
                  initialRegion={{
-                   latitude: 30.3753,      // centre of Pakistan
+                   latitude: 30.3753,    
                    longitude: 69.3451,
                    latitudeDelta: 15,
                    longitudeDelta: 15,
                  }}
                />
-
-               {/* banner over the map */}
                <View style={styles.noTripsBanner}>
                  <Text style={styles.noTripsText}>No active trips</Text>
                </View>
@@ -418,11 +406,10 @@ const AdminDashboardNew = () => {
                     <Text style={[styles.completedBadgeText, { color: '#9B403D' }]}>Pending Approval</Text>
                   </View>
                 </View>
-                {/* NEW ► action buttons */}
                 <View style={styles.actionRow}>
                   <TouchableOpacity
                     style={[styles.actionBtn, styles.modifyBtn]}
-                    onPress={() => openModify(item)}               // MOD ► open modal
+                    onPress={() => openModify(item)}         
                     >
                     <Text style={styles.actionText}>Modify</Text>
                   </TouchableOpacity>
@@ -761,7 +748,7 @@ const AdminDashboardNew = () => {
                 keyboardType="numeric"
                 value={editAmt}
                 onChangeText={setEditAmt}
-                blurOnSubmit      // ← 3
+                blurOnSubmit   
                 onSubmitEditing={Keyboard.dismiss}
               />
 
@@ -902,7 +889,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginLeft: 'auto',
     alignSelf: 'flex-start',
-    // paddingHorizontal: 0,
   },
   truckerAvatar: {
     width: 48,
@@ -1254,18 +1240,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  actionRow: {                                          // NEW
+  actionRow: {                                       
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginTop: 12,
   },
-  actionBtn: {                                          // NEW
+  actionBtn: {                                    
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 8,
     marginLeft: 8,
   },
-  approveBtn: { backgroundColor: '#047857' },           // NEW green
+  approveBtn: { backgroundColor: '#047857' },
   modifyBtn: {
     backgroundColor: '#EBF4F6',
     justifyContent: 'center',
@@ -1274,31 +1260,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 8,
   },
-  // NEW neutral
   actionText: {
     fontWeight: '600',
     fontSize: 14,
   },
                
-  modalBackdrop: {                         // NEW
+  modalBackdrop: {                         
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalCard: {                             // NEW
+  modalCard: {                             
     width: '85%',
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
   },
-  modalTitle: {                            // NEW
+  modalTitle: {                            
     fontSize: 18,
     fontWeight: '600',
     color: '#071952',
     marginBottom: 12,
   },
-  modalInput: {                            // NEW
+  modalInput: {                            
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 8,
@@ -1306,7 +1291,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 15,
   },
-  modalActions: {                          // NEW
+  modalActions: {                          
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginTop: 6,
