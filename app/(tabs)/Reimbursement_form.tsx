@@ -131,7 +131,7 @@ const ReimbursementFormScreen: React.FC = () =>
       Alert.alert("Success", "Reimbursement request submitted successfully!");
       router.push("/TruckerDashboardNew");
     } catch (error) {
-      const errorMessage = error?.response?.data?.error || "Failed to submit reimbursement.";
+      const errorMessage = "Failed to submit reimbursement.";
       Alert.alert("Error", errorMessage);
     }
   };
