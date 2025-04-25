@@ -145,13 +145,11 @@ const SignUp = () => {
                         </View>
                     </TouchableOpacity>
 
-                    {/* Logo */}
                     <View style={styles.logoContainer}>
                         <Image source={require('../../assets/images/truck.png')} style={styles.logo} />
                         <Text style={styles.subtitleText}>Where Every Mile Matters</Text>
                     </View>
 
-                    {/* Input Fields */}
                     <TextInput value={name} style={styles.input} placeholder="Full Name" onChangeText={setName} />
                     
                     <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail} />

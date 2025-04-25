@@ -324,7 +324,7 @@ const TruckerDashboardNew = () => {
                   onPress={async () => {
                     try {
                       const updated = await completeTrip(ongoingTrip.trip_id);
-                      const updatedStatus = "Inactive"; // or any other status you want to set
+                      const updatedStatus = "Inactive"; 
                       const updateResponse = await updateTruckerStatus(ongoingTrip.trucker_id, updatedStatus);
                       if (locationIdRef.current)
                         await deleteLocation(locationIdRef.current);
@@ -633,10 +633,10 @@ const styles = StyleSheet.create({
   },
   emptyReimbursementWrapper: {
     flex: 1,
-    backgroundColor: '#EFFFFF',  // light cyan background
+    backgroundColor: '#EFFFFF', 
     alignItems: 'center',
     padding: 16,
-    paddingTop: 40, // adjust this number as needed
+    paddingTop: 40, 
   },
   
   emptyCard: {

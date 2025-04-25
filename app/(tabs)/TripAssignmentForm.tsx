@@ -134,8 +134,6 @@ const TripAssignmentScreen: React.FC = () => {
 
       const created = await createTrip(newTrip);
       await updateTruckerStatus(selectedTruckerId, "Active");
-      
-      // Get the trucker info for email
       const assignedTrucker = truckers.find(t => t.trucker_id === selectedTruckerId);
       
       if (assignedTrucker) {
