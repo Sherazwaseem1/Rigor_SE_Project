@@ -86,6 +86,16 @@ const SignUp = () => {
     const signUp = async () => {
         if (!validatePassword(password) || !validatePasswordMatch(password)) return;
 
+        if (!phoneNumber.trim()) {
+            alert('Please enter your phone number');
+            return;
+        }
+
+        if (!age.trim()) {
+            alert('Please enter your age');
+            return;
+        }
+
         if (!gender) {
             alert('Please select a gender');
             return;
