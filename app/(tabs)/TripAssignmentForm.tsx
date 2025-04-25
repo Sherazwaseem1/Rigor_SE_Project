@@ -78,7 +78,7 @@ const TripAssignmentScreen: React.FC = () => {
     clearForm();
   }, [isFocused]);
 
-  const handleInputChange = (key: keyof Trip, value: any) => {
+  const handleInputChange = (key: keyof Trip, value) => {
     setForm(f => ({ ...f, [key]: value }));
   };
 
