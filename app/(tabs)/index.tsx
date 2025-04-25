@@ -12,7 +12,6 @@ export default function WelcomeScreen() {
   const textOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Fade in text animation
     Animated.timing(textOpacity, {
       toValue: 1,
       duration: 1000,
@@ -21,7 +20,6 @@ export default function WelcomeScreen() {
 
     const moveAnimation = Animated.loop(
       Animated.sequence([
-        // Move right with scale up
         Animated.parallel([
           Animated.timing(truckPosition, {
             toValue: SCREEN_WIDTH - 235,
@@ -46,7 +44,6 @@ export default function WelcomeScreen() {
             })
           ])
         ]),
-        // Move left with scale up
         Animated.parallel([
           Animated.timing(truckPosition, {
             toValue: -150,
