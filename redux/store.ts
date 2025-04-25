@@ -3,13 +3,12 @@ import { persistStore, persistReducer } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import userReducer from "./slices/userSlice";
 
-// 🔹 Persist Configuration
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
 };
 
-// 🔹 Wrap userReducer with persistReducer
+
 const persistedUserReducer = persistReducer(persistConfig, userReducer);
 
 export const store = configureStore({
@@ -24,7 +23,6 @@ export const store = configureStore({
     }),
 });
 
-// 🔹 Create a persistor to persist the store
 export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
