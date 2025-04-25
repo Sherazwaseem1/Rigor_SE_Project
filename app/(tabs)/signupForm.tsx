@@ -108,7 +108,7 @@ const SignUp = () => {
                 name,
                 phone_number: phoneNumber,
                 email,
-                rating: 0, 
+                rating: 1, 
                 status: "Inactive", 
                 age: parseInt(age, 10),
                 gender

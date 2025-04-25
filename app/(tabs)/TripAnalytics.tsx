@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import { getAllTrips } from '../../services/api';
 import type { Trip } from '../../services/api';
+import { useIsFocused } from "@react-navigation/native";
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +25,7 @@ const TripAnalytics = () => {
   const [numRoutes, setNumRoutes] = useState<string>('5');
   const [filteredRoutes, setFilteredRoutes] = useState<{route: string, count: number}[]>([]);
   const [tripStatusData, setTripStatusData] = useState<{ name: string; count: number; color: string }[]>([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -39,7 +41,7 @@ const TripAnalytics = () => {
     };
 
     fetchTrips();
-  }, []);
+  }, [isFocused]);
 
   const processRoutes = (tripsData: Trip[]) => {
     const routeCounts = tripsData.reduce((acc, trip) => {

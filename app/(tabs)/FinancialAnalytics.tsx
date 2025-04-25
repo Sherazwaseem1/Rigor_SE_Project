@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { PieChart } from 'react-native-chart-kit';
 import { getAllReimbursements } from '@/services/api';
+import { useIsFocused } from "@react-navigation/native";
 
 const { width } = Dimensions.get('window');
 
@@ -29,6 +30,7 @@ const FinancialAnalytics = () => {
   const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
   const [statusDistribution, setStatusDistribution] = useState<{ name: string; count: number; color: string }[]>([]);
   const [amountDistribution, setAmountDistribution] = useState<{ name: string; amount: number; color: string }[]>([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,7 +85,7 @@ const FinancialAnalytics = () => {
     };
 
     fetchData();
-  }, []);
+  }, [isFocused]);
 
   return (
     <SafeAreaView style={styles.container}>

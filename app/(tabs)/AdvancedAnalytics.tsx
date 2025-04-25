@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Feather } from '@expo/vector-icons';
 
+
 const { width } = Dimensions.get('window');
 
 const AdvancedAnalytics = () => {

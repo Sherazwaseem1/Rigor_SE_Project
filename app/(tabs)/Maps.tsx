@@ -5,11 +5,13 @@ import MapView, { Marker } from "react-native-maps";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { getAllLocations, getLocationById } from "../../services/api";
+import { useIsFocused } from "@react-navigation/native";
 
 const Maps: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const [locations, setLocations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -28,7 +30,7 @@ const Maps: React.FC = () => {
     };
 
     fetchLocations();
-  }, [user]);
+  }, [user, isFocused]);
 
   if (loading) {
     return (

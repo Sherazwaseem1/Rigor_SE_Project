@@ -5,6 +5,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { BarChart } from 'react-native-chart-kit';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getAllTruckers, Trucker } from '../../services/api';
+import { useIsFocused } from "@react-navigation/native";
 
 const TruckerPerformanceMetrics = () => {
   const [minRating, setMinRating] = useState('0');
@@ -12,6 +13,7 @@ const TruckerPerformanceMetrics = () => {
   const [filteredTruckers, setFilteredTruckers] = useState<Trucker[]>([]);
   const [statusData, setStatusData] = useState({ active: 0, inactive: 0 });
   const [loading, setLoading] = useState(true);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchTruckers = async () => {
@@ -24,7 +26,7 @@ const TruckerPerformanceMetrics = () => {
       }
     };
     fetchTruckers();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     const filtered = truckers
