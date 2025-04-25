@@ -51,10 +51,16 @@ const Login = () => {
   const signIn = async () => {
     setError('');
   
-    // ✅ Check for empty fields
+    // ✅ Check for empty fields and user type
     if (!email.trim() || !password.trim()) {
       setError("Email and password are required");
       alert("Please enter both email and password");
+      return;
+    }
+
+    if (!userType) {
+      setError("Please select a role (Trucker or Admin)");
+      alert("Please select a role (Trucker or Admin)");
       return;
     }
   
