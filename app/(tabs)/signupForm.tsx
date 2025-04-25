@@ -316,7 +316,8 @@ const styles = StyleSheet.create({
     eyeIcon: {
         position: 'absolute',
         right: 15,
-        top: 12,
+        top: '50%',
+        transform: [{ translateY: -12 }],
         zIndex: 1,
     },
     inputError: {

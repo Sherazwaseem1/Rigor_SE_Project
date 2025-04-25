@@ -4,8 +4,8 @@ import { Platform } from "react-native";
 // ✅ Set API URL based on platform (change IP if needed)
 const API_URL =
   Platform.OS === "web"
-    ? "http://localhost:5001/api"
-    : "http://192.168.18.194:5001/api"; // Replace with your IPv4 if necessary
+    ? "http://localhost:5000/api"
+    : "http://10.130.133.51:5000/api"; // Replace with your IPv4 if necessary
 
 // ✅ Trucker Interfaces
 export interface Trucker {
