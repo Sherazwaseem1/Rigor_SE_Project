@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styles from '../../assets/styles/styleUserProfile';
 import {
   View,
   Text,
@@ -28,7 +29,7 @@ const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dx7hrymxn/image/upload';
 const UPLOAD_PRESET = 'Rigor-code';
 const { width, height } = Dimensions.get('window');
 
-const UserProfileTest = () => {
+const userProfile = () => {
   const { isAdmin, id } = useSelector((state: RootState) => state.user);
   const [userData, setUserData] = useState<Trucker | Admin | null>(null);
   const [loading, setLoading] = useState(true);
@@ -113,7 +114,7 @@ const UserProfileTest = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={() => router.push(isAdmin ? '/AdminDashboardNew' : '/TruckerDashboardNew')}
+            onPress={() => router.push(isAdmin ? '/adminDashboard' : '/truckerDashboardNew')}
             style={styles.menuButton}
           >
             <IconSymbol name="chevron.left" size={24} color="#071952" />
@@ -160,77 +161,5 @@ const UserProfileTest = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: '#EBF4F6', paddingBottom: 32 },
-  loader: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#EBF4F6' },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  menuButton: { padding: 8 },
-  headerTitle: { marginLeft: 16, fontSize: 20, fontWeight: '600', color: '#071952' },
-  profileCard: {
-    alignItems: 'center',
-    padding: 24,
-    backgroundColor: '#FFFFFF',
-    margin: 16,
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  imageWrapper: { position: 'relative' },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderColor: '#E2E8F0',
-    borderWidth: 2,
-  },
-  imageOverlayButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#088395',
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageOverlayText: { color: 'white', fontSize: 20, fontWeight: 'bold' },
-  profileName: { fontSize: 18, fontWeight: '600', color: '#071952', marginTop: 12 },
-  roleLabel: { fontSize: 14, color: '#37B7C3', fontWeight: '500', marginTop: 4 },
-  infoCard: {
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
-    padding: 20,
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    marginTop: 16,
-  },
-  infoLabel: { fontSize: 13, color: '#64748B', marginBottom: 4, fontWeight: '500' },
-  infoText: { fontSize: 15, color: '#071952', marginBottom: 12, fontWeight: '600' },
-  profileIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#088395",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  profileIconText: { fontSize: 32, color: "#FFFFFF", fontWeight: "bold" },
-});
 
-export default UserProfileTest;
+export default userProfile;

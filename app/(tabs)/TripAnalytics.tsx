@@ -19,7 +19,7 @@ import styles from '../../assets/styles/styleTripAnalyticsForm';
 
 const { width } = Dimensions.get('window');
 
-const TripAnalytics = () => {
+const tripAnalytics = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [minTripCount, setMinTripCount] = useState<string>('0');
@@ -122,7 +122,7 @@ const TripAnalytics = () => {
       <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => router.push('/AdvancedAnalytics')}
+          onPress={() => router.push('/advancedAnalytics')}
           style={styles.backButton}
         >
           <IconSymbol name="chevron.left" size={24} color="#071952" />
@@ -240,4 +240,4 @@ const TripAnalytics = () => {
   );
 };
 
-export default TripAnalytics;
+export default tripAnalytics;

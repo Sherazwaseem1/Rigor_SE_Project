@@ -26,7 +26,7 @@ interface Reimbursement {
   receipt_url: string;
 }
 
-const FinancialAnalytics = () => {
+const financialAnalytics = () => {
   const [loading, setLoading] = useState(true);
   const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
   const [statusDistribution, setStatusDistribution] = useState<{ name: string; count: number; color: string }[]>([]);
@@ -93,7 +93,7 @@ const FinancialAnalytics = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={() => router.push('/AdvancedAnalytics')}
+            onPress={() => router.push('/advancedAnalytics')}
             style={styles.backButton}
           >
             <IconSymbol name="chevron.left" size={24} color="#071952" />
@@ -183,4 +183,4 @@ const FinancialAnalytics = () => {
 
 
 
-export default FinancialAnalytics;
+export default financialAnalytics;

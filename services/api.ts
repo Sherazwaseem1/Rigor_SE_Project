@@ -16,7 +16,7 @@ import {
 const API_URL =
   Platform.OS === "web"
     ? "http://localhost:5000/api"
-    : "http:/192.168.90.204:5000/api";
+    : "http://10.130.149.167:5000/api";
 
 export const getAllTruckers = async (): Promise<Trucker[]> => {
   const response = await axios.get<Trucker[]>(`${API_URL}/truckers`);

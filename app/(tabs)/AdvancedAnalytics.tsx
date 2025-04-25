@@ -16,7 +16,7 @@ import styles from '../../assets/styles/styleAdvancedAnalytics';
 
 const { width } = Dimensions.get('window');
 
-const AdvancedAnalytics = () => {
+const advancedAnalytics = () => {
   const analyticsCards = [
     {
       title: 'Trip Analytics',
@@ -40,7 +40,7 @@ const AdvancedAnalytics = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={() => router.push('/AdminDashboardNew')}
+            onPress={() => router.push('/adminDashboard')}
             style={styles.backButton}
           >
             <IconSymbol name="chevron.left" size={24} color="#071952" />
@@ -59,11 +59,11 @@ const AdvancedAnalytics = () => {
               style={styles.card}
               onPress={() => {
                 if (card.title === 'Trip Analytics') {
-                  router.push('/TripAnalytics');
+                  router.push('/tripAnalytics');
                 } else if (card.title === 'Trucker Performance Metrics') {
-                  router.push('/TruckerPerformanceMetrics');
+                  router.push('/truckerPerformanceMetrics');
                 } else if (card.title === 'Financial Analytics') {
-                  router.push('/FinancialAnalytics');
+                  router.push('/financialAnalytics');
                 } else {
                 }
               }}
@@ -85,4 +85,4 @@ const AdvancedAnalytics = () => {
 };
 
 
-export default AdvancedAnalytics;
+export default advancedAnalytics;

@@ -199,7 +199,7 @@ const TripAssignmentScreen: React.FC = () => {
       });
 
       clearForm();
-      router.push("/AdminDashboardNew");
+      router.push("/adminDashboard");
     } catch {
       Alert.alert("Error", "Selected trucker does not have a truck.");
     }
@@ -209,7 +209,7 @@ const TripAssignmentScreen: React.FC = () => {
     <SafeAreaView flex={1} backgroundColor="#fff" padding={20}>
       <ScrollView showsVerticalScrollIndicator={false}
       >
-        <TouchableOpacity onPress={() => router.push('/AdminDashboardNew')} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.push('/adminDashboard')} style={styles.backButton}>
           <IconSymbol name="chevron-left" size={20} color="#202545" />
           <Text style={styles.backLabel}>Back</Text>
         </TouchableOpacity>

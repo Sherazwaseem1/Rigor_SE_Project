@@ -34,7 +34,7 @@ import { useDispatch } from "react-redux";
 import { resetUser } from "../../redux/slices/userSlice";
 import { persistor } from "../../redux/store";
 
-const AdminDashboardNew = () => {
+const adminDashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const admin = useSelector((state: RootState) => state.user);
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -259,14 +259,14 @@ const AdminDashboardNew = () => {
 
       <TouchableOpacity 
         style={styles.drawerItem}
-        onPress={() => router.push('/TruckForm')}
+        onPress={() => router.push('/truckForm')}
       >
         <Text style={styles.drawerItemText}>Add New Truck</Text>
       </TouchableOpacity>
 
       <TouchableOpacity 
         style={styles.drawerItem}
-        onPress={() => router.push('/TripAssignmentForm')}
+        onPress={() => router.push('/tripAssignmentForm')}
       >
         <Text style={styles.drawerItemText}>Assign Trips</Text>
       </TouchableOpacity>
@@ -282,7 +282,7 @@ const AdminDashboardNew = () => {
 
       <TouchableOpacity 
         style={styles.drawerItem}
-        onPress={() => router.push('/UserProfileTest')}
+        onPress={() => router.push('/userProfile')}
       >
         <Text style={styles.drawerItemText}>Profile</Text>
       </TouchableOpacity>
@@ -639,7 +639,7 @@ const AdminDashboardNew = () => {
               <View>
                 <TouchableOpacity 
                   style={styles.advancedButton}
-                  onPress={() => router.push('/AdvancedAnalytics')}
+                  onPress={() => router.push('/advancedAnalytics')}
                 >
                   <Text style={styles.advancedButtonText}>Advanced Analytics</Text>
                 </TouchableOpacity>
@@ -858,4 +858,4 @@ const AdminDashboardNew = () => {
 };
 
 
-export default AdminDashboardNew;
+export default adminDashboard;

@@ -86,7 +86,7 @@ const Login = () => {
         }));
   
         handleClear();
-        router.push("/AdminDashboardNew");
+        router.push("/adminDashboard");
       } else {
         const truckerData = await getTruckerByEmail(email);
         if (!truckerData) {
@@ -104,7 +104,7 @@ const Login = () => {
         }));
   
         handleClear();
-        router.push("/TruckerDashboardNew");
+        router.push("/truckerDashboardNew");
       }
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {
