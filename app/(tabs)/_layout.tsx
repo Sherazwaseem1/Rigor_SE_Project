@@ -13,10 +13,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useRef, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
-// Session timeout in milliseconds (10 seconds for demo)
-const SESSION_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
+const SESSION_TIMEOUT = 10 * 60 * 1000; 
 
-// List of excluded routes (exact paths)
 const EXCLUDED_ROUTES = ['/', '/loginForm', '/signupForm'];
 
 export default function TabLayout() {
@@ -26,69 +24,48 @@ export default function TabLayout() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const appState = useRef(AppState.currentState);
-
-  // More precise route exclusion check
   const isExcluded = EXCLUDED_ROUTES.includes(pathname);
 
-  // Function to start the inactivity timer
   const startInactivityTimer = () => {
-    // Clear any existing timer first
     if (timerRef.current) clearTimeout(timerRef.current);
-    
-    // Only start timer if not on excluded routes
     if (!isExcluded) {
       timerRef.current = setTimeout(() => {
         setShowLogoutModal(true);
       }, SESSION_TIMEOUT);
     }
   };
-
-  // Function to reset the timer
   const resetTimer = () => {
-    // Don't reset if modal is shown or on excluded routes
     if (showLogoutModal || isExcluded) return;
     startInactivityTimer();
   };
 
-  // Effect for app state changes (background/foreground)
   useEffect(() => {
-    // Don't set up timers for excluded routes
     if (isExcluded) return;
-
-    // Initial timer start
     startInactivityTimer();
 
-    // App state change listener
     const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
-      // Reset timer when app comes back to foreground
       if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
         resetTimer();
       }
       appState.current = nextAppState;
     });
 
-    // Cleanup
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
       subscription.remove();
     };
   }, [isExcluded, showLogoutModal]);
-
-  // Effect for route/screen changes
   useEffect(() => {
-    // Reset timer on route change if not excluded
     if (!isExcluded && !showLogoutModal) {
       startInactivityTimer();
     }
   }, [pathname, isExcluded, showLogoutModal]);
 
-  // Handle user interaction
   const handleUserActivity = () => {
     resetTimer();
     Keyboard.dismiss();
   };
 
-  // Handle logout action
   const handleLogout = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     setShowLogoutModal(false);
@@ -101,7 +78,6 @@ export default function TabLayout() {
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={handleUserActivity}>
         <View style={{ flex: 1 }}>
-        {/* Logout modal */}
         {showLogoutModal && !isExcluded && (
           <View style={styles.overlay}>
             <View style={styles.modal}>
@@ -124,7 +100,6 @@ export default function TabLayout() {
           }}
         >
           <Tabs.Screen name="index" />
-          {/* Add other tabs as needed */}
         </Tabs>
         </View>
       </TouchableWithoutFeedback>
