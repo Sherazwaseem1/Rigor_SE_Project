@@ -31,7 +31,6 @@ import { useIsFocused } from "@react-navigation/native";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
-// List of major Pakistani cities
 const pakistaniCities = [
   { label: 'Karachi', value: 'Karachi' },
   { label: 'Lahore', value: 'Lahore' },
@@ -73,7 +72,7 @@ const pakistaniCities = [
   { label: 'Swat', value: 'Swat' },
   { label: 'Gilgit', value: 'Gilgit' },
   { label: 'Skardu', value: 'Skardu' }
-].sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically
+].sort((a, b) => a.label.localeCompare(b.label)); 
 
 const TripAssignmentScreen: React.FC = () => {
   const [truckers, setTruckers] = useState<Trucker[]>([]);
@@ -88,13 +87,8 @@ const TripAssignmentScreen: React.FC = () => {
     expected_cost: 0,
     assigned_by_admin_id: 0,
   });
-  
-  
-  // State for dropdown pickers
   const [startLocationOpen, setStartLocationOpen] = useState(false);
   const [endLocationOpen, setEndLocationOpen] = useState(false);
-  
-  // State for cost estimation
   const [estimatedCost, setEstimatedCost] = useState<string | null>(null);
   const [isLoadingCost, setIsLoadingCost] = useState(false);
   
@@ -113,8 +107,6 @@ const TripAssignmentScreen: React.FC = () => {
     };
     fetchTruckers();
   }, [isFocused]);
-
-  // Reset estimated cost when any inputs change
   useEffect(() => {
     setEstimatedCost(null);
   }, [form.start_location, form.end_location, form.distance]);
@@ -124,7 +116,6 @@ const TripAssignmentScreen: React.FC = () => {
   };
 
   const handleGetCostEstimate = async () => {
-    // Validate required fields
     if (!form.start_location || !form.end_location || !form.distance) {
       Alert.alert(
         "Missing Information", 
@@ -215,7 +206,6 @@ const TripAssignmentScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Header and Back Button */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -327,8 +317,6 @@ const TripAssignmentScreen: React.FC = () => {
           keyboardType="numeric"
           onChangeText={(text) => handleInputChange("expected_cost", parseFloat(text) || 0)}
         />
-
-        {/* Cost Estimation Section */}
         <View style={styles.costEstimationSection}>
           <TouchableOpacity
             style={styles.estimateButton}

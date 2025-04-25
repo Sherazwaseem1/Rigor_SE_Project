@@ -35,7 +35,7 @@ const Login = () => {
     const [loading, setLoading] = React.useState(false)
     const [passwordError, setPasswordError] = React.useState('')
     const [userType, setUserType] = React.useState(''); 
-    const [isPasswordVisible, setIsPasswordVisible] = React.useState(false); // Password visibility state
+    const [isPasswordVisible, setIsPasswordVisible] = React.useState(false); 
     const [error, setError] = React.useState('');
 
   const pickerRef = useRef<Picker<string> | null>(null);
@@ -50,8 +50,7 @@ const Login = () => {
   };
   const signIn = async () => {
     setError('');
-  
-    // ✅ Check for empty fields and user type
+
     if (!email.trim() || !password.trim()) {
       setError("Email and password are required");
       alert("Please enter both email and password");
@@ -159,7 +158,6 @@ const Login = () => {
           </View>
           {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
-          {/* Role Selection */}
           <View style={styles.dropdownWrapper}>
             <TouchableOpacity
               style={styles.fullPickerTouchable}
@@ -211,7 +209,6 @@ const Login = () => {
 
 export default Login;
 
-// Styles
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
