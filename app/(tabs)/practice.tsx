@@ -108,7 +108,6 @@ const TripAssignmentScreen: React.FC = () => {
         const activeTruckers = truckerData.filter(t => t.status === "Inactive");
         setTruckers(activeTruckers);
       } catch (error) {
-        console.error("Error fetching truckers", error);
         Alert.alert("Error", "Could not load truckers.");
       }
     };
@@ -146,7 +145,6 @@ const TripAssignmentScreen: React.FC = () => {
       handleInputChange("expected_cost", parseFloat(costEstimate.estimated_cost));
 
     } catch (error) {
-      console.error("Error getting cost estimate:", error);
       Alert.alert("Error", "Could not get cost estimate. Please try again.");
     } finally {
       setIsLoadingCost(false);
@@ -196,7 +194,6 @@ const TripAssignmentScreen: React.FC = () => {
       router.push('/AdminDashboard');
 
     } catch (error) {
-      console.error("Trip creation error:", error);
       Alert.alert("Unable to Process your request", "Selected trucker does not have a truck");
     }
   };

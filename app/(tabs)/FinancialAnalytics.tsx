@@ -77,7 +77,6 @@ const FinancialAnalytics = () => {
           }
         ]);
       } catch (error) {
-        console.error('Error fetching reimbursement data:', error);
       } finally {
         setLoading(false);
       }

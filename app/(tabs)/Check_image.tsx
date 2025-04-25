@@ -50,7 +50,6 @@ export default function ImagePickerComponent() {
       });
 
       const json = await res.json();
-      console.log('Cloudinary Response:', json);
 
       if (json.secure_url) {
         return json.secure_url;
@@ -59,7 +58,6 @@ export default function ImagePickerComponent() {
         return null;
       }
     } catch (error) {
-      console.error('Cloudinary Upload Error:', error);
       Alert.alert('Upload Failed', 'Something went wrong during upload');
       return null;
     }

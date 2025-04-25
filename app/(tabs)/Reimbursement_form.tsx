@@ -89,14 +89,12 @@ const ReimbursementFormScreen: React.FC = () =>
       });
 
       const json = await res.json();
-      console.log("Cloudinary Response:", json);
 
       if (json.secure_url) return json.secure_url;
 
       Alert.alert("Upload Failed", "No secure_url in Cloudinary response");
       return null;
     } catch (error) {
-      console.error("Cloudinary Upload Error:", error);
       Alert.alert("Upload Failed", "Something went wrong during upload");
       return null;
     }
@@ -131,7 +129,6 @@ const ReimbursementFormScreen: React.FC = () =>
       Alert.alert("Success", "Reimbursement request submitted successfully!");
       router.push("/TruckerDashboardNew");
     } catch (error: any) {
-      console.error("Error submitting reimbursement:", error);
       const errorMessage = error?.response?.data?.error || "Failed to submit reimbursement.";
       Alert.alert("Error", errorMessage);
     }
