@@ -364,18 +364,23 @@ const TruckerDashboardNew = () => {
 
       case "reimbursements":
         return (
-          <ScrollView>
-            {pendingReimbursements.map((r) => (
-              <View key={r.reimbursement_id} style={styles.card}>
-                <Text style={styles.cardText}>Trip ID: {r.trip_id}</Text>
-                <Text style={styles.cardText}>
-                  Amount: $ {parseFloat(r.amount.$numberDecimal).toFixed(2)}
-                </Text>
-                <Text style={styles.pendingText}>Pending</Text>
+          <View style={styles.emptyReimbursementWrapper}>
+            {pendingReimbursements.length === 0 ? (
+              <View style={styles.emptyCard}>
+                <Text style={styles.emptyCardText}>No pending reimbursements</Text>
               </View>
-            ))}
-          </ScrollView>
+            ) : (
+              <ScrollView contentContainerStyle={{ paddingBottom: 16 }}>
+                {pendingReimbursements.map((r) => (
+                  <View key={r.reimbursement_id} style={[styles.card, styles.reimbursementCard]}>
+                    ...
+                  </View>
+                ))}
+              </ScrollView>
+            )}
+          </View>
         );
+  
     }
   };
 
@@ -405,8 +410,9 @@ const TruckerDashboardNew = () => {
               : "Pending Reimbursements"}
           </Text>
         </View>
+
         <View
-          style={[styles.content, activeSection === "map" && styles.contentMap]}
+          style={[styles.container, activeSection === "map" && styles.contentMap]}
         >
           {renderContent()}
         </View>
@@ -493,12 +499,13 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    marginHorizontal: 8,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   cardText: {
     fontSize: 15,
@@ -524,14 +531,51 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     alignSelf: "flex-start",
   },
-  pendingText: {
-    color: "#D97706",
-    backgroundColor: "#FEF2F2",
+  reimbursementCard: {
+    marginHorizontal: 16,
+  },
+  tripIdBadge: {
+    backgroundColor: '#EBF4F6',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  tripIdText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#088395',
+  },
+  reimbursementDetails: {
+    marginVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+    paddingBottom: 8,
+  },
+  amountLabel: {
+    fontSize: 12,
+    color: '#64748B',
+    marginBottom: 4,
+    fontWeight: '500',
+  },
+  amountValue: {
+    fontSize: 20,
+    color: '#071952',
+    fontWeight: '600',
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  pendingBadge: {
+    backgroundColor: '#FEF2F2',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
-    fontWeight: "600",
-    alignSelf: "flex-start",
+  },
+  pendingBadgeText: {
+    color: '#D97706',
+    fontSize: 14,
+    fontWeight: '600',
   },
   completeBtn: {
     marginTop: 16,
@@ -565,6 +609,9 @@ const styles = StyleSheet.create({
   },
   tripHeader: {
     marginBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+    paddingBottom: 8,
   },
   tripRoute: {
     fontSize: 18,
@@ -582,6 +629,40 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginTop: 4,
   },
+  emptyReimbursementWrapper: {
+    flex: 1,
+    backgroundColor: '#EFFFFF',  // light cyan background
+    emptyReimbursementWrapper: {
+    flex: 1,
+    backgroundColor: '#EFFFFF',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 40, // adjust this number as needed
+    },
+    
+    alignItems: 'center',
+    padding: 16,
+  },
+  
+  emptyCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingVertical: 24,
+    paddingHorizontal: 32,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  
+  emptyCardText: {
+    fontSize: 16,
+    color: '#64748B',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  
 });
 
 export default TruckerDashboardNew;
