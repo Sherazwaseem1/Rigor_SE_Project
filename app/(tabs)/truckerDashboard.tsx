@@ -584,4 +584,4 @@ const truckerDashboard = () => {
 };
 
 
-export default TruckerDashboard;
+export default truckerDashboard;
