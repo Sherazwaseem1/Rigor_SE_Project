@@ -112,7 +112,7 @@ const Login = () => {
         alert("Invalid email or password");
       } else {
         setError('An error occurred, please try again');
-        alert("An error occurred during login");
+        alert("Account does not exist");
       }
     } finally {
       setLoading(false);
