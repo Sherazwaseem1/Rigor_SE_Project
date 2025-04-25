@@ -181,7 +181,7 @@ export default function TruckForm() {
               setValue("assigned_trucker_id", itemValue);
             }}
           >
-            <Picker.Item label="-- Select a trucker --" value={undefined} />
+            <Picker.Item label="Select a trucker" value={undefined} />
             {truckers.map((trucker) => (
               <Picker.Item
                 key={trucker.trucker_id}

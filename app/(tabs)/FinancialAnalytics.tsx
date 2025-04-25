@@ -141,10 +141,10 @@ const FinancialAnalytics = () => {
 
               {/* Amount Distribution Chart */}
               <View style={styles.chartContainer}>
-                <Text style={styles.chartTitle}>Reimbursement Amount Distribution</Text>
+                <Text style={styles.chartTitle}>Reimbursement Amount ($) Distribution</Text>
                 <PieChart
                   data={amountDistribution.map(data => ({
-                    name: `$${data.amount.toFixed(2)}`,
+                    name: data.name,
                     population: data.amount,
                     color: data.color,
                     legendFontColor: '#071952',

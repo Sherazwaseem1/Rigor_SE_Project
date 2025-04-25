@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
-  LayoutAnimation,              // NEW ► for smooth removal
-  UIManager,                    // NEW ► Android enablement
+  LayoutAnimation,        
+  UIManager,                
   Platform,
-  Modal,                    // NEW ► modal prompt
+  Modal,           
   TextInput, 
-  Keyboard,                    // ← 1
+  Keyboard,                
   TouchableWithoutFeedback,
 } from 'react-native';
 import axios from 'axios';  
@@ -38,8 +38,8 @@ const AdminDashboardNew = () => {
   const [truckers, setTruckers] = useState<Trucker[]>([]);
   const [reimbursements, setReimbursements] = useState<Reimbursement[]>([]);
   const [loading, setLoading] = useState(true);
-  // const [activeSection, setActiveSection] = useState('map');
-  const [activeSection, setActiveSection] = useState<'map' | 'ongoing' | 'recent' | 'reimbursements' | 'approved' | 'truckers' | 'analytics'>('map');
+  const [activeSection, setActiveSection] = useState<'map' | 'trips' | 'reimbursements' | 'approved' | 'truckers' | 'analytics'>('map');
+  const [tripFilter, setTripFilter] = useState<'all' | 'ongoing' | 'recent'>('all');
   const isFocused = useIsFocused();
   const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
   const dispatch = useDispatch();
@@ -47,14 +47,17 @@ const AdminDashboardNew = () => {
   const [locations, setLocations] = useState<any[]>([]);
   const [locLoading, setLocLoading] = useState(true);
 
-  const [editVisible, setEditVisible]       = useState(false);   // NEW
-  const [editAmt, setEditAmt]               = useState('');      // NEW
-  const [editComment, setEditComment]       = useState('');      // NEW
-  const [editingId, setEditingId]           = useState<number>(); // NEW
+  const [editVisible, setEditVisible]       = useState(false);  
+  const [editAmt, setEditAmt]               = useState('');     
+  const [editComment, setEditComment]       = useState('');    
+  const [editingId, setEditingId]           = useState<number>();
 
 
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
+
+  const [truckerFilter, setTruckerFilter] = useState<'all' | 'active' | 'inactive'>('all');
+
 
   const [isRatingVisible, setIsRatingVisible] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
@@ -79,12 +82,9 @@ const AdminDashboardNew = () => {
         setTrips(tripsData);
         setTruckers(truckersData);
         setReimbursements(reimbursementsData);
-  
-        // fetch profile picture
         const profilePicResponse = await getAdminProfileImage(admin.id);
         setProfilePicUrl(profilePicResponse?.profile_pic_url || null);
       } catch (error) {
-        // console.error('Error fetching admin dashboard data:', error);
       } finally {
         setLoading(false);
       }
@@ -95,7 +95,7 @@ const AdminDashboardNew = () => {
 
   useEffect(() => {
     const fetchLocations = async () => {
-      if (activeSection !== 'map') return;          // only when needed
+      if (activeSection !== 'map') return;       
       setLocLoading(true);
       try {
         if (admin.isAdmin) {
@@ -106,7 +106,6 @@ const AdminDashboardNew = () => {
           setLocations([loc]);
         }
       } catch (err) {
-        // console.error('Error fetching locations:', err);
         setLocations([]);
       } finally {
         setLocLoading(false);
@@ -116,7 +115,7 @@ const AdminDashboardNew = () => {
     fetchLocations();
   }, [activeSection, admin, isFocused]);
   
-  const openModify = (item: Reimbursement) => {                 // NEW
+  const openModify = (item: Reimbursement) => {       
     setEditingId(item.reimbursement_id);
     setEditAmt(parseFloat(item.amount.$numberDecimal).toString());
     setEditComment('');
@@ -131,20 +130,15 @@ const AdminDashboardNew = () => {
          amount: parseFloat(editAmt),
          comments: editComment,
        });
-  
-       // replace the one we edited in state
        setReimbursements((prev) =>
          prev.map((r) =>
            r.reimbursement_id === updated.reimbursement_id ? updated : r
          )
        );
-  
-       // close modal & reset
        setEditVisible(false);
        setEditAmt("");
        setEditComment("");
      } catch (err) {
-       console.error("Modify failed", err);
      }
   };
   
@@ -178,10 +172,10 @@ const AdminDashboardNew = () => {
       </TouchableOpacity>
       
       <TouchableOpacity 
-        style={[styles.drawerItem, activeSection === 'ongoing' && styles.activeDrawerItem]}
-        onPress={() => { setActiveSection('ongoing'); setIsDrawerOpen(false); }}
+        style={[styles.drawerItem, activeSection === 'trips' && styles.activeDrawerItem]}
+        onPress={() => { setActiveSection('trips'); setIsDrawerOpen(false); }}
       >
-        <Text style={styles.drawerItemText}>Ongoing Trips</Text>
+        <Text style={styles.drawerItemText}>Trips</Text>
       </TouchableOpacity>
       
       <TouchableOpacity 
@@ -216,17 +210,12 @@ const AdminDashboardNew = () => {
 
       <TouchableOpacity 
         style={styles.drawerItem}
-        onPress={() => router.push('/TripAssignmentFrom')}
+        onPress={() => router.push('/TripAssignmentForm')}
       >
         <Text style={styles.drawerItemText}>Assign Trips</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={[styles.drawerItem, activeSection === 'recent' && styles.activeDrawerItem]}
-        onPress={() => { setActiveSection('recent'); setIsDrawerOpen(false); }}
-      >
-        <Text style={styles.drawerItemText}>Recent Trips</Text>
-      </TouchableOpacity>
+
       
       <TouchableOpacity 
         style={[styles.drawerItem, activeSection === 'analytics' && styles.activeDrawerItem]}
@@ -269,18 +258,15 @@ const AdminDashboardNew = () => {
         if (locations.length === 0) {
           return (
              <View style={styles.mapWrapper}>
-               {/* empty map so the screen still shows a map */}
                <MapView
                  style={styles.map}
                  initialRegion={{
-                   latitude: 30.3753,      // centre of Pakistan
+                   latitude: 30.3753,    
                    longitude: 69.3451,
                    latitudeDelta: 15,
                    longitudeDelta: 15,
                  }}
                />
-
-               {/* banner over the map */}
                <View style={styles.noTripsBanner}>
                  <Text style={styles.noTripsText}>No active trips</Text>
                </View>
@@ -300,11 +286,38 @@ const AdminDashboardNew = () => {
           </MapView>
         );
       
-      case 'ongoing':
-        const ongoingTrips = trips.filter(trip => trip.status === 'Scheduled');
+      case 'trips':
+        let filteredTrips = trips;
+        if (tripFilter === 'ongoing') {
+          filteredTrips = trips.filter(trip => trip.status === 'Scheduled');
+        } else if (tripFilter === 'recent') {
+          filteredTrips = trips.filter(trip => trip.status === 'Completed');
+        }
+
         return (
           <ScrollView>
-            {ongoingTrips.map(trip => (
+            <View style={styles.filterContainer}>
+              <TouchableOpacity 
+                style={[styles.filterButton, tripFilter === 'all' && styles.activeFilter]}
+                onPress={() => setTripFilter('all')}
+              >
+                <Text style={[styles.filterText, tripFilter === 'all' && styles.activeFilterText]}>All</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.filterButton, tripFilter === 'ongoing' && styles.activeFilter]}
+                onPress={() => setTripFilter('ongoing')}
+              >
+                <Text style={[styles.filterText, tripFilter === 'ongoing' && styles.activeFilterText]}>In Progess</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.filterButton, tripFilter === 'recent' && styles.activeFilter]}
+                onPress={() => setTripFilter('recent')}
+              >
+                <Text style={[styles.filterText, tripFilter === 'recent' && styles.activeFilterText]}>Completed</Text>
+              </TouchableOpacity>
+            </View>
+
+            {filteredTrips.map(trip => (
               <View key={trip.trip_id} style={[styles.card, styles.recentTripCard]}>
                 <View style={styles.tripHeader}>
                   <View style={styles.tripRoute}>
@@ -316,63 +329,30 @@ const AdminDashboardNew = () => {
                 </View>
                 <View style={styles.tripDetails}>
                   <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Start Location</Text>
-                    <Text style={styles.locationText}>{trip.start_location}</Text>
+                    <Text style={styles.locationLabel}>Trucker Id</Text>
+                    <Text style={styles.locationText}>{trip.trucker_id}</Text>
                   </View>
                   <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Destination</Text>
-                    <Text style={styles.locationText}>{trip.end_location}</Text>
+                    <Text style={styles.locationLabel}>Distance</Text>
+                    <Text style={styles.locationText}>{`${trip.distance} km`}</Text>
                   </View>
                 </View>
                 <View style={styles.statusContainer}>
-                  <View style={[styles.completedBadge, { backgroundColor: '#FEF3C7' }]}>
-                    <Text style={[styles.completedBadgeText, { color: '#9B403D' }]}>In Progress</Text>
+                  <View style={[styles.completedBadge, trip.status === 'Scheduled' && { backgroundColor: '#FEF3C7' }]}>
+                    <Text 
+                      style={[styles.completedBadgeText, 
+                        trip.status === 'Scheduled' && { color: '#9B403D' }
+                      ]}
+                    >
+                      {trip.status === 'Scheduled' ? 'In Progress' : 'Completed'}
+                    </Text>
                   </View>
                 </View>
               </View>
             ))}
-            {ongoingTrips.length === 0 && (
+            {filteredTrips.length === 0 && (
               <View style={[styles.card, styles.emptyCard]}>
-                <Text style={styles.emptyText}>No ongoing trips</Text>
-              </View>
-            )}
-          </ScrollView>
-        );
-      
-      case 'recent':
-        const completedTrips = trips.filter(trip => trip.status === 'Completed');
-        return (
-          <ScrollView>
-            {completedTrips.map(trip => (
-              <View key={trip.trip_id} style={[styles.card, styles.recentTripCard]}>
-                <View style={styles.tripHeader}>
-                  <View style={styles.tripRoute}>
-                    <Text style={styles.routeText}>{trip.start_location} → {trip.end_location}</Text>
-                  </View>
-                  <View style={styles.tripIdBadge}>
-                    <Text style={styles.tripIdText}>#{trip.trip_id}</Text>
-                  </View>
-                </View>
-                <View style={styles.tripDetails}>
-                  <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Start Location</Text>
-                    <Text style={styles.locationText}>{trip.start_location}</Text>
-                  </View>
-                  <View style={styles.locationContainer}>
-                    <Text style={styles.locationLabel}>Destination</Text>
-                    <Text style={styles.locationText}>{trip.end_location}</Text>
-                  </View>
-                </View>
-                <View style={styles.statusContainer}>
-                  <View style={styles.completedBadge}>
-                    <Text style={styles.completedBadgeText}>Completed</Text>
-                  </View>
-                </View>
-              </View>
-            ))}
-            {completedTrips.length === 0 && (
-              <View style={[styles.card, styles.emptyCard]}>
-                <Text style={styles.emptyText}>No recent trips available</Text>
+                <Text style={styles.emptyText}>No {tripFilter === 'all' ? '' : tripFilter} trips available</Text>
               </View>
             )}
           </ScrollView>
@@ -425,11 +405,10 @@ const AdminDashboardNew = () => {
                     <Text style={[styles.completedBadgeText, { color: '#9B403D' }]}>Pending Approval</Text>
                   </View>
                 </View>
-                {/* NEW ► action buttons */}
                 <View style={styles.actionRow}>
                   <TouchableOpacity
                     style={[styles.actionBtn, styles.modifyBtn]}
-                    onPress={() => openModify(item)}               // MOD ► open modal
+                    onPress={() => openModify(item)}         
                     >
                     <Text style={styles.actionText}>Modify</Text>
                   </TouchableOpacity>
@@ -528,7 +507,6 @@ const AdminDashboardNew = () => {
                             )
                           );
                         } catch (err) {
-                          console.error("Approval or rating update failed", err);
                         } finally {
                           setIsRatingVisible(false);
                           setRating(0);
@@ -649,9 +627,34 @@ const AdminDashboardNew = () => {
         }
 
       case 'truckers':
+        const filteredTruckers = truckers.filter(trucker => 
+          truckerFilter === 'all' ? true : 
+          truckerFilter === 'active' ? trucker.status === 'Active' : 
+          trucker.status === 'Inactive'
+        );
         return (
           <ScrollView>
-            {truckers.map(trucker => (
+            <View style={styles.filterContainer}>
+              <TouchableOpacity 
+                style={[styles.filterButton, truckerFilter === 'all' && styles.filterButtonActive]}
+                onPress={() => setTruckerFilter('all')}
+              >
+                <Text style={[styles.filterButtonText, truckerFilter === 'all' && styles.filterButtonTextActive]}>All</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.filterButton, truckerFilter === 'active' && styles.filterButtonActive]}
+                onPress={() => setTruckerFilter('active')}
+              >
+                <Text style={[styles.filterButtonText, truckerFilter === 'active' && styles.filterButtonTextActive]}>Active</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.filterButton, truckerFilter === 'inactive' && styles.filterButtonActive]}
+                onPress={() => setTruckerFilter('inactive')}
+              >
+                <Text style={[styles.filterButtonText, truckerFilter === 'inactive' && styles.filterButtonTextActive]}>Inactive</Text>
+              </TouchableOpacity>
+            </View>
+            {filteredTruckers.map(trucker => (
               <View key={trucker.trucker_id} style={[styles.card, styles.truckerCard]}>
                 <View style={styles.truckerHeader}>
                   <View style={styles.truckerInfo}>
@@ -663,11 +666,18 @@ const AdminDashboardNew = () => {
                       <Text style={styles.truckerId}>ID: #{trucker.trucker_id}</Text>
                     </View>
                   </View>
-                  <View style={[styles.statusBadge, { backgroundColor: trucker.status === 'Active' ? '#E6F4EA' : '#FFF4E5' }]}>
-                    <Text style={[styles.statusText, { color: trucker.status === 'Active' ? '#1E8E3E' : '#B95000' }]}>
+                  <View style={[
+                    styles.statusBadgeBase,
+                    trucker.status === 'Active' ? styles.statusBadgeActive : styles.statusBadgeInactive
+                  ]}>
+                    <Text style={[
+                      styles.statusTextBase,
+                      trucker.status === 'Active' ? styles.statusTextActive : styles.statusTextInactive
+                    ]}>
                       {trucker.status}
                     </Text>
                   </View>
+
                 </View>
                 <View style={styles.truckerContact}>
                   <View style={styles.contactItem}>
@@ -709,8 +719,7 @@ const AdminDashboardNew = () => {
             <Feather name="menu" size={24} color="#071952" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{activeSection === 'map' ? 'Live Location' : 
-            activeSection === 'ongoing' ? 'Ongoing Trips' :
-            activeSection === 'recent' ? 'Recent Trips' :
+            activeSection === 'trips' ? 'Trips' :
             activeSection === 'reimbursements' ? 'Pending Reimbursements' :
             activeSection === 'approved' ? 'Approved Reimbursements' :
             activeSection === 'truckers' ? 'Registered Truckers' :
@@ -737,7 +746,7 @@ const AdminDashboardNew = () => {
                 keyboardType="numeric"
                 value={editAmt}
                 onChangeText={setEditAmt}
-                blurOnSubmit      // ← 3
+                blurOnSubmit   
                 onSubmitEditing={Keyboard.dismiss}
               />
 
@@ -775,6 +784,44 @@ const AdminDashboardNew = () => {
 };
 
 const styles = StyleSheet.create({
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
+  filterButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#f3f4f6',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  activeFilter: {
+    backgroundColor: '#088395',
+  },
+  filterText: {
+    fontSize: 14,
+    color: '#4b5563',
+    fontWeight: '500',
+  },
+  activeFilterText: {
+    color: '#ffffff',
+  },
+  filterButtonActive: {
+    backgroundColor: '#088395',
+    borderColor: '#088395',
+  },
+  filterButtonText: {
+    fontSize: 14,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  filterButtonTextActive: {
+    color: '#FFFFFF',
+  },
   advancedButton: {
     backgroundColor: '#088395',
     padding: 12,
@@ -834,12 +881,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   statusBadge: {
+    backgroundColor:'#FFF4E5',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
     marginLeft: 'auto',
     alignSelf: 'flex-start',
-    // paddingHorizontal: 0,
   },
   truckerAvatar: {
     width: 48,
@@ -1191,39 +1238,50 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  actionRow: {                                          // NEW
+  actionRow: {                                       
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginTop: 12,
   },
-  actionBtn: {                                          // NEW
+  actionBtn: {                                    
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 8,
     marginLeft: 8,
   },
-  approveBtn: { backgroundColor: '#047857' },           // NEW green
-  modifyBtn: { backgroundColor: '#EBF4F6' },            // NEW neutral
-  actionText: { fontWeight: '600', color: '#071952' }, 
-  modalBackdrop: {                         // NEW
+  approveBtn: { backgroundColor: '#047857' },
+  modifyBtn: {
+    backgroundColor: '#EBF4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  actionText: {
+    fontWeight: '600',
+    fontSize: 14,
+  },
+               
+  modalBackdrop: {                         
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalCard: {                             // NEW
+  modalCard: {                             
     width: '85%',
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
   },
-  modalTitle: {                            // NEW
+  modalTitle: {                            
     fontSize: 18,
     fontWeight: '600',
     color: '#071952',
     marginBottom: 12,
   },
-  modalInput: {                            // NEW
+  modalInput: {                            
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 8,
@@ -1231,7 +1289,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 15,
   },
-  modalActions: {                          // NEW
+  modalActions: {                          
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginTop: 6,
@@ -1282,6 +1340,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  statusBadgeBase: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    marginLeft: 12,
+    minWidth: 80, 
+    alignItems: 'center', 
+  },
+  
+  statusTextBase: {
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+
+  },
+  
+  statusBadgeActive: {
+    backgroundColor: '#E6F4EA',
+  },
+  statusTextActive: {
+    color: '#1E8E3E',
+  },
+  
+  statusBadgeInactive: {
+    backgroundColor: '#FFF4E5',
+  },
+  statusTextInactive: {
+    color: '#B95000',
+  },
+  
   
 });
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker } from "react-native-maps";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -39,8 +40,9 @@ const Maps: React.FC = () => {
   }
 
   return (
-    <MapView style={styles.map}>
-      {locations.map((location) => (
+    <SafeAreaView style={styles.container}>
+      <MapView style={styles.map}>
+        {locations.map((location) => (
         <Marker
           key={location.location_id}
           coordinate={{
@@ -51,11 +53,15 @@ const Maps: React.FC = () => {
           description={`Timestamp: ${new Date(location.timestamp).toLocaleString()}`}
         />
       ))}
-    </MapView>
+      </MapView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   map: {
     flex: 1,
   },

@@ -10,6 +10,7 @@ import {
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Feather } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
@@ -18,65 +19,66 @@ const AdvancedAnalytics = () => {
     {
       title: 'Trip Analytics',
       description: 'Detailed insights into trip performance and routes',
-      icon: '📊',
+      icon: 'bar-chart-2',
     },
     {
       title: 'Trucker Performance Metrics',
       description: 'Analysis of trucker ratings and efficiency',
-      icon: '👨‍💼',
+      icon: 'user-check',
     },
     {
       title: 'Financial Analytics',
       description: 'Cost analysis and reimbursement trends',
-      icon: '💰',
+      icon: 'dollar-sign',
     },
   ];
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-      {/* Header with back button */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => router.push('/AdminDashboardNew')}
-          style={styles.backButton}
-        >
-          <IconSymbol name="chevron.left" size={24} color="#071952" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Advanced Analytics</Text>
-      </View>
-
-      {/* Cards Container */}
-      <ScrollView 
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {analyticsCards.map((card, index) => (
-          <TouchableOpacity 
-            key={index}
-            style={styles.card}
-            onPress={() => {
-              if (card.title === 'Trip Analytics') {
-                router.push('/TripAnalytics');
-              } else {
-                if (card.title === 'Trucker Performance Metrics') {
-                router.push('/TruckerPerformanceMetrics');
-              } else if (card.title === 'Financial Analytics') {
-                router.push('/FinancialAnalytics');
-              } else {
-                console.log("Navigating to ${card.title}");
-              }
-              }
-            }}
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => router.push('/AdminDashboardNew')}
+            style={styles.backButton}
           >
-            <Text style={styles.cardIcon}>{card.icon}</Text>
-            <Text style={styles.cardTitle}>{card.title}</Text>
-            <Text style={styles.cardDescription}>{card.description}</Text>
+            <IconSymbol name="chevron.left" size={24} color="#071952" />
           </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
+          <Text style={styles.headerTitle}>Advanced Analytics</Text>
+        </View>
+
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {analyticsCards.map((card, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.card}
+              onPress={() => {
+                if (card.title === 'Trip Analytics') {
+                  router.push('/TripAnalytics');
+                } else if (card.title === 'Trucker Performance Metrics') {
+                  router.push('/TruckerPerformanceMetrics');
+                } else if (card.title === 'Financial Analytics') {
+                  router.push('/FinancialAnalytics');
+                } else {
+                  console.log(`Navigating to ${card.title}`);
+                }
+              }}
+            >
+              <Feather
+                name={card.icon as any}
+                size={32}
+                color="#071952"
+                style={styles.cardIcon}
+              />
+              <Text style={styles.cardTitle}>{card.title}</Text>
+              <Text style={styles.cardDescription}>{card.description}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -125,7 +127,6 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardIcon: {
-    fontSize: 32,
     marginBottom: 12,
   },
   cardTitle: {

@@ -84,16 +84,13 @@ const TripAnalytics = () => {
     ]);
   };
 
-  // Process trip data for the bar chart of average distances
   const processTripsData = () => {
     if (!trips.length) return { labels: [], data: [] };
 
-    // Sort trips by start time
     const sortedTrips = [...trips].sort((a, b) => 
       new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
     );
 
-    // Group trips by month and calculate average distances
     const tripsByMonth = sortedTrips.reduce((acc, trip) => {
       const date = new Date(trip.start_time);
       const monthYear = `${date.getMonth() + 1}/${date.getFullYear().toString().slice(2)}`;
@@ -106,7 +103,6 @@ const TripAnalytics = () => {
       return acc;
     }, {} as Record<string, { totalDistance: number; count: number }>);
 
-    // Calculate averages
     const monthlyAverages = Object.entries(tripsByMonth).map(([month, data]) => ({
       month,
       average: data.totalDistance / data.count
@@ -122,7 +118,6 @@ const TripAnalytics = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-      {/* Header with back button */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => router.push('/AdvancedAnalytics')}
@@ -144,7 +139,6 @@ const TripAnalytics = () => {
           </View>
         ) : (
           <>
-            {/* Trip Status Distribution */}
             <View style={styles.chartContainer}>
               <Text style={styles.chartTitle}>Trip Status Distribution</Text>
               {tripStatusData.length > 0 && (
@@ -174,8 +168,6 @@ const TripAnalytics = () => {
                 />
               )}
             </View>
-
-            {/* Longest Routes Section */}
             <View style={styles.chartContainer}>
               <Text style={styles.chartTitle}>Longest Routes</Text>
               <View style={styles.filterContainer}>
@@ -209,7 +201,6 @@ const TripAnalytics = () => {
               )}
             </View>
 
-            {/* Popular Routes Section */}
             <View style={styles.routesContainer}>
               <View style={styles.routeHeader}>
                 <Text style={styles.sectionTitle}>Popular Routes</Text>
@@ -229,7 +220,9 @@ const TripAnalytics = () => {
                   <View key={index} style={styles.routeCard}>
                     <View style={styles.routeInfo}>
                       <Text style={styles.routeText}>{route.route}</Text>
-                      <Text style={styles.tripCount}>{route.count} trips</Text>
+                      <Text style={styles.tripCount}>
+                        {route.count} {route.count === 1 ? 'trip' : 'trips'}
+                      </Text>
                     </View>
                   </View>
                 ))

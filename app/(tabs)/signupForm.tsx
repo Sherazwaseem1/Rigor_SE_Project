@@ -17,13 +17,13 @@ const SignUp = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [repeatPassword, setRepeatPassword] = useState('');  // New state for repeat password
+    const [repeatPassword, setRepeatPassword] = useState(''); 
     const [phoneNumber, setPhoneNumber] = useState('');
     const [age, setAge] = useState('');
     const [gender, setGender] = useState('');
     const [loading, setLoading] = useState(false);
     const [passwordError, setPasswordError] = useState('');
-    const [passwordMatchError, setPasswordMatchError] = useState('');  // New error state for password mismatch
+    const [passwordMatchError, setPasswordMatchError] = useState('');  
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isRepeatPasswordVisible, setIsRepeatPasswordVisible] = useState(false);
@@ -64,12 +64,12 @@ const SignUp = () => {
 
     const onPasswordChange = (text: string) => {
         setPassword(text);
-        validatePassword(text);  // This ensures the password is validated on change
+        validatePassword(text);  
     };
     
     const onRepeatPasswordChange = (text: string) => {
         setRepeatPassword(text);
-        validatePasswordMatch(text);  // Validate match every time the repeat password changes
+        validatePasswordMatch(text);  
     };
 
     const validatePasswordMatch = (repeatPassword: string) => {
@@ -86,6 +86,16 @@ const SignUp = () => {
     const signUp = async () => {
         if (!validatePassword(password) || !validatePasswordMatch(password)) return;
 
+        if (!phoneNumber.trim()) {
+            alert('Please enter your phone number');
+            return;
+        }
+
+        if (!age.trim()) {
+            alert('Please enter your age');
+            return;
+        }
+
         if (!gender) {
             alert('Please select a gender');
             return;
@@ -95,26 +105,22 @@ const SignUp = () => {
             
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             console.log('User signed up:', userCredential.user);
-            // alert('Check your emails');
-
-            //TODO: MAKE SURE TRUCKER_ID IS MAX + 1
             const newTrucker:NewTrucker = {
                 name,
                 phone_number: phoneNumber,
                 email,
-                rating: 0, // Default rating
-                status: "Inactive", // Default status
+                rating: 0, 
+                status: "Inactive", 
                 age: parseInt(age, 10),
                 gender
             };
     
             await createTrucker(newTrucker);
             console.log('Trucker entry created:', newTrucker);
-            handleClear(); // Clear the input fields after successful sign-up
+            handleClear(); 
             router.push("/loginForm");
         } catch (error: any) {
             console.error('Error signing up:', error);
-            // alert(error.message);
         } finally {
             setLoading(false);
         }
@@ -125,13 +131,13 @@ const SignUp = () => {
             <ScrollView 
                 contentContainerStyle={styles.scrollContainer}
                 keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
             >
                 <ThemedView style={styles.container}>
                     
-                    {/* Back Button */}
                     <TouchableOpacity style={styles.backButton} onPress={() => { 
                         handleClear();
-                        router.back(); // Navigate back to the previous screen
+                        router.back(); 
                     } }>
                         <View style={styles.backButtonContent}>
                             <IconSymbol size={24} name="chevron.left" color="#333" />
@@ -179,7 +185,7 @@ const SignUp = () => {
                         style={[styles.input, passwordMatchError ? styles.inputError : null, { paddingRight: 50 }]}
                         placeholder="Repeat Password"
                         autoCapitalize="none"
-                        onChangeText={onRepeatPasswordChange}  // Trigger validation on each change
+                        onChangeText={onRepeatPasswordChange}  
                     />
                     <TouchableOpacity 
                         style={styles.eyeIcon} 
@@ -198,7 +204,7 @@ const SignUp = () => {
                     
                     <TextInput value={age} style={styles.input} placeholder="Age" keyboardType="numeric" onChangeText={setAge} />
                     
-                    {/* Gender Dropdown */}
+
                     <View style={styles.pickerContainer}>
                         <Picker
                             selectedValue={gender}
@@ -212,7 +218,6 @@ const SignUp = () => {
                         </Picker>
                     </View>
 
-                    {/* Loading Indicator or Button */}
                     {loading ? (
                         <ActivityIndicator size="large" color="#0000ff" />
                     ) : (
@@ -222,7 +227,7 @@ const SignUp = () => {
                     )}
                     <TouchableOpacity onPress={() => { 
                         handleClear();
-                        router.push('/loginForm'); // Navigate to the login form
+                        router.push('/loginForm'); 
                     }}>
                         <Text style={styles.signUpText}>
                             Already have an account? <Text style={styles.signUpLink}>Log in</Text>
@@ -235,148 +240,162 @@ const SignUp = () => {
 };
 
 export default SignUp;
-//styling
+
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#fff',
     },
     scrollContainer: {
-        flexGrow: 1,
-        paddingBottom: 20,
+        flexGrow: 1
     },
     container: {
         flex: 1,
-        backgroundColor: '#EBF4F6',
+        backgroundColor: '#fff',
         paddingHorizontal: Math.min(screenWidth * 0.05, 24),
         paddingTop: Platform.OS === 'ios' ? 0 : Math.min(screenHeight * 0.02, 16),
         paddingBottom: Math.min(screenHeight * 0.02, 16),
     },
     backButton: {
-        paddingVertical: Math.max(screenHeight * 0.01, 8),
-        marginTop: Math.max(screenHeight * 0.04, 24),
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        marginTop: 20,
+        marginBottom: 10,
+        zIndex: 1
     },
     backButtonContent: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     backButtonLabel: {
-        fontSize: Math.min(screenWidth * 0.04, 16),
-        marginLeft: Math.max(screenWidth * 0.01, 5),
-        color: '#333',
+        fontSize: Math.min(Math.max(screenWidth * 0.04, 16), 18),
+        color: '#1E293B',
+        marginLeft: 12,
+        fontWeight: '600',
+        letterSpacing: 0.5
     },
     logoContainer: {
         alignItems: 'center',
-        marginTop: Math.min(screenHeight * 0.08, 80),
-        marginBottom: Math.min(screenHeight * 0.05, 40),
-        backgroundColor: '#FFF',
-        padding: 20,
-        borderRadius: 20,
+        marginBottom: Math.max(screenHeight * 0.05, 40),
+        marginTop: 20,
+        paddingTop: Math.max(screenHeight * 0.04, 32),
+        paddingBottom: Math.max(screenHeight * 0.04, 32),
+        marginHorizontal: Math.max(screenWidth * 0.1, 40),
+        backgroundColor: '#FFFFFF',
+        padding: 32,
+        borderRadius: 30,
         shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
-        elevation: 8,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.15,
+        shadowRadius: 24,
+        elevation: 12,
+        borderWidth: 1,
+        borderColor: '#E5E9F0',
+        overflow: 'hidden',
+        width: '85%',
+        alignSelf: 'center'
     },
     logo: {
-        width: Math.min(screenWidth * 0.9, 420),
-        height: Math.min(screenHeight * 0.28, 220),
-        maxWidth: '90%',
+        width: Math.min(screenWidth * 0.7, 300),
+        height: Math.min(screenHeight * 0.2, 160),
+        maxWidth: '80%',
         resizeMode: 'contain',
+        transform: [{ scale: 0.95 }],
+        opacity: 0.95
     },
     subtitleText: {
         fontSize: 18,
-        color: '#088395',
+        color: '#071952',
         textAlign: 'center',
-        marginBottom: Math.min(screenHeight * 0.04, 32),
-        fontWeight: '500',
+        marginTop: 10,
+        fontWeight: '500'
     },
     inputContainer: {
         width: '100%',
         position: 'relative',
-        marginBottom: Math.max(screenHeight * 0.015, 10),
+        marginBottom: Math.max(screenHeight * 0.02, 16)
     },
     input: {
-        backgroundColor: '#FFF',
-        padding: Math.min(screenHeight * 0.018, 16),
-        borderRadius: 12,
-        marginVertical: 8,
         width: '100%',
-        fontSize: 16,
-        color: '#071952',
+        height: Math.max(screenHeight * 0.065, 52),
+        borderWidth: 1,
+        borderColor: '#E5E9F0',
+        borderRadius: 12,
+        paddingHorizontal: Math.max(screenWidth * 0.04, 16),
+        marginBottom: Math.max(screenHeight * 0.02, 16),
+        fontSize: Math.min(screenWidth * 0.04, 16),
+        backgroundColor: '#FFFFFF',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.05,
         shadowRadius: 2,
-        elevation: 2,
+        elevation: 1
     },
     eyeIcon: {
         position: 'absolute',
         right: 15,
-        top: 12,
+        top: '50%',
+        transform: [{ translateY: -12 }],
         zIndex: 1,
     },
     inputError: {
-        borderColor: 'red',
+        borderColor: '#FF3B30'
     },
     errorText: {
-        color: 'red',
+        color: '#FF3B30',
         fontSize: Math.min(screenWidth * 0.035, 14),
         alignSelf: 'flex-start',
+        marginBottom: 8
     },
     button: {
-        backgroundColor: '#071952',
-        padding: Math.min(screenHeight * 0.022, 18),
-        borderRadius: 12,
-        alignItems: 'center',
         width: '100%',
-        marginTop: Math.min(screenHeight * 0.02, 15),
-        marginBottom: Math.min(screenHeight * 0.02, 15),
-        minHeight: 52,
+        height: Math.max(screenHeight * 0.065, 52),
+        backgroundColor: '#071952',
         justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 12,
+        marginTop: Math.max(screenHeight * 0.03, 24),
+        marginBottom: Math.max(screenHeight * 0.02, 16),
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15,
+        shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        elevation: 4,
+        elevation: 5
     },
     buttonText: {
-        color: '#EBF4F6',
+        color: '#FFFFFF',
         fontSize: 18,
-        fontWeight: '700',
+        fontWeight: '700'
     },
     pickerContainer: {
-        backgroundColor: '#FFF',
-        padding: Math.min(screenHeight * 0.018, 16),
-        borderRadius: 12,
-        marginVertical: 8,
         width: '100%',
-        fontSize: 16,
-        color: '#071952',
+        height: Math.max(screenHeight * 0.065, 52),
+        borderWidth: 1,
+        borderColor: '#E5E9F0',
+        borderRadius: 12,
+        marginBottom: Math.max(screenHeight * 0.02, 16),
+        backgroundColor: '#FFFFFF',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.05,
         shadowRadius: 2,
-        elevation: 2,
+        elevation: 1,
+        justifyContent: 'center'
     },
     picker: {
         width: '100%',
-        height: 50,
-        color: '#071952',
-        marginTop: -16,
-        marginBottom: -16,
+        height: 52,
+        color: '#000000'
     },
     signUpText: {
-        fontSize: Math.min(screenWidth * 0.04, 16),
-        color: '#202545',
-        textAlign: 'center',
-        marginTop: Math.max(screenHeight * 0.015, 10),
+        fontSize: 16,
+        color: '#071952',
+        marginTop: Math.max(screenHeight * 0.015, 12),
+        textAlign: 'center'
     },
     signUpLink: {
-        color: '#7F9FB4',
-        fontWeight: 'bold',
-    },
+        color: '#071952',
+        fontWeight: '700'
+    }
 });
