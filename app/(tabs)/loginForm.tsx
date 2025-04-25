@@ -34,7 +34,7 @@ const Login = () => {
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
     const [passwordError, setPasswordError] = React.useState('')
-    const [userType, setUserType] = React.useState('trucker'); // New state for dropdown
+    const [userType, setUserType] = React.useState(''); 
     const [isPasswordVisible, setIsPasswordVisible] = React.useState(false); // Password visibility state
     const [error, setError] = React.useState('');
 

@@ -167,3 +167,30 @@ export const getTruckerProfilePic = async (req: Request, res: Response): Promise
 };
 
 
+// 🟧 Update trucker rating by trucker_id
+export const updateTruckerRating = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const truckerId = Number(req.params.id);
+    const { rating } = req.body;
+
+    if (rating == null || isNaN(rating)) {
+      res.status(400).json({ error: "A valid rating must be provided" });
+      return;
+    }
+
+    const updatedTrucker = await Trucker.findOneAndUpdate(
+      { trucker_id: truckerId },
+      { rating },
+      { new: true }
+    );
+
+    if (!updatedTrucker) {
+      res.status(404).json({ error: "Trucker not found" });
+      return;
+    }
+
+    res.status(200).json(updatedTrucker);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update rating", details: error });
+  }
+};

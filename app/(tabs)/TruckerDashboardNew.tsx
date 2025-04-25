@@ -1,7 +1,3 @@
-// Rewritten TruckerDashboardNew.tsx with AdminDashboardNew styling
-// All logic is preserved, but layout, drawer, header, cards, fonts, colors, spacing updated
-// to match admin dashboard UI
-
 import React, { useEffect, useState, useRef } from "react";
 import {
   View,
@@ -29,6 +25,7 @@ import {
   completeTrip,
   deleteLocation,
   getTruckerProfilePic,
+  updateTruckerStatus,
 } from "../../services/api";
 
 import { RootState } from "../../redux/store";
@@ -75,7 +72,6 @@ const TruckerDashboardNew = () => {
         const truckerData = await getTruckerByEmail(trucker.email);
 
         const profilePicResponse = await getTruckerProfilePic(trucker.id);
-        console.log(profilePicResponse)
         setProfilePicUrl(profilePicResponse?.profile_pic_url || null);
 
         setRating(truckerData.rating || 0);
@@ -203,7 +199,7 @@ const TruckerDashboardNew = () => {
           </View>
         )}
         <Text style={styles.profileName}>{trucker.name}</Text>
-        <Text style={styles.role}>⭐ {rating.toFixed(1)} / 5</Text>
+        <Text style={styles.role}>⭐ {rating.toFixed(1)} / 5.0</Text>
       </View>
 
       {["map", "ongoing", "recent", "reimbursements"].map((section) => (
@@ -319,6 +315,8 @@ const TruckerDashboardNew = () => {
               onPress={async () => {
                 try {
                   const updated = await completeTrip(ongoingTrip.trip_id);
+                  const updatedStatus = "Inactive"; // or any other status you want to set
+                  const updateResponse = await updateTruckerStatus(ongoingTrip.trucker_id, updatedStatus);
                   if (locationIdRef.current)
                     await deleteLocation(locationIdRef.current);
                   setLocations([]);
