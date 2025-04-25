@@ -62,6 +62,8 @@ const TruckerDashboardNew = () => {
   const firstLocLoad = useRef(true);
   const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
 
+  // Added a comment
+
   useEffect(() => {
     const fetchData = async () => {
       try {
