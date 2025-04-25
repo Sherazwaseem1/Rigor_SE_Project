@@ -1,33 +1,22 @@
 import axios from "axios";
 import { Platform } from "react-native";
+import {
+  Trucker,
+  NewTrucker,
+  Admin,
+  Location,
+  Reimbursement,
+  Trip,
+  Truck,
+  CreateTruckRequest,
+  TripCostEstimate,
+  EmailResponse,
+} from "./util";
 
 const API_URL =
   Platform.OS === "web"
     ? "http://localhost:5000/api"
-    : "http:/192.168.90.204:5000/api"; 
-
-export interface Trucker {
-  trucker_id: number;
-  name: string;
-  phone_number: string;
-  email: string;
-  rating: number;
-  status: string;
-  age: number;
-  gender: string;
-  profile_pic_url?: string | null; 
-}
-
-export interface NewTrucker {
-  name: string;
-  phone_number: string;
-  email: string;
-  rating: number;
-  status: string;
-  age: number;
-  gender: string;
-  profile_pic_url?: string | null; 
-}
+    : "http:/192.168.90.204:5000/api";
 
 export const getAllTruckers = async (): Promise<Trucker[]> => {
   const response = await axios.get<Trucker[]>(`${API_URL}/truckers`);
@@ -100,7 +89,6 @@ export const updateTruckerProfilePic = async (
   return response.data;
 };
 
-
 export const getTruckerProfilePic = async (truckerId: number) => {
   const response = await axios.get<{ profile_pic_url: string | null }>(
     `${API_URL}/truckers/profile-pic/${truckerId}`
@@ -118,14 +106,6 @@ export const updateTruckerRating = async (
   );
   return response.data;
 };
-
-export interface Admin {
-  admin_id: number;
-  name: string;
-  email: string;
-  phone_number: string;
-  profile_pic_url?: string;
-}
 
 export const getAllAdmins = async (): Promise<Admin[]> => {
   const response = await axios.get<Admin[]>(`${API_URL}/admins`);
@@ -184,14 +164,6 @@ export const updateAdminProfileImage = async (
   return response.data;
 };
 
-export interface Location {
-  location_id: number;
-  trip_id: number;
-  latitude: number;
-  longitude: number;
-  timestamp: Date;
-}
-
 export const getAllLocations = async (): Promise<Location[]> => {
   const response = await axios.get<Location[]>(`${API_URL}/locations`);
   return response.data;
@@ -232,18 +204,6 @@ export const deleteLocation = async (
   return response.data;
 };
 
-export interface Reimbursement {
-  reimbursement_id: number;
-  trip_id: number;
-  amount: {
-    $numberDecimal: string;
-  };
-  receipt_url: string;
-  status: string;
-  comments?: string;
-  admin_id: number;
-}
-
 export const getAllReimbursements = async (): Promise<Reimbursement[]> => {
   const response = await axios.get<Reimbursement[]>(
     `${API_URL}/reimbursements`
@@ -252,7 +212,7 @@ export const getAllReimbursements = async (): Promise<Reimbursement[]> => {
 };
 
 export const createReimbursement = async (
-  reimbursementData: Omit<Reimbursement, "reimbursement_id"> 
+  reimbursementData: Omit<Reimbursement, "reimbursement_id">
 ): Promise<Reimbursement> => {
   const response = await axios.post<Reimbursement>(
     `${API_URL}/reimbursements`,
@@ -307,21 +267,6 @@ export const modifyReimbursement = async (
     .patch<Reimbursement>(`${API_URL}/reimbursements/${reimbursement_id}`, data)
     .then((r) => r.data);
 
-export interface Trip {
-  trip_id: number;
-  trucker_id: number;
-  truck_id: number;
-  start_location: string;
-  end_location: string;
-  start_time: string;
-  end_time?: string;
-  status: string;
-  distance: number;
-  assigned_by_admin_id: number;
-  trip_rating?: number;
-  expected_cost?: number;
-}
-
 export const getAllTrips = async (): Promise<Trip[]> => {
   const response = await axios.get<Trip[]>(`${API_URL}/trips`);
   return response.data;
@@ -366,32 +311,23 @@ export const completeTrip = async (trip_id: number): Promise<Trip> => {
   }
 };
 
-export const updateTripRating = async (trip_id: number, rating: number): Promise<Trip> => {
-  const response = await axios.patch<Trip>(`${API_URL}/trips/${trip_id}/rating`, {
-    rating,
-  });
+export const updateTripRating = async (
+  trip_id: number,
+  rating: number
+): Promise<Trip> => {
+  const response = await axios.patch<Trip>(
+    `${API_URL}/trips/${trip_id}/rating`,
+    {
+      rating,
+    }
+  );
   return response.data;
 };
-
-export interface Truck {
-  truck_id: number;
-  license_plate: string;
-  chassis_number: string;
-  capacity: number;
-  assigned_trucker_id?: number; 
-}
 
 export const getAllTrucks = async (): Promise<Truck[]> => {
   const response = await axios.get<Truck[]>(`${API_URL}/trucks`);
   return response.data;
 };
-
-export interface CreateTruckRequest {
-  license_plate: string;
-  chassis_number: string;
-  capacity: number;
-  assigned_trucker_id?: number;
-}
 
 export const createTruck = async (
   truckData: CreateTruckRequest
@@ -413,10 +349,6 @@ export const getTruckersWithoutTruck = async (): Promise<Trucker[]> => {
   return response.data;
 };
 
-export interface TripCostEstimate {
-  estimated_cost: string;
-}
-
 export const estimateTripCost = async (
   start_location: string,
   end_location: string,
@@ -433,15 +365,10 @@ export const estimateTripCost = async (
   return response.data;
 };
 
-export interface EmailResponse {
-  success: boolean;
-  message: string;
-}
-
 export const sendEmailNotification = async (
   to: string,
   subject: string,
-  text: string 
+  text: string
 ): Promise<EmailResponse> => {
   const response = await axios.post<EmailResponse>(
     `${API_URL}/email/send-email`,

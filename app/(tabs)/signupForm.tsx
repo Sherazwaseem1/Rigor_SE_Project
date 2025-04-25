@@ -6,11 +6,12 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedText } from '@/components/ThemedText';
-import { createTrucker, NewTrucker } from "../../services/api"; 
+import { createTrucker } from "../../services/api"; 
 import { Picker } from '@react-native-picker/picker'; 
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../../assets/styles/styleSignUpForm';
 
+import {NewTrucker} from '../../services/util';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 

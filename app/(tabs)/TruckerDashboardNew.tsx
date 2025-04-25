@@ -32,7 +32,7 @@ import {
 } from "../../services/api";
 
 import { RootState } from "../../redux/store";
-import { Trip, Reimbursement } from "../../services/api";
+import { Trip, Reimbursement } from "../../services/util";
 
 import { useDispatch } from "react-redux";
 import { resetUser } from "../../redux/slices/userSlice";

@@ -4,9 +4,9 @@ import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { BarChart } from 'react-native-chart-kit';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getAllTruckers, Trucker } from '../../services/api';
+import { getAllTruckers } from '../../services/api';
 import { useIsFocused } from "@react-navigation/native";
-
+import {Trucker} from '../../services/util';
 const TruckerPerformanceMetrics = () => {
   const [minRating, setMinRating] = useState('0');
   const [truckers, setTruckers] = useState<Trucker[]>([]);

@@ -124,7 +124,10 @@ const Login = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
         <ThemedView style={styles.container}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <TouchableOpacity onPress={() => {
+            handleClear()
+            router.back()
+          }} style={styles.backButton}>
             <IconSymbol size={24} name="chevron.left" color="#333" />
             <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
           </TouchableOpacity>

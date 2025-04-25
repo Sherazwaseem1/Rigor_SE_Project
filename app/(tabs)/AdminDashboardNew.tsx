@@ -26,7 +26,7 @@ import { Feather } from '@expo/vector-icons';
 import MapView, { Marker } from 'react-native-maps';   
 import { RootState } from '../../redux/store';
 import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById, approveReimbursement, modifyReimbursement, updateTripRating, updateTruckerRating, getTripsByTruckerId   } from '../../services/api';
-import { Trip, Trucker, Reimbursement } from '../../services/api';
+import { Trip, Trucker, Reimbursement } from '../../services/util';
 import { Image } from 'react-native';
 
 import { useDispatch } from "react-redux";

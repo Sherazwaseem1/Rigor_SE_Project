@@ -13,12 +13,13 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { createReimbursement, Reimbursement } from "../../services/api";
+import { createReimbursement} from "../../services/api";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams } from "expo-router";
 import styles from '../../assets/styles/styleReimbursementForm';
 
+import { Reimbursement } from "../../services/util";
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dx7hrymxn/image/upload";
 const UPLOAD_PRESET = "Rigor-code";
 

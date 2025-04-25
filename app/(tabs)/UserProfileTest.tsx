@@ -21,10 +21,9 @@ import {
   getTruckerById,
   updateTruckerProfilePic,
   updateAdminProfileImage,
-  Trucker,
-  Admin
 } from '../../services/api';
 
+import   {Trucker,Admin} from '../../services/util';
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dx7hrymxn/image/upload';
 const UPLOAD_PRESET = 'Rigor-code';
 const { width, height } = Dimensions.get('window');

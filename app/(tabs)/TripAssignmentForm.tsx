@@ -16,8 +16,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
 import { 
-  Trip, 
-  Trucker, 
   getAllTruckers, 
   createTrip, 
   getTruckByTruckerId, 
@@ -27,6 +25,7 @@ import {
   getTruckersWithoutTruck,
   sendEmailNotification
 } from "../../services/api";
+import { Trip, Trucker } from "../../services/util";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useIsFocused } from "@react-navigation/native";

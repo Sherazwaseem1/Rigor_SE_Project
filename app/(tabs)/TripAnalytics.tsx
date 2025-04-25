@@ -13,7 +13,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import { getAllTrips } from '../../services/api';
-import type { Trip } from '../../services/api';
+import type { Trip } from '../../services/util';
 import { useIsFocused } from "@react-navigation/native";
 import styles from '../../assets/styles/styleTripAnalyticsForm';
 

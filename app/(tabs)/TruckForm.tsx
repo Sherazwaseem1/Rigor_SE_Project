@@ -15,12 +15,13 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "../../hooks/useThemeColor";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { createTruck, getTruckersWithoutTruck, Trucker  } from "../../services/api"; 
+import { createTruck, getTruckersWithoutTruck  } from "../../services/api"; 
 import { router } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 import { useState } from 'react';
-
+import { ActivityIndicator } from "react-native";
+import { Trucker } from "../../services/util"; 
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
@@ -36,6 +37,7 @@ export default function TruckForm() {
 
   const [truckers, setTruckers] = useState<Trucker[]>([]);
   const [selectedTruckerId, setSelectedTruckerId] = useState<string | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   
   const backgroundColor = useThemeColor(
@@ -69,6 +71,7 @@ export default function TruckForm() {
 
   const onSubmit = async (data: TruckFormData) => {
   const capacityValue = Number(data.capacity);
+  if (isSubmitting) return;
 
     if (isNaN(capacityValue) || capacityValue <= 0) {
       alert("Capacity must be a number greater than 0");
@@ -84,6 +87,7 @@ export default function TruckForm() {
         : {}),
     };
 
+    setIsSubmitting(true); 
 
     try {
       const response = await createTruck(submissionData);
@@ -193,11 +197,17 @@ export default function TruckForm() {
         </View>
 
         <TouchableOpacity
-          style={styles.submitButton}
-          onPress={handleSubmit(onSubmit)}
-        >
-          <Text style={styles.submitButtonText}>Submit</Text>
-        </TouchableOpacity>
+            style={[styles.submitButton, isSubmitting && { opacity: 0.6 }]}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <ActivityIndicator size="small" color="#088395" />
+            ) : (
+              <Text style={styles.submitButtonText}>Submit</Text>
+            )}
+          </TouchableOpacity>
+
       </ScrollView>
     </SafeAreaView>
   );
