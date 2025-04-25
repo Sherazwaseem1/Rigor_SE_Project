@@ -20,7 +20,6 @@ Reply with only a single number. No currency sign. No explanation. Just the numb
 
     res.status(200).json({ estimated_cost: estimatedCost });
   } catch (error) {
-    console.error("Gemini error:", error);
     res.status(500).json({ error: "Failed to estimate trip cost" });
   }
 };

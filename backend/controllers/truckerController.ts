@@ -42,7 +42,6 @@ export const getTruckerById = async (req: Request, res: Response): Promise<void>
     }
     res.status(200).json(trucker);
   } catch (error) {
-    console.error("Error fetching trucker:", error);
     res.status(500).json({ error: "Error fetching trucker", details: error });
   }
 };

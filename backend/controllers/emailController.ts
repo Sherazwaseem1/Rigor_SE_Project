@@ -31,7 +31,6 @@ export const sendEmail = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: 'Email sent successfully.' });  // ✅ return added
   } catch (error) {
-    console.error('Email send failed:', error);
      res.status(500).json({ error: 'Failed to send email.' });  // ✅ return added
   }
 };
