@@ -314,13 +314,13 @@ const AdminDashboardNew = () => {
                 style={[styles.filterButton, tripFilter === 'ongoing' && styles.activeFilter]}
                 onPress={() => setTripFilter('ongoing')}
               >
-                <Text style={[styles.filterText, tripFilter === 'ongoing' && styles.activeFilterText]}>Ongoing</Text>
+                <Text style={[styles.filterText, tripFilter === 'ongoing' && styles.activeFilterText]}>In Progess</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.filterButton, tripFilter === 'recent' && styles.activeFilter]}
                 onPress={() => setTripFilter('recent')}
               >
-                <Text style={[styles.filterText, tripFilter === 'recent' && styles.activeFilterText]}>Recent</Text>
+                <Text style={[styles.filterText, tripFilter === 'recent' && styles.activeFilterText]}>Completed</Text>
               </TouchableOpacity>
             </View>
 
