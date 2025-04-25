@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Create transporter
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -13,12 +12,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Exported controller
 export const sendEmail = async (req: Request, res: Response) => {
   const { to, subject, html } = req.body;
 
   if (!to || !subject || !html) {
-     res.status(400).json({ error: 'Missing required fields.' });  // ✅ return added
+     res.status(400).json({ error: 'Missing required fields.' }); 
   }
 
   try {
@@ -29,9 +27,9 @@ export const sendEmail = async (req: Request, res: Response) => {
       html,
     });
 
-    res.status(200).json({ message: 'Email sent successfully.' });  // ✅ return added
+    res.status(200).json({ message: 'Email sent successfully.' });  
   } catch (error) {
     console.error('Email send failed:', error);
-     res.status(500).json({ error: 'Failed to send email.' });  // ✅ return added
+     res.status(500).json({ error: 'Failed to send email.' });  
   }
 };

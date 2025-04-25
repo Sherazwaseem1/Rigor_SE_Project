@@ -1,21 +1,18 @@
 import { Request, Response } from "express";
 import Location from "../models/location";
 
-// Get all locations
-// Get all locations
 export const getAllLocations = async (req: Request, res: Response) => {
     try {
-        const locations = await Location.find(); // ❌ No populate here
+        const locations = await Location.find(); 
         res.status(200).json(locations);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch locations", details: error });
     }
 };
 
-// Get a single location by ID
 export const getLocationById = async (req: Request, res: Response) => {
     try {
-        const location = await Location.findOne({ location_id: Number(req.params.id) }); // ✅ Fix here
+        const location = await Location.findOne({ location_id: Number(req.params.id) });
         if (!location) {
             res.status(404).json({ error: "Location not found" });
             return;
@@ -26,12 +23,9 @@ export const getLocationById = async (req: Request, res: Response) => {
     }
 };
 
-// Create a new location
 export const createLocation = async (req: Request, res: Response): Promise<void> => {
     try {
         const { location_id, trip_id, latitude, longitude, timestamp } = req.body;
-
-        // ✅ Ensure required fields are provided
         if (!location_id || !trip_id || !latitude || !longitude) {
             res.status(400).json({ error: "Missing required fields" });
             return;
@@ -39,7 +33,7 @@ export const createLocation = async (req: Request, res: Response): Promise<void>
 
         const newLocation = new Location({
             location_id: Number(location_id),
-            trip_id: Number(trip_id), // Ensuring number type
+            trip_id: Number(trip_id), 
             latitude: Number(latitude),
             longitude: Number(longitude),
             timestamp: timestamp ? new Date(timestamp) : new Date()
@@ -52,7 +46,6 @@ export const createLocation = async (req: Request, res: Response): Promise<void>
     }
 };
 
-// Update a location by ID
 export const updateLocation = async (req: Request, res: Response): Promise<void> => {
     try {
         const updatedLocation = await Location.findOneAndUpdate(
@@ -72,7 +65,6 @@ export const updateLocation = async (req: Request, res: Response): Promise<void>
     }
 };
 
-// Delete a location by ID
 export const deleteLocation = async (req: Request, res: Response): Promise<void> => {
     try {
         const deletedLocation = await Location.findOneAndDelete({ location_id: Number(req.params.id) }).exec();

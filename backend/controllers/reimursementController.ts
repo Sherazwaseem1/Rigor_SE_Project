@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import Reimbursement from "../models/reimbursement";
-import mongoose from "mongoose";  // For Decimal128
+import mongoose from "mongoose";  
 
-// 🟢 Get all reimbursements
 export const getAllReimbursements = async (req: Request, res: Response): Promise<void> => {
     try {
         const reimbursements = await Reimbursement.find();
@@ -12,31 +11,25 @@ export const getAllReimbursements = async (req: Request, res: Response): Promise
     }
 };
 
-// 🟣 Create a new reimbursement
 export const createReimbursement = async (req: Request, res: Response): Promise<void> => {
     try {
         const { trip_id, amount, receipt_url, status, comments, admin_id } = req.body;
-
-        // ✅ Ensure required fields are provided
         if (!trip_id || !amount || !receipt_url || !status || !admin_id) {
             res.status(400).json({ error: "Missing required fields" });
             return;
         }
 
-        // Find the highest existing reimbursement_id
         const maxReimbursement = await Reimbursement.findOne().sort({ reimbursement_id: -1 });
-
-        // Set the new reimbursement_id to max(currendid) + 1 or 1 if no records exist
         const newReimbursementId = maxReimbursement ? maxReimbursement.reimbursement_id + 1 : 1;
 
         const newReimbursement = new Reimbursement({
-            reimbursement_id: newReimbursementId, // Use the generated ID
-            trip_id: Number(trip_id),  // ✅ Ensure numeric type
+            reimbursement_id: newReimbursementId,
+            trip_id: Number(trip_id), 
             amount,
             receipt_url,
             status,
             comments,
-            admin_id: Number(admin_id) // ✅ Ensure numeric type
+            admin_id: Number(admin_id) 
         });
 
         await newReimbursement.save();
@@ -46,7 +39,6 @@ export const createReimbursement = async (req: Request, res: Response): Promise<
     }
 };
 
-// 🔵 Get reimbursements by trip ID
 export const getReimbursementsByTripId = async (req: Request, res: Response): Promise<void> => {
     try {
         const { trip_id } = req.params;
@@ -63,7 +55,6 @@ export const getReimbursementsByTripId = async (req: Request, res: Response): Pr
     }
 };
 
-// 🟠 Get reimbursements by admin ID
 export const getReimbursementsByAdminId = async (req: Request, res: Response): Promise<void> => {
     try {
         const { admin_id } = req.params;
@@ -80,7 +71,6 @@ export const getReimbursementsByAdminId = async (req: Request, res: Response): P
     }
 };
 
-// 🟡 Get reimbursements by status (e.g., "Pending", "Approved", "Rejected")
 export const getReimbursementsByStatus = async (req: Request, res: Response): Promise<void> => {
     try {
         const { status } = req.params;
@@ -97,12 +87,10 @@ export const getReimbursementsByStatus = async (req: Request, res: Response): Pr
     }
 };
 
-/* ─── NEW HELPERS ──────────────────────────────────────────────── */
 const findByNumericId = (id: number) =>
     ({ reimbursement_id: id } as const);
   
-  /* ─── ✅  Approve reimbursement  (PATCH  /:id/approve) ────────── */
-/* ─── ✅  Approve reimbursement  (PATCH  /:id/approve) ────────── */
+ 
 export const approveReimbursement = async (req: Request, res: Response): Promise<void> => {
     try {
       const id = Number(req.params.reimbursement_id);
@@ -124,23 +112,19 @@ export const approveReimbursement = async (req: Request, res: Response): Promise
     }
 };
   
-/* ─── ✅  Modify reimbursement  (PATCH  /:id)  ------------------- */
 export const updateReimbursement = async (req: Request, res: Response): Promise<void> => {
     try {
       const id = Number(req.params.reimbursement_id);
       const { amount, comments } = req.body;
-  
-      // build update object dynamically
       const update: any = {};
+
       if (amount !== undefined) {
-        // Fix: Properly convert amount to string first
         update.amount = mongoose.Types.Decimal128.fromString(amount.toString());
       }
       if (comments !== undefined) {
-        // fetch existing so we can append
         const existing = (await Reimbursement.findOne(findByNumericId(id)))?.comments || "";
         update.comments = existing
-          ? `${existing}\n${comments}`    // concatenate on new line
+          ? `${existing}\n${comments}`   
           : comments;
       }
 

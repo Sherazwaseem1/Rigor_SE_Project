@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Trip from "../models/trip";
 
-// 🟢 Get all trips
 export const getAllTrips = async (req: Request, res: Response): Promise<void> => {
     try {
         const trips = await Trip.find();
@@ -11,7 +10,6 @@ export const getAllTrips = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-// 🔵 Get trips by trucker ID
 export const getTripsByTruckerId = async (req: Request, res: Response): Promise<void> => {
     try {
         const { trucker_id } = req.params;
@@ -28,7 +26,6 @@ export const getTripsByTruckerId = async (req: Request, res: Response): Promise<
     }
 };
 
-// 🟣 Get trips by admin ID
 export const getTripsByAdminId = async (req: Request, res: Response): Promise<void> => {
     try {
         const { admin_id } = req.params;
@@ -45,7 +42,6 @@ export const getTripsByAdminId = async (req: Request, res: Response): Promise<vo
     }
 };
 
-// 🟠 Get trips by status (e.g., "Completed", "In Progress", etc.)
 export const getTripsByStatus = async (req: Request, res: Response): Promise<void> => {
     try {
         const { status } = req.params;
@@ -62,7 +58,6 @@ export const getTripsByStatus = async (req: Request, res: Response): Promise<voi
     }
 };
 
-// 🟢 Create a new trip
 export const createTrip = async (req: Request, res: Response): Promise<void> => {
     try {
         const {
@@ -76,10 +71,9 @@ export const createTrip = async (req: Request, res: Response): Promise<void> => 
             distance,
             assigned_by_admin_id,
             trip_rating,
-            expected_cost // ✅ Added expected_cost
+            expected_cost 
         } = req.body;
 
-        // ✅ Ensure required fields are provided (excluding trip_id now)
         if (
             !trucker_id ||
             !truck_id ||
@@ -95,7 +89,6 @@ export const createTrip = async (req: Request, res: Response): Promise<void> => 
             return;
         }
 
-        // ✅ Get the max existing trip_id
         const latestTrip = await Trip.findOne().sort({ trip_id: -1 }).exec();
         const newTripId = latestTrip ? latestTrip.trip_id + 1 : 1;
 
@@ -111,7 +104,7 @@ export const createTrip = async (req: Request, res: Response): Promise<void> => 
             distance: Number(distance),
             assigned_by_admin_id: Number(assigned_by_admin_id),
             trip_rating: trip_rating ? Number(trip_rating) : undefined,
-            expected_cost: expected_cost ? Number(expected_cost) : undefined // ✅ Store expected_cost
+            expected_cost: expected_cost ? Number(expected_cost) : undefined 
         });
 
         await newTrip.save();
@@ -122,10 +115,9 @@ export const createTrip = async (req: Request, res: Response): Promise<void> => 
 };
 
 
-// ─── ✅  Update a trip (PATCH /:trip_id) ───────────────────────────
 export const updateTrip = async (req: Request, res: Response): Promise<void> => {
     try {
-      const tripId = Number(req.params.trip_id);  // Use only trip_id as defined in route
+      const tripId = Number(req.params.trip_id); 
       const updates = req.body;
       
       const updated = await Trip.findOneAndUpdate(
@@ -145,7 +137,6 @@ export const updateTrip = async (req: Request, res: Response): Promise<void> => 
     }
   };
 
-  // ✅ Update Trip Rating
 export const rateTrip = async (req: Request, res: Response): Promise<void> => {
     try {
       const tripId = Number(req.params.trip_id);
