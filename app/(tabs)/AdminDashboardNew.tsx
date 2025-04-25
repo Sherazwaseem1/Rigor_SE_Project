@@ -15,6 +15,7 @@ import {
   TextInput, 
   Keyboard,                
   TouchableWithoutFeedback,
+  RefreshControl,
 } from 'react-native';
 import axios from 'axios';  
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -64,6 +65,8 @@ const AdminDashboardNew = () => {
   const [isRatingVisible, setIsRatingVisible] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
   const [rating, setRating] = useState<number>(0);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -116,6 +119,57 @@ const AdminDashboardNew = () => {
 
     fetchLocations();
   }, [activeSection, admin, isFocused]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      switch (activeSection) {
+        case 'map':
+          if (admin.isAdmin) {
+            const locs = await getAllLocations();
+            setLocations(locs);
+          } else {
+            const loc = await getLocationById(admin.id);
+            setLocations([loc]);
+          }
+          break;
+  
+        case 'trips': {
+          const tripsData = await getAllTrips();
+          setTrips(tripsData);
+          break;
+        }
+  
+        case 'reimbursements': {
+          const data = await getAllReimbursements();
+          setReimbursements(data);
+          break;
+        }
+  
+        case 'truckers': {
+          const data = await getAllTruckers();
+          setTruckers(data);
+          break;
+        }
+  
+        case 'analytics': {
+          const [t, r, tr] = await Promise.all([
+            getAllTrips(),
+            getAllReimbursements(),
+            getAllTruckers(),
+          ]);
+          setTrips(t);
+          setReimbursements(r);
+          setTruckers(tr);
+          break;
+        }
+      }
+    } catch (err) {
+      console.warn('Refresh failed:', err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
   
   const openModify = (item: Reimbursement) => {       
     setEditingId(item.reimbursement_id);
@@ -297,7 +351,11 @@ const AdminDashboardNew = () => {
         }
 
         return (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <View style={styles.filterContainer}>
               <TouchableOpacity 
                 style={[styles.filterButton, tripFilter === 'all' && styles.activeFilter]}
@@ -364,7 +422,11 @@ const AdminDashboardNew = () => {
         const pendingReimbursements = reimbursements.filter(r => r.status === 'Pending');
         return (
           <>
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             {pendingReimbursements.map(item => (
               <View key={item.reimbursement_id} style={[styles.card, styles.recentTripCard]}>
                 <View style={styles.tripHeader}>
@@ -528,7 +590,11 @@ const AdminDashboardNew = () => {
 
         case 'analytics':
           return (
-            <ScrollView>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+            >
               <View style={[styles.card, styles.analyticsCard]}>
                 <Text style={styles.sectionTitle}>Trip Statistics</Text>
                 <View style={styles.statRow}>
@@ -584,7 +650,11 @@ const AdminDashboardNew = () => {
         case 'approved': {
           const approved = reimbursements.filter(r => r.status === 'Approved');
           return (
-            <ScrollView>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+            >
               {approved.map(item => (
                 <View key={item.reimbursement_id} style={[styles.card, styles.recentTripCard]}>
                   <View style={styles.tripHeader}>
@@ -633,7 +703,11 @@ const AdminDashboardNew = () => {
           trucker.status === 'Inactive'
         );
         return (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <View style={styles.filterContainer}>
               <TouchableOpacity 
                 style={[styles.filterButton, truckerFilter === 'all' && styles.filterButtonActive]}
