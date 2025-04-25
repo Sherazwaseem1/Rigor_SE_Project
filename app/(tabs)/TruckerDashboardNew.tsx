@@ -199,7 +199,7 @@ const TruckerDashboardNew = () => {
           </View>
         )}
         <Text style={styles.profileName}>{trucker.name}</Text>
-        <Text style={styles.role}>⭐ {rating.toFixed(1)} / 5</Text>
+        <Text style={styles.role}>⭐ {rating.toFixed(1)} / 5.0</Text>
       </View>
 
       {["map", "ongoing", "recent", "reimbursements"].map((section) => (
