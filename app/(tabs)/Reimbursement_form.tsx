@@ -17,6 +17,7 @@ import { createReimbursement, Reimbursement } from "../../services/api";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams } from "expo-router";
+import styles from '../../assets/styles/styleReimbursementForm';
 
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dx7hrymxn/image/upload";
 const UPLOAD_PRESET = "Rigor-code";
@@ -179,50 +180,5 @@ const ReimbursementFormScreen: React.FC = () =>
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#f9f9f9",
-  },
-  container: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  heading: {
-    marginTop: 30,
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 30,
-    textAlign: "center",
-    color: "#333",
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 6,
-    marginTop: 15,
-    color: "#555",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 8,
-    fontSize: 16,
-  },
-  buttonContainer: {
-    marginTop: 30,
-    backgroundColor: "#007AFF",
-    borderRadius: 8,
-    overflow: "hidden",
-  },
-  image: {
-    width: 300,
-    height: 300,
-    marginTop: 20,
-    borderRadius: 10,
-    alignSelf: "center",
-  },
-});
 
 export default ReimbursementFormScreen;
