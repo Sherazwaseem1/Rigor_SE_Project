@@ -63,7 +63,6 @@ const AdvancedAnalytics = () => {
                 } else if (card.title === 'Financial Analytics') {
                   router.push('/FinancialAnalytics');
                 } else {
-                  console.log(`Navigating to ${card.title}`);
                 }
               }}
             >
