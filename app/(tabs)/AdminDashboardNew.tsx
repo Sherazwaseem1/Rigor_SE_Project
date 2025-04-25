@@ -23,7 +23,7 @@ import { Drawer } from 'react-native-drawer-layout';
 import { Feather } from '@expo/vector-icons';
 import MapView, { Marker } from 'react-native-maps';   
 import { RootState } from '../../redux/store';
-import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById, approveReimbursement, modifyReimbursement   } from '../../services/api';
+import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById, approveReimbursement, modifyReimbursement, updateTripRating   } from '../../services/api';
 import { Trip, Trucker, Reimbursement } from '../../services/api';
 import { Image } from 'react-native';
 
@@ -506,7 +506,8 @@ const AdminDashboardNew = () => {
                             admin.id
                           );
 
-                          // await updateTruckerRating(trip.trucker_id, rating);
+                          await updateTripRating(trip.trip_id, rating);
+
 
                           setReimbursements(prev =>
                             prev.map(r =>

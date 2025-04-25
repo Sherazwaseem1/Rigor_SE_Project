@@ -144,3 +144,31 @@ export const updateTrip = async (req: Request, res: Response): Promise<void> => 
       res.status(500).json({ error: 'Failed to update trip', details: err });
     }
   };
+
+  // ✅ Update Trip Rating
+export const rateTrip = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const tripId = Number(req.params.trip_id);
+      const { rating } = req.body;
+  
+      if (!rating || rating < 1 || rating > 5) {
+        res.status(400).json({ error: "Invalid rating. Must be between 1 and 5." });
+        return;
+      }
+  
+      const updatedTrip = await Trip.findOneAndUpdate(
+        { trip_id: tripId },
+        { trip_rating: rating },
+        { new: true }
+      );
+  
+      if (!updatedTrip) {
+        res.status(404).json({ error: "Trip not found" });
+        return;
+      }
+  
+      res.status(200).json(updatedTrip);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update trip rating", details: error });
+    }
+  };
