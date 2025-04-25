@@ -15,9 +15,9 @@ const transporter = nodemailer.createTransport({
 
 // Export as a named function (not as middleware directly)
 export const sendEmail = async (req: Request, res: Response) => {
-  const { to, subject, text } = req.body;
+  const { to, subject, html } = req.body;
 
-  if (!to || !subject || !text) {
+  if (!to || !subject || !html) {
      res.status(400).json({ error: 'Missing required fields.' });
   }
 
@@ -26,12 +26,12 @@ export const sendEmail = async (req: Request, res: Response) => {
       from: "dheetcoders25@gmail.com",
       to,
       subject,
-      text,
+      html,
     });
 
      res.status(200).json({ message: 'Email sent successfully.' });
   } catch (error) {
     console.error('Email send failed:', error);
-     res.status(500).json({ error: 'Failed to send email.' });
+     res.status(400).json({ error: 'Failed to send email.' });
   }
 };
