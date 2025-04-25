@@ -116,8 +116,11 @@ export const updateReimbursement = async (req: Request, res: Response): Promise<
     try {
       const id = Number(req.params.reimbursement_id);
       const { amount, comments } = req.body;
-      const update = {};
-
+      const update: Partial<{
+        amount: mongoose.Types.Decimal128;
+        comments: string;
+      }> = {};
+        
       if (amount !== undefined) {
         update.amount = mongoose.Types.Decimal128.fromString(amount.toString());
       }
