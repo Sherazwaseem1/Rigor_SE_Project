@@ -5,6 +5,7 @@ import MapView, { Marker } from "react-native-maps";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { getAllLocations, getLocationById } from "../../services/api";
+import styles from '../../assets/styles/styleMaps';
 
 const Maps: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -56,19 +57,5 @@ const Maps: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  map: {
-    flex: 1,
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
 
 export default Maps;
