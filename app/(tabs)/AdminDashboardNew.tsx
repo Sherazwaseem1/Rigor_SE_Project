@@ -23,7 +23,7 @@ import { Drawer } from 'react-native-drawer-layout';
 import { Feather } from '@expo/vector-icons';
 import MapView, { Marker } from 'react-native-maps';   
 import { RootState } from '../../redux/store';
-import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById, approveReimbursement, modifyReimbursement, updateTripRating   } from '../../services/api';
+import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById, approveReimbursement, modifyReimbursement, updateTripRating, updateTruckerRating, getTripsByTruckerId   } from '../../services/api';
 import { Trip, Trucker, Reimbursement } from '../../services/api';
 import { Image } from 'react-native';
 
@@ -508,6 +508,19 @@ const AdminDashboardNew = () => {
 
                           await updateTripRating(trip.trip_id, rating);
 
+                          const allTruckerTrips = await getTripsByTruckerId(trip.trucker_id);
+                          const completedTripsWithRatings = allTruckerTrips.filter(
+                            (t) => t.status === "Completed" && t.trip_rating != null
+                          );
+
+                          const allRated = allTruckerTrips
+                                            .filter((t) => t.status === "Completed")
+                                            .every((t) => t.trip_rating != null);
+                          
+                          if (allRated && completedTripsWithRatings.length > 0) {
+                            const avgRating = completedTripsWithRatings.reduce((acc, t) => acc + (t.trip_rating || 0), 0) /completedTripsWithRatings.length;
+                            await updateTruckerRating(trip.trucker_id, parseFloat(avgRating.toFixed(2)));
+                          }
 
                           setReimbursements(prev =>
                             prev.map(r =>
