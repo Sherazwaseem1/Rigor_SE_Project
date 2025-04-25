@@ -634,16 +634,9 @@ const styles = StyleSheet.create({
   emptyReimbursementWrapper: {
     flex: 1,
     backgroundColor: '#EFFFFF',  // light cyan background
-    emptyReimbursementWrapper: {
-    flex: 1,
-    backgroundColor: '#EFFFFF',
     alignItems: 'center',
     padding: 16,
     paddingTop: 40, // adjust this number as needed
-    },
-    
-    alignItems: 'center',
-    padding: 16,
   },
   
   emptyCard: {
