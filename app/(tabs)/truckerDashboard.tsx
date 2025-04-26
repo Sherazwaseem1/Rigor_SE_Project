@@ -448,6 +448,7 @@ const truckerDashboard = () => {
       case "recent":
         return (
           <ScrollView
+            showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -483,7 +484,8 @@ const truckerDashboard = () => {
                 </View>
               ) : (
                 <ScrollView
-                  contentContainerStyle={{ paddingBottom: 16 }}
+                    contentContainerStyle={{ paddingBottom: 16 }}
+                    showsVerticalScrollIndicator={false}
                   refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                   }

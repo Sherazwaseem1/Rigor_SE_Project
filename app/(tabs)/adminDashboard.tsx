@@ -207,7 +207,7 @@ const adminDashboard = () => {
   };
 
   const renderDrawerContent = () => (
-    <ScrollView style={styles.drawerContent}>
+    <ScrollView style={styles.drawerContent} showsVerticalScrollIndicator={false}>
       <View style={styles.profileSection}>
         {profilePicUrl ? (
           <View style={styles.profileImageWrapper}>
@@ -398,8 +398,9 @@ const adminDashboard = () => {
 
         return (
           <ScrollView
+            showsVerticalScrollIndicator={false}
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> 
             }
           >
             <View style={styles.filterContainer}>
@@ -528,6 +529,7 @@ const adminDashboard = () => {
         return (
           <>
             <ScrollView
+              showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
@@ -768,6 +770,7 @@ const adminDashboard = () => {
       case "analytics":
         return (
           <ScrollView
+            showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -848,6 +851,7 @@ const adminDashboard = () => {
         const approved = reimbursements.filter((r) => r.status === "Approved");
         return (
           <ScrollView
+            showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -916,6 +920,7 @@ const adminDashboard = () => {
         case 'analytics':
           return (
             <ScrollView
+              showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
@@ -976,6 +981,7 @@ const adminDashboard = () => {
           const approved = reimbursements.filter(r => r.status === 'Approved');
           return (
             <ScrollView
+              showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
@@ -1029,6 +1035,7 @@ const adminDashboard = () => {
         );
         return (
           <ScrollView
+            showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }

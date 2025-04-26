@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
       flex: 1
     },
     statusBadge: {
-      backgroundColor:'#FFF4E5',
+      backgroundColor: '#FFF4E5',
       paddingHorizontal: 12,
       paddingVertical: 6,
       borderRadius: 12,
@@ -307,18 +307,21 @@ const styles = StyleSheet.create({
     card: {
       backgroundColor: '#FFFFFF',
       borderRadius: 16,
-      padding: 16,
-      marginBottom: 12,
+      padding: 20,
       marginHorizontal: 16,
-      shadowColor: Platform.OS === 'ios' ? '#000000' : '#088395',
-      shadowOffset: { width: 0, height: 2 },
+      marginVertical: 8,
+      marginBottom: 16,
+      shadowColor: Platform.OS === 'ios' ? '#000000' : '#071952',
+      shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.12,
-      shadowRadius: 4,
-      elevation: 3,
-      borderWidth: 1,
-      borderColor: '#088395',
+      shadowRadius: 8,
+      elevation: 6,
+      borderWidth: Platform.OS === 'ios' ? 0 : 1,
+      borderColor: '#E2E8F0',
       transform: [{ scale: 0.98 }, { translateY: -2 }],
       overflow: 'hidden',
+      borderTopWidth: 4,
+      borderTopColor: '#088395',
     },
     cardText: {
       fontSize: 14,
@@ -488,14 +491,14 @@ const styles = StyleSheet.create({
     },
     map: { flex: 1, borderRadius: 16 },
     loaderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    contentMap: {       
+    contentMap: {
       padding: 0,
     },
     noTripsBanner: {
       position: 'absolute',
       top: 20,
       alignSelf: 'center',
-      backgroundColor: '#071952',     
+      backgroundColor: '#071952',
       paddingHorizontal: 20,
       paddingVertical: 10,
       borderRadius: 20,
@@ -513,12 +516,12 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: '600',
     },
-    actionRow: {                                       
+    actionRow: {
       flexDirection: 'row',
       justifyContent: 'flex-end',
       marginTop: 12,
     },
-    actionBtn: {                                    
+    actionBtn: {
       paddingVertical: 8,
       paddingHorizontal: 14,
       borderRadius: 8,
@@ -537,26 +540,26 @@ const styles = StyleSheet.create({
       fontWeight: '600',
       fontSize: 14,
     },
-                 
-    modalBackdrop: {                         
+
+    modalBackdrop: {
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.4)',
       justifyContent: 'center',
       alignItems: 'center',
     },
-    modalCard: {                             
+    modalCard: {
       width: '85%',
       backgroundColor: '#fff',
       borderRadius: 16,
       padding: 20,
     },
-    modalTitle: {                            
+    modalTitle: {
       fontSize: 18,
       fontWeight: '600',
       color: '#071952',
       marginBottom: 12,
     },
-    modalInput: {                            
+    modalInput: {
       borderWidth: 1,
       borderColor: '#E2E8F0',
       borderRadius: 8,
@@ -564,7 +567,7 @@ const styles = StyleSheet.create({
       marginBottom: 12,
       fontSize: 15,
     },
-    modalActions: {                          
+    modalActions: {
       flexDirection: 'row',
       justifyContent: 'flex-end',
       marginTop: 6,
@@ -582,14 +585,14 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       padding: 20,
     },
-    
-    
+
+
     fullImage: {
       width: '100%',
       height: '80%',
       borderRadius: 10,
     },
-    
+
     closeArea: {
       position: 'absolute',
       top: 40,
@@ -597,14 +600,14 @@ const styles = StyleSheet.create({
       zIndex: 2,
       padding: 10,
     },
-  
+
     modalCloseButton: {
       position: 'absolute',
       top: 40,
       right: 20,
       zIndex: 1,
     },
-    
+
     modalCloseText: {
       fontSize: 30,
       color: '#fff',
@@ -621,32 +624,32 @@ const styles = StyleSheet.create({
       borderRadius: 12,
       alignSelf: 'flex-start',
       marginLeft: 12,
-      minWidth: 80, 
-      alignItems: 'center', 
+      minWidth: 80,
+      alignItems: 'center',
     },
-    
+
     statusTextBase: {
       fontSize: 14,
       fontWeight: '600',
       textAlign: 'center',
-  
+
     },
-    
+
     statusBadgeActive: {
       backgroundColor: '#EBF4F6',
     },
     statusTextActive: {
       color: '#37B7C3',
     },
-    
+
     statusBadgeInactive: {
       backgroundColor: '#37B7C3',
     },
     statusTextInactive: {
       color: '#EBF4F6',
     },
-    
-    
+
+
   });
 
 export default styles;

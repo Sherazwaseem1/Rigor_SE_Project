@@ -111,7 +111,7 @@ const userProfile = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => router.push(isAdmin ? '/adminDashboard' : '/truckerDashboard')}

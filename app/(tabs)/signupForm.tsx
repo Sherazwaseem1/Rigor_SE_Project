@@ -126,7 +126,7 @@ const SignUp = () => {
     };
 
     return (
-        <SafeAreaView flex={1} backgroundColor="#fff">
+        <SafeAreaView style={styles.safeArea}>
             <ScrollView 
                 contentContainerStyle={styles.scrollContainer}
                 keyboardShouldPersistTaps="handled"
@@ -138,10 +138,9 @@ const SignUp = () => {
                         handleClear();
                         router.back(); 
                     } }>
-                        <View style={styles.backButtonContent}>
                             <IconSymbol size={24} name="chevron.left" color="#333" />
                             <ThemedText style={styles.backButtonLabel}>Back</ThemedText>
-                        </View>
+
                     </TouchableOpacity>
 
                     <View style={styles.logoContainer}>

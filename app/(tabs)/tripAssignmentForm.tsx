@@ -27,10 +27,11 @@ import {
 } from "../../services/api";
 import { Trip, Trucker } from "../../services/util";
 import { useSelector } from "react-redux";
+import { useThemeColor } from "../../hooks/useThemeColor";
 import { RootState } from "../../redux/store";
 import { useIsFocused } from "@react-navigation/native";
 import { router } from "expo-router";
-import IconSymbol from "react-native-vector-icons/FontAwesome";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -205,24 +206,46 @@ const TripAssignmentScreen: React.FC = () => {
     }
   };
 
+  const backgroundColor = useThemeColor(
+    { light: "#fff", dark: "#fff" },
+    "background"
+  );
+
   return (
-    <SafeAreaView flex={1} backgroundColor="#fff" padding={20}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <ScrollView showsVerticalScrollIndicator={false}
       >
-        <TouchableOpacity onPress={() => router.push('/adminDashboard')} style={styles.backButton}>
-          <IconSymbol name="chevron-left" size={20} color="#202545" />
-          <Text style={styles.backLabel}>Back</Text>
-        </TouchableOpacity>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+                router.push('/adminDashboard');
+            }}
+          >
+            <View style={styles.backButtonContent}>
+              <IconSymbol name="chevron.left" size={20} color="#202545" />
+              <Text style={[styles.backButtonLabel, { color: '#202545' }]}>Back</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
 
-        <Image source={require("../../assets/images/rigor_no_bg.jpeg")} style={styles.logo} resizeMode="contain" />
-        <Text style={styles.title}>Assign New Trip</Text>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../../assets/images/rigor_no_bg.jpeg")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
 
-        <Text style={styles.label}>Trucker</Text>
-        <View style={styles.pickerWrapper}>
+        <Text style={[styles.title, { color: "#202545" }]}>Assign New Trip</Text>
+        
+
+        <View style={styles.inputContainer}>  
+            <Text style={[styles.label, { color: "#202545" }]}>Trucker</Text>
+        <View style={[styles.input, { padding: 0 }]}>
           <Picker
             selectedValue={selectedTruckerId}
             onValueChange={val => setSelectedTruckerId(val)}
-            style={styles.picker}
           >
             <Picker.Item label="Select Trucker" value={null} />
             {truckers.map(t => (
@@ -231,31 +254,29 @@ const TripAssignmentScreen: React.FC = () => {
           </Picker>
         </View>
 
-        <Text style={styles.label}>Start Location</Text>
-        <View style={styles.pickerWrapper}>
+        <Text style={[styles.label, { color: "#202545" }]}>Start Location</Text>
+        <View style={[styles.input, { padding: 0 }]}>
           <Picker
             selectedValue={form.start_location || ""}
             onValueChange={val => handleInputChange("start_location", val)}
-            style={styles.picker}
           >
             <Picker.Item label="Select Start City" value="" />
             {pakistaniCities.map(c => <Picker.Item key={c} label={c} value={c} />)}
           </Picker>
         </View>
 
-        <Text style={styles.label}>End Location</Text>
-        <View style={styles.pickerWrapper}>
+        <Text style={[styles.label, { color: "#202545" }]}>End Location</Text>
+        <View style={[styles.input, { padding: 0 }]}>
           <Picker
             selectedValue={form.end_location || ""}
             onValueChange={val => handleInputChange("end_location", val)}
-            style={styles.picker}
           >
             <Picker.Item label="Select End City" value="" />
             {pakistaniCities.map(c => <Picker.Item key={c} label={c} value={c} />)}
           </Picker>
         </View>
 
-        <Text style={styles.label}>Distance (km)</Text>
+        <Text style={[styles.label, { color: "#202545" }]}>Distance (km)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
@@ -264,7 +285,7 @@ const TripAssignmentScreen: React.FC = () => {
           onChangeText={t => handleInputChange("distance", t === "" ? undefined : parseFloat(t))}
         />
 
-        <Text style={styles.label}>Expected Cost (PKR)</Text>
+        <Text style={[styles.label, { color: "#202545" }]}>Expected Cost (PKR)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
@@ -272,6 +293,7 @@ const TripAssignmentScreen: React.FC = () => {
           value={form.expected_cost != null ? String(form.expected_cost) : ""}
           onChangeText={t => handleInputChange("expected_cost", t === "" ? undefined : parseFloat(t))}
         />
+        </View>
 
         <TouchableOpacity style={styles.button} onPress={handleGetCostEstimate}>
           <Text style={styles.buttonText}>{isLoadingCost ? "Calculating..." : "Get Cost Estimate By AI"}</Text>
