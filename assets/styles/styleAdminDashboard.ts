@@ -85,6 +85,23 @@ const styles = StyleSheet.create({
       padding: 20,
       marginHorizontal: 16,
       marginVertical: 8,
+      shadowColor: Platform.OS === 'ios' ? '#000000' : '#071952',
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.15,
+      shadowRadius: 12,
+      elevation: 8,
+      borderWidth: Platform.OS === 'ios' ? 0 : 1,
+      borderColor: '#E2E8F0',
+      transform: [{ scale: 0.98 }, { translateY: -1 }],
+      overflow: 'hidden',
+      shadowColor: Platform.OS === 'ios' ? '#000000' : '#071952',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.12,
+      shadowRadius: 8,
+      elevation: 6,
+      borderWidth: Platform.OS === 'ios' ? 0 : 1,
+      borderColor: '#E2E8F0',
+      transform: [{ translateY: -2 }],
     },
     truckerHeader: {
       flexDirection: 'row',
@@ -576,17 +593,17 @@ const styles = StyleSheet.create({
     },
     
     statusBadgeActive: {
-      backgroundColor: '#E6F4EA',
+      backgroundColor: '#EBF4F6',
     },
     statusTextActive: {
-      color: '#1E8E3E',
+      color: '#37B7C3',
     },
     
     statusBadgeInactive: {
-      backgroundColor: '#FFF4E5',
+      backgroundColor: '#37B7C3',
     },
     statusTextInactive: {
-      color: '#B95000',
+      color: '#EBF4F6',
     },
     
     
