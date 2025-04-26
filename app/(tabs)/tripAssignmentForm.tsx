@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from '../../assets/styles/styleTripAssignmentForm';
+import styles from "../../assets/styles/styleTripAssignmentForm";
 import {
   View,
   Text,
@@ -15,15 +15,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
-import { 
-  getAllTruckers, 
-  createTrip, 
-  getTruckByTruckerId, 
+import {
+  getAllTruckers,
+  createTrip,
+  getTruckByTruckerId,
   updateTruckerStatus,
   estimateTripCost,
   createLocation,
   getTruckersWithoutTruck,
-  sendEmailNotification
+  sendEmailNotification,
 } from "../../services/api";
 import { Trip, Trucker } from "../../services/util";
 import { useSelector } from "react-redux";
@@ -36,26 +36,62 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const pakistaniCities = [
-  "Karachi","Lahore","Islamabad","Rawalpindi","Faisalabad","Multan",
-  "Hyderabad","Peshawar","Quetta","Sialkot","Gujranwala","Sargodha",
-  "Bahawalpur","Sukkur","Larkana","Sheikhupura","Rahim Yar Khan","Jhang",
-  "Dera Ghazi Khan","Gujrat","Sahiwal","Wah Cantonment","Kasur","Okara",
-  "Chiniot","Kamoke","Nawabshah","Burewala","Jhelum","Sadiqabad","Khanewal",
-  "Hafizabad","Mirpur Khas","Attock","Muzaffarabad","Abbottabad","Mardan",
-  "Swat","Gilgit","Skardu"
+  "Karachi",
+  "Lahore",
+  "Islamabad",
+  "Rawalpindi",
+  "Faisalabad",
+  "Multan",
+  "Hyderabad",
+  "Peshawar",
+  "Quetta",
+  "Sialkot",
+  "Gujranwala",
+  "Sargodha",
+  "Bahawalpur",
+  "Sukkur",
+  "Larkana",
+  "Sheikhupura",
+  "Rahim Yar Khan",
+  "Jhang",
+  "Dera Ghazi Khan",
+  "Gujrat",
+  "Sahiwal",
+  "Wah Cantonment",
+  "Kasur",
+  "Okara",
+  "Chiniot",
+  "Kamoke",
+  "Nawabshah",
+  "Burewala",
+  "Jhelum",
+  "Sadiqabad",
+  "Khanewal",
+  "Hafizabad",
+  "Mirpur Khas",
+  "Attock",
+  "Muzaffarabad",
+  "Abbottabad",
+  "Mardan",
+  "Swat",
+  "Gilgit",
+  "Skardu",
 ].sort();
 
 const TripAssignmentScreen: React.FC = () => {
   const [truckers, setTruckers] = useState<Trucker[]>([]);
-  const [selectedTruckerId, setSelectedTruckerId] = useState<number | null>(null);
+  const [selectedTruckerId, setSelectedTruckerId] = useState<number | null>(
+    null
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState<Partial<Trip>>({
     start_location: "",
     end_location: "",
     start_time: new Date().toISOString(),
     status: "Scheduled",
-    distance: undefined,    
-    expected_cost: undefined, 
+    distance: undefined,
+    expected_cost: undefined,
   });
 
   const [estimatedCost, setEstimatedCost] = useState<string | null>(null);
@@ -67,9 +103,11 @@ const TripAssignmentScreen: React.FC = () => {
     const fetchTruckers = async () => {
       try {
         const all = await getAllTruckers();
-        const inactive = all.filter(t => t.status === "Inactive");
+        const inactive = all.filter((t) => t.status === "Inactive");
         const withoutTruck = await getTruckersWithoutTruck();
-        const withTruck = inactive.filter(t => !withoutTruck.some(w => w.trucker_id === t.trucker_id));
+        const withTruck = inactive.filter(
+          (t) => !withoutTruck.some((w) => w.trucker_id === t.trucker_id)
+        );
         setTruckers(withTruck);
       } catch {
         Alert.alert("Error", "Could not fetch truckers.");
@@ -80,7 +118,7 @@ const TripAssignmentScreen: React.FC = () => {
   }, [isFocused]);
 
   const handleInputChange = (key: keyof Trip, value) => {
-    setForm(f => ({ ...f, [key]: value }));
+    setForm((f) => ({ ...f, [key]: value }));
   };
 
   const clearForm = () => {
@@ -118,10 +156,20 @@ const TripAssignmentScreen: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!selectedTruckerId || !form.start_location || !form.end_location || form.expected_cost == null) {
+    if (isSubmitting) return;
+
+    if (
+      !selectedTruckerId ||
+      !form.start_location ||
+      !form.end_location ||
+      form.expected_cost == null
+    ) {
       Alert.alert("Missing Info", "All fields are required.");
       return;
     }
+
+    setIsSubmitting(true);
+
     try {
       const truck = await getTruckByTruckerId(selectedTruckerId);
       const newTrip = {
@@ -135,8 +183,10 @@ const TripAssignmentScreen: React.FC = () => {
 
       const created = await createTrip(newTrip);
       await updateTruckerStatus(selectedTruckerId, "Active");
-      const assignedTrucker = truckers.find(t => t.trucker_id === selectedTruckerId);
-      
+      const assignedTrucker = truckers.find(
+        (t) => t.trucker_id === selectedTruckerId
+      );
+
       if (assignedTrucker) {
         const emailHTML = `
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; background-color: #f9f9f9;">
@@ -185,11 +235,12 @@ const TripAssignmentScreen: React.FC = () => {
             emailHTML
           );
         } catch {
+        } finally {
+          setIsSubmitting(false);
         }
       }
-      
+
       Alert.alert("Success", "Trip assigned successfully!");
-      
 
       await createLocation({
         location_id: Date.now(),
@@ -213,18 +264,19 @@ const TripAssignmentScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <ScrollView showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => {
-                router.push('/adminDashboard');
+              router.push("/adminDashboard");
             }}
           >
             <View style={styles.backButtonContent}>
               <IconSymbol name="chevron.left" size={20} color="#202545" />
-              <Text style={[styles.backButtonLabel, { color: '#202545' }]}>Back</Text>
+              <Text style={[styles.backButtonLabel, { color: "#202545" }]}>
+                Back
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -237,74 +289,112 @@ const TripAssignmentScreen: React.FC = () => {
           />
         </View>
 
-        <Text style={[styles.title, { color: "#202545" }]}>Assign New Trip</Text>
-        
+        <Text style={[styles.title, { color: "#202545" }]}>
+          Assign New Trip
+        </Text>
 
-        <View style={styles.inputContainer}>  
-            <Text style={[styles.label, { color: "#202545" }]}>Trucker</Text>
-        <View style={[styles.input, { padding: 0 }]}>
-          <Picker
-            selectedValue={selectedTruckerId}
-            onValueChange={val => setSelectedTruckerId(val)}
-          >
-            <Picker.Item label="Select Trucker" value={null} />
-            {truckers.map(t => (
-              <Picker.Item key={t.trucker_id} label={t.name} value={t.trucker_id} />
-            ))}
-          </Picker>
-        </View>
+        <View style={styles.inputContainer}>
+          <Text style={[styles.label, { color: "#202545" }]}>Trucker</Text>
+          <View style={[styles.input, { padding: 0 }]}>
+            <Picker
+              selectedValue={selectedTruckerId}
+              onValueChange={(val) => setSelectedTruckerId(val)}
+            >
+              <Picker.Item label="Select Trucker" value={null} />
+              {truckers.map((t) => (
+                <Picker.Item
+                  key={t.trucker_id}
+                  label={t.name}
+                  value={t.trucker_id}
+                />
+              ))}
+            </Picker>
+          </View>
 
-        <Text style={[styles.label, { color: "#202545" }]}>Start Location</Text>
-        <View style={[styles.input, { padding: 0 }]}>
-          <Picker
-            selectedValue={form.start_location || ""}
-            onValueChange={val => handleInputChange("start_location", val)}
-          >
-            <Picker.Item label="Select Start City" value="" />
-            {pakistaniCities.map(c => <Picker.Item key={c} label={c} value={c} />)}
-          </Picker>
-        </View>
+          <Text style={[styles.label, { color: "#202545" }]}>
+            Start Location
+          </Text>
+          <View style={[styles.input, { padding: 0 }]}>
+            <Picker
+              selectedValue={form.start_location || ""}
+              onValueChange={(val) => handleInputChange("start_location", val)}
+            >
+              <Picker.Item label="Select Start City" value="" />
+              {pakistaniCities.map((c) => (
+                <Picker.Item key={c} label={c} value={c} />
+              ))}
+            </Picker>
+          </View>
 
-        <Text style={[styles.label, { color: "#202545" }]}>End Location</Text>
-        <View style={[styles.input, { padding: 0 }]}>
-          <Picker
-            selectedValue={form.end_location || ""}
-            onValueChange={val => handleInputChange("end_location", val)}
-          >
-            <Picker.Item label="Select End City" value="" />
-            {pakistaniCities.map(c => <Picker.Item key={c} label={c} value={c} />)}
-          </Picker>
-        </View>
+          <Text style={[styles.label, { color: "#202545" }]}>End Location</Text>
+          <View style={[styles.input, { padding: 0 }]}>
+            <Picker
+              selectedValue={form.end_location || ""}
+              onValueChange={(val) => handleInputChange("end_location", val)}
+            >
+              <Picker.Item label="Select End City" value="" />
+              {pakistaniCities.map((c) => (
+                <Picker.Item key={c} label={c} value={c} />
+              ))}
+            </Picker>
+          </View>
 
-        <Text style={[styles.label, { color: "#202545" }]}>Distance (km)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          placeholder="0"
-          value={form.distance != null ? String(form.distance) : ""}
-          onChangeText={t => handleInputChange("distance", t === "" ? undefined : parseFloat(t))}
-        />
+          <Text style={[styles.label, { color: "#202545" }]}>
+            Distance (km)
+          </Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            placeholder="0"
+            value={form.distance != null ? String(form.distance) : ""}
+            onChangeText={(t) =>
+              handleInputChange(
+                "distance",
+                t === "" ? undefined : parseFloat(t)
+              )
+            }
+          />
 
-        <Text style={[styles.label, { color: "#202545" }]}>Expected Cost (PKR)</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          placeholder="0"
-          value={form.expected_cost != null ? String(form.expected_cost) : ""}
-          onChangeText={t => handleInputChange("expected_cost", t === "" ? undefined : parseFloat(t))}
-        />
+          <Text style={[styles.label, { color: "#202545" }]}>
+            Expected Cost (PKR)
+          </Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            placeholder="0"
+            value={form.expected_cost != null ? String(form.expected_cost) : ""}
+            onChangeText={(t) =>
+              handleInputChange(
+                "expected_cost",
+                t === "" ? undefined : parseFloat(t)
+              )
+            }
+          />
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleGetCostEstimate}>
-          <Text style={styles.buttonText}>{isLoadingCost ? "Calculating..." : "Get Cost Estimate By AI"}</Text>
+          <Text style={styles.buttonText}>
+            {isLoadingCost ? "Calculating..." : "Get Cost Estimate By AI"}
+          </Text>
           {isLoadingCost && <ActivityIndicator style={{ marginLeft: 8 }} />}
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Submit</Text>
+        <TouchableOpacity
+          style={[styles.button, isSubmitting && { backgroundColor: "#ccc" }]}
+          onPress={handleSubmit}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <ActivityIndicator color="#ffffff" />
+          ) : (
+            <Text style={styles.buttonText}>Submit</Text>
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button, styles.clearButton]} onPress={clearForm}>
+        <TouchableOpacity
+          style={[styles.button, styles.clearButton]}
+          onPress={clearForm}
+        >
           <Text style={styles.buttonText}>Clear Form</Text>
         </TouchableOpacity>
       </ScrollView>
