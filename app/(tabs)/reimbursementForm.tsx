@@ -138,7 +138,7 @@ const ReimbursementFormScreen: React.FC = () =>
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         <Text style={styles.heading}>Submit Reimbursement</Text>
 
         <Text style={styles.label}>Amount (in PKR):</Text>
