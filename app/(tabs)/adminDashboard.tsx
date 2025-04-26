@@ -540,12 +540,7 @@ const adminDashboard = () => {
                   <View style={styles.tripHeader}>
                     <View style={styles.tripRoute}>
                       <Text style={styles.routeText}>
-                        Reimbursement Request
-                      </Text>
-                    </View>
-                    <View style={styles.tripIdBadge}>
-                      <Text style={styles.tripIdText}>
-                        #{item.reimbursement_id}
+                        Reimbursement #{item.reimbursement_id}
                       </Text>
                     </View>
                   </View>
