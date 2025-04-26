@@ -493,14 +493,14 @@ const adminDashboard = () => {
                     style={[
                       styles.completedBadge,
                       trip.status === "Scheduled" && {
-                        backgroundColor: "#FEF3C7",
+                        backgroundColor: "#37B7C3",
                       },
                     ]}
                   >
                     <Text
                       style={[
                         styles.completedBadgeText,
-                        trip.status === "Scheduled" && { color: "#9B403D" },
+                        trip.status === "Scheduled" && { color: "#EBF4F6" },
                       ]}
                     >
                       {trip.status === "Scheduled"
