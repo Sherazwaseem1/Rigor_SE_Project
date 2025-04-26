@@ -115,7 +115,6 @@ const userProfile = () => {
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => router.push(isAdmin ? '/adminDashboard' : '/truckerDashboard')}
-            style={styles.menuButton}
           >
             <IconSymbol name="chevron.left" size={24} color="#071952" />
           </TouchableOpacity>
