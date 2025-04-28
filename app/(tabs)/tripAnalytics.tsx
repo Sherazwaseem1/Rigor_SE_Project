@@ -22,16 +22,18 @@ const { width } = Dimensions.get('window');
 const tripAnalytics = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
-  const [minTripCount, setMinTripCount] = useState<string>('0');
-  const [numRoutes, setNumRoutes] = useState<string>('5');
+  const [minTripCount, setMinTripCount] = useState<string>('2');
+  const [numRoutes, setNumRoutes] = useState<string>('3');
   const [filteredRoutes, setFilteredRoutes] = useState<{route: string, count: number}[]>([]);
   const [tripStatusData, setTripStatusData] = useState<{ name: string; count: number; color: string }[]>([]);
   const isFocused = useIsFocused();
+  const minTrips = parseInt(minTripCount) || 0;
+  const numTopRoutes = parseInt(numRoutes) || 0;
 
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        const tripsData = await getAllTrips();
+        const tripsData = await getAllTrips() || [];
         setTrips(tripsData);
         processRoutes(tripsData);
         processTripStatus(tripsData);
@@ -55,7 +57,7 @@ const tripAnalytics = () => {
       .map(([route, count]) => ({ route, count }))
       .sort((a, b) => b.count - a.count);
 
-    setFilteredRoutes(routes.filter(route => route.count >= parseInt(minTripCount) || 0));
+    setFilteredRoutes(routes.filter(route => route.count >= minTripCount));
   };
 
   useEffect(() => {
@@ -185,7 +187,7 @@ const tripAnalytics = () => {
               {trips.length > 0 ? (
                 trips
                   .sort((a, b) => b.distance - a.distance)
-                  .slice(0, parseInt(numRoutes))
+                  .slice(0, numRoutes)
                   .map((trip, index) => (
                     <View key={index} style={styles.routeCard}>
                       <View style={styles.routeInfo}>
