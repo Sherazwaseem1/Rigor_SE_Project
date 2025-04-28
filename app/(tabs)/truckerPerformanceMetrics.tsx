@@ -20,8 +20,17 @@ const truckerPerformanceMetrics = () => {
     const fetchTruckers = async () => {
       try {
         const data = await getAllTruckers();
+        if (!Array.isArray(data)) {
+          console.error('Invalid truckers data format');
+          setTruckers([]);
+          return;
+        }
         setTruckers(data);
       } catch (error) {
+        console.error('Error fetching truckers:', error);
+        setTruckers([]);
+        setStatusData({ active: 0, inactive: 0 });
+        setFilteredTruckers([]);
       } finally {
         setLoading(false);
       }
