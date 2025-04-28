@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
       textAlign: 'center'
     },
     signUpLink: {
-      color: '#088395',
+      color: '#37B7C3',
       fontWeight: '700'
     },
     dropdownWrapper: {
