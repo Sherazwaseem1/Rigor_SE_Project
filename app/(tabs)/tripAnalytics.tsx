@@ -33,11 +33,20 @@ const tripAnalytics = () => {
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        const tripsData = await getAllTrips() || [];
+        const tripsData = await getAllTrips();
+        if (!Array.isArray(tripsData)) {
+          console.error('Invalid trips data format');
+          setTrips([]);
+          return;
+        }
         setTrips(tripsData);
         processRoutes(tripsData);
         processTripStatus(tripsData);
       } catch (error) {
+        console.error('Error fetching trips:', error);
+        setTrips([]);
+        setFilteredRoutes([]);
+        setTripStatusData([]);
       } finally {
         setLoading(false);
       }
