@@ -37,6 +37,11 @@ const financialAnalytics = () => {
     const fetchData = async () => {
       try {
         const data = await getAllReimbursements();
+        if (!Array.isArray(data)) {
+          console.error('Invalid reimbursements data format');
+          setReimbursements([]);
+          return;
+        }
         setReimbursements(data);
         const statusCounts = data.reduce(
           (acc, reimbursement) => {
@@ -80,6 +85,10 @@ const financialAnalytics = () => {
           }
         ]);
       } catch (error) {
+        console.error('Error fetching reimbursements:', error);
+        setReimbursements([]);
+        setStatusDistribution([]);
+        setAmountDistribution([]);
       } finally {
         setLoading(false);
       }
