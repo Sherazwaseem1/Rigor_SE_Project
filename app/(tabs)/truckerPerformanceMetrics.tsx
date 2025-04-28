@@ -102,7 +102,7 @@ const truckerPerformanceMetrics = () => {
           <View key={index} style={styles.card}>
             <View style={styles.routeInfo}>
               <Text style={styles.truckerName}>{trucker.name}</Text>
-              <Text style={styles.truckerRating}>⭐ {trucker.rating}</Text>
+              <Text style={styles.truckerRating}>{trucker.rating} {trucker.rating === 1 ? 'star' : 'stars'}</Text>
             </View>
           </View>
         ))}
