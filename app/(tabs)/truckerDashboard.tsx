@@ -16,11 +16,13 @@ import { router } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+import { Modal, Pressable } from "react-native";
 
 import {
   getTripsByTruckerId,
   getTruckerByEmail,
   getReimbursementsByTripId,
+  getAllReimbursements,
   getAllLocations,
   updateLocation,
   completeTrip,
@@ -65,8 +67,12 @@ const truckerDashboard = () => {
 
   const [refreshing, setRefreshing] = useState(false);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchData = async () => {
+      if (!trucker?.id) return;
       try {
         const tripsData = await getTripsByTruckerId(trucker.id);
         const completedTrips = tripsData.filter(
@@ -84,12 +90,6 @@ const truckerDashboard = () => {
         setPastTrips(completedTrips);
         setOngoingTrip(activeTrip || null);
 
-        const reimbursements = await Promise.all(
-          tripsData.map((t) => getReimbursementsByTripId(t.trip_id))
-        );
-        setPendingReimbursements(
-          reimbursements.flat().filter((r) => r.status === "Pending")
-        );
       } catch (err) {
       } finally {
         setLoading(false);
@@ -98,6 +98,37 @@ const truckerDashboard = () => {
     fetchData();
   }, [isFocused]);
 
+  useEffect(() => {
+    const fetchReimbursements = async () => {
+      if (!trucker?.id) return;
+      try {
+        const tripsData = await getTripsByTruckerId(trucker.id);
+  
+        const completedTrips = tripsData.filter((trip) => trip.status === "Completed");
+  
+        const allReimbursements = await getAllReimbursements();
+  
+        const completedTripIds = completedTrips.map((trip) => trip.trip_id);
+  
+        const relatedReimbursements = allReimbursements.filter((reimbursement: Reimbursement) =>
+          completedTripIds.includes(reimbursement.trip_id)
+        );
+  
+        const pending = relatedReimbursements.filter((r) => r.status === "Pending");
+        const approved = relatedReimbursements.filter((r) => r.status === "Approved");
+  
+        setPendingReimbursements([...pending, ...approved]);
+      } catch (error) {
+        console.error("Error fetching reimbursements:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchReimbursements();
+  }, [isFocused]);
+  
+  
   useEffect(() => {
     const fetchLocations = async () => {
       if (activeSection !== "map") return;
@@ -191,20 +222,28 @@ const truckerDashboard = () => {
         const allLocs = await getAllLocations();
         const tripLoc = allLocs.filter((l) => l.trip_id === ongoingTrip.trip_id);
         setLocations(tripLoc);
-      } else if (activeSection === "ongoing" || activeSection === "recent" || activeSection === "reimbursements") {
+      } else if (
+        activeSection === "ongoing" ||
+        activeSection === "recent" ||
+        activeSection === "reimbursements"
+      ) {
         const tripsData = await getTripsByTruckerId(trucker.id);
         const completedTrips = tripsData.filter((t) => t.status === "Completed");
         const activeTrip = tripsData.find((t) => t.status === "Scheduled");
   
-        const reimbursements = await Promise.all(
-          tripsData.map((t) => getReimbursementsByTripId(t.trip_id))
+        const allReimbursements = await getAllReimbursements();
+        const completedTripIds = completedTrips.map((trip) => trip.trip_id);
+  
+        const relatedReimbursements = allReimbursements.filter((reimbursement) =>
+          completedTripIds.includes(reimbursement.trip_id)
         );
+  
+        const pending = relatedReimbursements.filter((r) => r.status === "Pending");
+        const approved = relatedReimbursements.filter((r) => r.status === "Approved");
   
         setPastTrips(completedTrips);
         setOngoingTrip(activeTrip || null);
-        setPendingReimbursements(
-          reimbursements.flat().filter((r) => r.status === "Pending")
-        );
+        setPendingReimbursements([...pending, ...approved]);
       }
     } catch (err) {
       console.error("Refresh failed:", err);
@@ -468,82 +507,80 @@ const truckerDashboard = () => {
         );
 
         case "reimbursements":
-          const allReimbursements = pastTrips
-            .flatMap((trip) => trip.reimbursements || [])
-            .concat(pendingReimbursements);
-        
-          const uniqueReimbursements = Array.from(
-            new Map(allReimbursements.map(r => [r.reimbursement_id, r])).values()
-          );
-        
-          return (
-            <View style={styles.contentWrapper}>
-              {uniqueReimbursements.length === 0 ? (
+          if (pendingReimbursements.length === 0) {
+            return (
+              <View style={styles.emptyReimbursementWrapper}>
                 <View style={styles.emptyCard}>
-                  <Text style={styles.emptyCardText}>No reimbursements</Text>
+                  <Text style={styles.emptyCardText}>No reimbursements found.</Text>
                 </View>
-              ) : (
-                <ScrollView
-                    contentContainerStyle={{ paddingBottom: 16 }}
-                    showsVerticalScrollIndicator={false}
-                  refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                  }
-                >
-                  {uniqueReimbursements.map((r) => (
-                    <View key={r.reimbursement_id} style={[styles.card, styles.reimbursementCard]}>
-                      <View style={styles.reimbursementHeader}>
-                        <View style={styles.tripIdBadge}>
-                          <Text style={styles.tripIdText}>Trip #{r.trip_id}</Text>
-                        </View>
-                        <Text style={styles.reimbursementDate}>
-                          {r.date_submitted
-                            ? new Date(r.date_submitted).toLocaleDateString()
-                            : ""}
-                        </Text>
-                      </View>
-        
-                      <View style={styles.reimbursementDetails}>
-                        <Text style={styles.amountLabel}>Amount</Text>
-                        <Text style={styles.amountValue}>
-                          ${parseFloat(r.amount?.$numberDecimal || r.amount).toFixed(2)}
-                        </Text>
-                      </View>
-        
-                      {r.type && (
-                        <Text style={styles.cardText}>Type: {r.type}</Text>
-                      )}
-                      {r.description && (
-                        <Text style={styles.cardText}>Description: {r.description}</Text>
-                      )}
-        
+              </View>
+            );
+          }
 
-        
-                      <View style={styles.statusContainer}>
-                        <View
-                          style={[
-                            r.status === "Pending"
-                              ? styles.pendingBadge
-                              : styles.statusBadge,
-                          ]}
-                        >
-                          <Text
-                            style={
-                              r.status === "Pending"
-                                ? styles.pendingBadgeText
-                                : styles.statusText
-                            }
-                          >
-                            {r.status}
-                          </Text>
-                        </View>
-                      </View>
+          return (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+            >
+              {pendingReimbursements.map((reimbursement) => (
+                <View key={reimbursement.reimbursement_id} style={styles.card}>
+                  <View style={styles.reimbursementHeader}>
+                    <View style={styles.tripIdBadge}>
+                      <Text style={styles.tripIdText}>Trip #{reimbursement.trip_id}</Text>
                     </View>
-                  ))}
-                </ScrollView>
-              )}
-            </View>
+                  </View>
+
+                  <View style={styles.reimbursementDetails}>
+                    <Text style={styles.amountLabel}>Amount</Text>
+                    <Text style={styles.amountValue}>$ {parseFloat(reimbursement.amount.$numberDecimal).toFixed(2)}</Text>
+                    {reimbursement.comments ? (
+                      <Text style={styles.cardText}>Comment: {reimbursement.comments}</Text>
+                    ) : null}
+                  </View>
+
+                  <View style={styles.statusContainer}>
+                    <View
+                      style={
+                        reimbursement.status === "Pending"
+                          ? styles.pendingBadge
+                          : styles.completedText
+                      }
+                    >
+                      <Text
+                        style={
+                          reimbursement.status === "Pending"
+                            ? styles.pendingBadgeText
+                            : styles.completedText
+                        }
+                      >
+                        {reimbursement.status}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {reimbursement.receipt_url && (
+                    <View style={styles.receiptWrapper}>
+                      <Text style={styles.receiptLabel}>Receipt</Text>
+                      <TouchableOpacity
+                        onPress={() => {
+                          setSelectedImageUri(reimbursement.receipt_url);
+                          setModalVisible(true);
+                        }}
+                      >
+                        <Image
+                          source={{ uri: reimbursement.receipt_url }}
+                          style={styles.receiptImage}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              ))}
+            </ScrollView>
           );
+          
   
     }
   };
@@ -580,6 +617,29 @@ const truckerDashboard = () => {
         >
           {renderContent()}
         </View>
+        <Modal visible={modalVisible} transparent animationType="fade">
+          <Pressable
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0,0,0,0.9)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => setModalVisible(false)}
+          >
+            {selectedImageUri && (
+              <Image
+                source={{ uri: selectedImageUri }}
+                style={{
+                  width: "90%",
+                  height: "80%",
+                  resizeMode: "contain",
+                  borderRadius: 10,
+                }}
+              />
+            )}
+          </Pressable>
+        </Modal>
       </SafeAreaView>
     </Drawer>
   ); 

@@ -29,6 +29,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/slices/userSlice';
 import { getTruckerByEmail, getAdminByEmail } from '../../services/api';
 import styles from '../../assets/styles/styleLoginForm';
+import { FirebaseError } from 'firebase/app';
 
 const Login = () => {
     const [email, setEmail] = React.useState('')
@@ -51,6 +52,15 @@ const Login = () => {
   };
   const signIn = async () => {
     setError('');
+
+    function isFirebaseError(e: unknown): e is FirebaseError {
+      return (
+        typeof e === 'object' &&
+        e !== null &&
+        'code' in e &&
+        typeof (e as any).code === 'string'
+      );
+    }
 
     if (!email.trim() || !password.trim()) {
       setError("Email and password are required");
@@ -107,9 +117,9 @@ const Login = () => {
         router.push("/truckerDashboard");
       }
     } catch (error) {
-      if (error.code === 'auth/invalid-credential') {
+      if (isFirebaseError(error) && error.code === 'auth/invalid-credential') {
         setError('Invalid email address or password');
-        alert("Invalid email or password");
+        alert('Invalid email or password');
       } else {
         setError('An error occurred, please try again');
         alert("Account does not exist");
