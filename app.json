@@ -17,8 +17,9 @@
         "backgroundColor": "#ffffff"
       },
       "googleMaps": {
-        "apiKey": "AIzaSyCiS88RSVg6G4GkWS9S-4ptWUxSxxnY_nc" 
-      }
+        "apiKey": "Random Key"
+      },
+      "package": "com.rigorcode.Rigor"
     },
     "web": {
       "bundler": "metro",
@@ -39,6 +40,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "fd27f5ca-406c-4a90-a026-88fbfd4cc7dc"
+      }
     }
   }
 }
