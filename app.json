@@ -15,6 +15,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/RigorLogo.jpg",
         "backgroundColor": "#ffffff"
+      },
+      "googleMaps": {
+        "apiKey": "AIzaSyCiS88RSVg6G4GkWS9S-4ptWUxSxxnY_nc" 
       }
     },
     "web": {
