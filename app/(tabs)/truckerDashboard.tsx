@@ -119,7 +119,6 @@ const truckerDashboard = () => {
   
         setPendingReimbursements([...pending, ...approved]);
       } catch (error) {
-        console.error("Error fetching reimbursements:", error);
       } finally {
         setLoading(false);
       }
@@ -246,7 +245,6 @@ const truckerDashboard = () => {
         setPendingReimbursements([...pending, ...approved]);
       }
     } catch (err) {
-      console.error("Refresh failed:", err);
     } finally {
       setRefreshing(false);
     }
@@ -399,7 +397,6 @@ const truckerDashboard = () => {
                   style={styles.completeBtn}
                   onPress={async () => {
                     try {
-                      console.log("Completing")
                       const updated = await completeTrip(ongoingTrip.trip_id);
                       const updatedStatus = "Inactive"; 
                       const updateResponse = await updateTruckerStatus(ongoingTrip.trucker_id, updatedStatus);
@@ -410,7 +407,6 @@ const truckerDashboard = () => {
                       setOngoingTrip(null);
                       setPastTrips((prev) => [updated, ...prev]);
 
-                      // ✉️ Send email to the admin
                       try {
                         const adminData = await getAdminById(ongoingTrip.assigned_by_admin_id);
                         const adminEmail = adminData.email;
@@ -466,7 +462,6 @@ const truckerDashboard = () => {
                           emailHTML,
                         );
                       } catch (emailErr) {
-                        console.error("Failed to send email notification:", emailErr);
                       }
 
                       router.push({

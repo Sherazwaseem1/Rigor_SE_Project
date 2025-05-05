@@ -35,7 +35,6 @@ const tripAnalytics = () => {
       try {
         const tripsData = await getAllTrips();
         if (!Array.isArray(tripsData)) {
-          console.error('Invalid trips data format');
           setTrips([]);
           return;
         }
@@ -43,7 +42,6 @@ const tripAnalytics = () => {
         processRoutes(tripsData);
         processTripStatus(tripsData);
       } catch (error) {
-        console.error('Error fetching trips:', error);
         setTrips([]);
         setFilteredRoutes([]);
         setTripStatusData([]);

@@ -10,7 +10,7 @@ const getScale = () => {
   return Math.min(Math.max(scale, MIN_SCALE), MAX_SCALE);
 };
 
-const normalize = (size:any) => {
+const normalize = (size:int) => {
   const scale = getScale();
   const newSize = size * scale;
   return Math.round(PixelRatio.roundToNearestPixel(newSize));
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: SCREEN_WIDTH * 0.9,
     alignSelf: 'center',
-    display:'flex',
+    display: 'flex',
     justifyContent: 'flex-end',
     gap: SCREEN_HEIGHT * 0.02,
     flex: 0.3,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     minHeight: 52,
-    display:'flex',
+    display: 'flex',
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

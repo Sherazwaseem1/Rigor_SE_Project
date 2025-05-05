@@ -18,7 +18,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE", "persist/PURGE",], // Ignore non-serializable actions
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE", "persist/PURGE",],
       },
     }),
 });

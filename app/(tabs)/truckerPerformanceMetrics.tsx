@@ -21,13 +21,11 @@ const truckerPerformanceMetrics = () => {
       try {
         const data = await getAllTruckers();
         if (!Array.isArray(data)) {
-          console.error('Invalid truckers data format');
           setTruckers([]);
           return;
         }
         setTruckers(data);
       } catch (error) {
-        console.error('Error fetching truckers:', error);
         setTruckers([]);
         setStatusData({ active: 0, inactive: 0 });
         setFilteredTruckers([]);
@@ -54,7 +52,7 @@ const truckerPerformanceMetrics = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push('/advancedAnalytics')} style={styles.backButton}>
           <IconSymbol name="chevron.left" size={24} color="#071952" />
@@ -63,7 +61,7 @@ const truckerPerformanceMetrics = () => {
       </View>
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Bar Chart */}
+
         <View style={styles.chartContainer}>
           <Text style={styles.sectionTitle}>Trucker Status Distribution</Text>
           <BarChart
@@ -93,7 +91,6 @@ const truckerPerformanceMetrics = () => {
           />
         </View>
 
-        {/* Filter Section */}
         <View style={styles.filterCard}>
           <Text style={styles.sectionTitle}>Filter by Rating</Text>
           <View style={styles.filterInputGroup}>
@@ -117,7 +114,6 @@ const truckerPerformanceMetrics = () => {
         ))}
         </View>
 
-        {/* Truckers List */}
       </ScrollView>
     </SafeAreaView>
   );

@@ -6,7 +6,7 @@ import strict from "node:assert/strict";
 dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLEAPI_KEY as string) ;
-// "AIzaSyDaygCJ4NhbRdIC_NTDEXCHAiUemlmpF10"
+
 export const estimateTripCostWithLLM = async (req: Request, res: Response) => {
   const { start_location, end_location, distance } = req.body;
 

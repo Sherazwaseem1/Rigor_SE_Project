@@ -25,7 +25,6 @@ export default function TabLayout() {
   const isExcluded = EXCLUDED_ROUTES.includes(pathname);
   const lastActivity = useRef(Date.now());
 
-  // Create activity handler using PanResponder
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => {
@@ -40,11 +39,11 @@ export default function TabLayout() {
     if (timerRef.current) clearTimeout(timerRef.current);
     if (!isExcluded) {
       timerRef.current = setTimeout(() => {
-        // Only show logout modal if the user has been inactive
+
         if (Date.now() - lastActivity.current >= SESSION_TIMEOUT) {
           setShowLogoutModal(true);
         } else {
-          // User was active, restart timer
+
           startInactivityTimer();
         }
       }, SESSION_TIMEOUT);
@@ -74,7 +73,6 @@ export default function TabLayout() {
     };
   }, [isExcluded, showLogoutModal]);
   
-  // Reset timer when the route changes
   useEffect(() => {
     if (!isExcluded && !showLogoutModal) {
       startInactivityTimer();

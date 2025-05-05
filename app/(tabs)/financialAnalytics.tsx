@@ -38,7 +38,6 @@ const financialAnalytics = () => {
       try {
         const data = await getAllReimbursements();
         if (!Array.isArray(data)) {
-          console.error('Invalid reimbursements data format');
           setReimbursements([]);
           return;
         }
@@ -85,7 +84,6 @@ const financialAnalytics = () => {
           }
         ]);
       } catch (error) {
-        console.error('Error fetching reimbursements:', error);
         setReimbursements([]);
         setStatusDistribution([]);
         setAmountDistribution([]);

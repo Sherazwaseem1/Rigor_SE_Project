@@ -169,7 +169,6 @@ const adminDashboard = () => {
         }
       }
     } catch (err) {
-      console.warn('Refresh failed:', err);
     } finally {
       setRefreshing(false);
     }
@@ -265,7 +264,6 @@ const adminDashboard = () => {
         <Text style={styles.drawerItemText}>Pending Reimbursements</Text>
       </TouchableOpacity>
 
-      {/* Approved */}
       <TouchableOpacity
         style={[
           styles.drawerItem,
