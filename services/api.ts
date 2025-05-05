@@ -13,10 +13,7 @@ import {
   EmailResponse,
 } from "./util";
 
-const API_URL =
-  Platform.OS === "web"
-    ? "http://localhost:5000/api"
-    : "http://192.168.1.107:5000/api";
+const API_URL = "https://rigorseproject-production.up.railway.app/api"
 
 export const getAllTruckers = async (): Promise<Trucker[]> => {
   const response = await axios.get<Trucker[]>(`${API_URL}/truckers`);
