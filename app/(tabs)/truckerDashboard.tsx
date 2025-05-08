@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import styles from '../../assets/styles/styleTruckerDashboard';
+import styles from "../../assets/styles/styleTruckerDashboard";
 import {
   View,
   Text,
@@ -56,7 +56,7 @@ const truckerDashboard = () => {
   const dispatch = useDispatch();
   const [activeSection, setActiveSection] = useState<
     "map" | "ongoing" | "recent" | "reimbursements"
-  >("map"); 
+  >("map");
 
   const [locations, setLocations] = useState<any[]>([]);
   const [locLoading, setLocLoading] = useState(true);
@@ -89,7 +89,6 @@ const truckerDashboard = () => {
 
         setPastTrips(completedTrips);
         setOngoingTrip(activeTrip || null);
-
       } catch (err) {
       } finally {
         setLoading(false);
@@ -103,20 +102,27 @@ const truckerDashboard = () => {
       if (!trucker?.id) return;
       try {
         const tripsData = await getTripsByTruckerId(trucker.id);
-  
-        const completedTrips = tripsData.filter((trip) => trip.status === "Completed");
-  
-        const allReimbursements = await getAllReimbursements();
-  
-        const completedTripIds = completedTrips.map((trip) => trip.trip_id);
-  
-        const relatedReimbursements = allReimbursements.filter((reimbursement: Reimbursement) =>
-          completedTripIds.includes(reimbursement.trip_id)
+
+        const completedTrips = tripsData.filter(
+          (trip) => trip.status === "Completed"
         );
-  
-        const pending = relatedReimbursements.filter((r) => r.status === "Pending");
-        const approved = relatedReimbursements.filter((r) => r.status === "Approved");
-  
+
+        const allReimbursements = await getAllReimbursements();
+
+        const completedTripIds = completedTrips.map((trip) => trip.trip_id);
+
+        const relatedReimbursements = allReimbursements.filter(
+          (reimbursement: Reimbursement) =>
+            completedTripIds.includes(reimbursement.trip_id)
+        );
+
+        const pending = relatedReimbursements.filter(
+          (r) => r.status === "Pending"
+        );
+        const approved = relatedReimbursements.filter(
+          (r) => r.status === "Approved"
+        );
+
         setPendingReimbursements([...pending, ...approved]);
       } catch (error) {
         console.error("Error fetching reimbursements:", error);
@@ -124,11 +130,10 @@ const truckerDashboard = () => {
         setLoading(false);
       }
     };
-  
+
     fetchReimbursements();
   }, [isFocused]);
-  
-  
+
   useEffect(() => {
     const fetchLocations = async () => {
       if (activeSection !== "map") return;
@@ -194,8 +199,7 @@ const truckerDashboard = () => {
                 longitude: pos.coords.longitude,
                 timestamp: new Date(),
               });
-            } catch (err) {
-            }
+            } catch (err) {}
           }
         }
       );
@@ -220,7 +224,9 @@ const truckerDashboard = () => {
           return;
         }
         const allLocs = await getAllLocations();
-        const tripLoc = allLocs.filter((l) => l.trip_id === ongoingTrip.trip_id);
+        const tripLoc = allLocs.filter(
+          (l) => l.trip_id === ongoingTrip.trip_id
+        );
         setLocations(tripLoc);
       } else if (
         activeSection === "ongoing" ||
@@ -228,19 +234,25 @@ const truckerDashboard = () => {
         activeSection === "reimbursements"
       ) {
         const tripsData = await getTripsByTruckerId(trucker.id);
-        const completedTrips = tripsData.filter((t) => t.status === "Completed");
+        const completedTrips = tripsData.filter(
+          (t) => t.status === "Completed"
+        );
         const activeTrip = tripsData.find((t) => t.status === "Scheduled");
-  
+
         const allReimbursements = await getAllReimbursements();
         const completedTripIds = completedTrips.map((trip) => trip.trip_id);
-  
-        const relatedReimbursements = allReimbursements.filter((reimbursement) =>
-          completedTripIds.includes(reimbursement.trip_id)
+
+        const relatedReimbursements = allReimbursements.filter(
+          (reimbursement) => completedTripIds.includes(reimbursement.trip_id)
         );
-  
-        const pending = relatedReimbursements.filter((r) => r.status === "Pending");
-        const approved = relatedReimbursements.filter((r) => r.status === "Approved");
-  
+
+        const pending = relatedReimbursements.filter(
+          (r) => r.status === "Pending"
+        );
+        const approved = relatedReimbursements.filter(
+          (r) => r.status === "Approved"
+        );
+
         setPastTrips(completedTrips);
         setOngoingTrip(activeTrip || null);
         setPendingReimbursements([...pending, ...approved]);
@@ -331,48 +343,19 @@ const truckerDashboard = () => {
 
     switch (activeSection) {
       case "map":
-        if (locLoading)
-          return (
-            <ActivityIndicator
-              size="large"
-              color="#088395"
-              style={styles.loaderContainer}
-            />
-          );
-        if (!ongoingTrip || locations.length === 0) {
-          return (
-            <View style={styles.mapWrapper}>
-              <MapView
-                style={styles.map}
-                initialRegion={{
-                  latitude: 30.3753,
-                  longitude: 69.3451,
-                  latitudeDelta: 15,
-                  longitudeDelta: 15,
-                }}
-              />
-              <View style={styles.noTripsBanner}>
-                <Text style={styles.noTripsText}>Not in a trip</Text>
-              </View>
-            </View>
-          );
-        }
         return (
-          <MapView style={styles.map}>
-            {locations.map((loc) => (
-              <Marker
-                key={loc.location_id}
-                coordinate={{
-                  latitude: loc.latitude,
-                  longitude: loc.longitude,
-                }}
-                title={`Trip #${loc.trip_id}`}
-                description={new Date(loc.timestamp).toLocaleString()}
-              />
-            ))}
-          </MapView>
+          <View style={styles.mapWrapper}>
+            <View style={styles.noTripsBanner}>
+              <Text style={styles.noTripsText}>
+                Maps are currently not working
+              </Text>
+              <Text style={styles.noTripsSubtext}>
+                We apologize for the inconvenience. Our mapping service is
+                temporarily unavailable.
+              </Text>
+            </View>
+          </View>
         );
-
       case "ongoing":
         if (!ongoingTrip)
           return (
@@ -389,20 +372,31 @@ const truckerDashboard = () => {
                 </Text>
               </View>
               <View style={styles.tripDetails}>
-                <Text style={styles.cardText}>Trip ID: {ongoingTrip.trip_id}</Text>
-                <Text style={styles.cardText}>Start: {ongoingTrip.start_location}</Text>
-                <Text style={styles.cardText}>End: {ongoingTrip.end_location}</Text>
+                <Text style={styles.cardText}>
+                  Trip ID: {ongoingTrip.trip_id}
+                </Text>
+                <Text style={styles.cardText}>
+                  Start: {ongoingTrip.start_location}
+                </Text>
+                <Text style={styles.cardText}>
+                  End: {ongoingTrip.end_location}
+                </Text>
                 <View style={styles.statusBadge}>
-                  <Text style={styles.statusText}>Status: {ongoingTrip.status}</Text>
+                  <Text style={styles.statusText}>
+                    Status: {ongoingTrip.status}
+                  </Text>
                 </View>
                 <TouchableOpacity
                   style={styles.completeBtn}
                   onPress={async () => {
                     try {
-                      console.log("Completing")
+                      console.log("Completing");
                       const updated = await completeTrip(ongoingTrip.trip_id);
-                      const updatedStatus = "Inactive"; 
-                      const updateResponse = await updateTruckerStatus(ongoingTrip.trucker_id, updatedStatus);
+                      const updatedStatus = "Inactive";
+                      const updateResponse = await updateTruckerStatus(
+                        ongoingTrip.trucker_id,
+                        updatedStatus
+                      );
                       if (locationIdRef.current)
                         await deleteLocation(locationIdRef.current);
 
@@ -412,10 +406,14 @@ const truckerDashboard = () => {
 
                       // ✉️ Send email to the admin
                       try {
-                        const adminData = await getAdminById(ongoingTrip.assigned_by_admin_id);
+                        const adminData = await getAdminById(
+                          ongoingTrip.assigned_by_admin_id
+                        );
                         const adminEmail = adminData.email;
 
-                        const truckerData = await getTruckerById(ongoingTrip.trucker_id);
+                        const truckerData = await getTruckerById(
+                          ongoingTrip.trucker_id
+                        );
 
                         const emailHTML = `
                           <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; background-color: #f9f9f9;">
@@ -463,18 +461,20 @@ const truckerDashboard = () => {
                         await sendEmailNotification(
                           adminEmail,
                           "Trip Completed - Reimbursement Request",
-                          emailHTML,
+                          emailHTML
                         );
                       } catch (emailErr) {
-                        console.error("Failed to send email notification:", emailErr);
+                        console.error(
+                          "Failed to send email notification:",
+                          emailErr
+                        );
                       }
 
                       router.push({
                         pathname: "./reimbursementForm",
                         params: { trip_id: updated.trip_id },
                       });
-                    } catch (err) {
-                    }
+                    } catch (err) {}
                   }}
                 >
                   <Text style={styles.completeText}>Complete Trip</Text>
@@ -506,82 +506,89 @@ const truckerDashboard = () => {
           </ScrollView>
         );
 
-        case "reimbursements":
-          if (pendingReimbursements.length === 0) {
-            return (
-              <View style={styles.emptyReimbursementWrapper}>
-                <View style={styles.emptyCard}>
-                  <Text style={styles.emptyCardText}>No reimbursements found.</Text>
-                </View>
-              </View>
-            );
-          }
-
+      case "reimbursements":
+        if (pendingReimbursements.length === 0) {
           return (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-            >
-              {pendingReimbursements.map((reimbursement) => (
-                <View key={reimbursement.reimbursement_id} style={styles.card}>
-                  <View style={styles.reimbursementHeader}>
-                    <View style={styles.tripIdBadge}>
-                      <Text style={styles.tripIdText}>Trip #{reimbursement.trip_id}</Text>
-                    </View>
-                  </View>
+            <View style={styles.emptyReimbursementWrapper}>
+              <View style={styles.emptyCard}>
+                <Text style={styles.emptyCardText}>
+                  No reimbursements found.
+                </Text>
+              </View>
+            </View>
+          );
+        }
 
-                  <View style={styles.reimbursementDetails}>
-                    <Text style={styles.amountLabel}>Amount</Text>
-                    <Text style={styles.amountValue}>$ {parseFloat(reimbursement.amount.$numberDecimal).toFixed(2)}</Text>
-                    {reimbursement.comments ? (
-                      <Text style={styles.cardText}>Comment: {reimbursement.comments}</Text>
-                    ) : null}
+        return (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            {pendingReimbursements.map((reimbursement) => (
+              <View key={reimbursement.reimbursement_id} style={styles.card}>
+                <View style={styles.reimbursementHeader}>
+                  <View style={styles.tripIdBadge}>
+                    <Text style={styles.tripIdText}>
+                      Trip #{reimbursement.trip_id}
+                    </Text>
                   </View>
+                </View>
 
-                  <View style={styles.statusContainer}>
-                    <View
+                <View style={styles.reimbursementDetails}>
+                  <Text style={styles.amountLabel}>Amount</Text>
+                  <Text style={styles.amountValue}>
+                    ${" "}
+                    {parseFloat(reimbursement.amount.$numberDecimal).toFixed(2)}
+                  </Text>
+                  {reimbursement.comments ? (
+                    <Text style={styles.cardText}>
+                      Comment: {reimbursement.comments}
+                    </Text>
+                  ) : null}
+                </View>
+
+                <View style={styles.statusContainer}>
+                  <View
+                    style={
+                      reimbursement.status === "Pending"
+                        ? styles.pendingBadge
+                        : styles.completedText
+                    }
+                  >
+                    <Text
                       style={
                         reimbursement.status === "Pending"
-                          ? styles.pendingBadge
+                          ? styles.pendingBadgeText
                           : styles.completedText
                       }
                     >
-                      <Text
-                        style={
-                          reimbursement.status === "Pending"
-                            ? styles.pendingBadgeText
-                            : styles.completedText
-                        }
-                      >
-                        {reimbursement.status}
-                      </Text>
-                    </View>
+                      {reimbursement.status}
+                    </Text>
                   </View>
-
-                  {reimbursement.receipt_url && (
-                    <View style={styles.receiptWrapper}>
-                      <Text style={styles.receiptLabel}>Receipt</Text>
-                      <TouchableOpacity
-                        onPress={() => {
-                          setSelectedImageUri(reimbursement.receipt_url);
-                          setModalVisible(true);
-                        }}
-                      >
-                        <Image
-                          source={{ uri: reimbursement.receipt_url }}
-                          style={styles.receiptImage}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  )}
                 </View>
-              ))}
-            </ScrollView>
-          );
-          
-  
+
+                {reimbursement.receipt_url && (
+                  <View style={styles.receiptWrapper}>
+                    <Text style={styles.receiptLabel}>Receipt</Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedImageUri(reimbursement.receipt_url);
+                        setModalVisible(true);
+                      }}
+                    >
+                      <Image
+                        source={{ uri: reimbursement.receipt_url }}
+                        style={styles.receiptImage}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+        );
     }
   };
 
@@ -613,7 +620,10 @@ const truckerDashboard = () => {
         </View>
 
         <View
-          style={[styles.container, activeSection === "map" && styles.contentMap]}
+          style={[
+            styles.container,
+            activeSection === "map" && styles.contentMap,
+          ]}
         >
           {renderContent()}
         </View>
@@ -642,8 +652,7 @@ const truckerDashboard = () => {
         </Modal>
       </SafeAreaView>
     </Drawer>
-  ); 
+  );
 };
-
 
 export default truckerDashboard;

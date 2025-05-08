@@ -16,19 +16,31 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   RefreshControl,
-} from 'react-native';
-import axios from 'axios';  
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
-import { router } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
-import { Drawer } from 'react-native-drawer-layout';
-import { Feather } from '@expo/vector-icons';
-import MapView, { Marker } from 'react-native-maps';   
-import { RootState } from '../../redux/store';
-import { getAllTrips, getAllTruckers, getAllReimbursements, getAdminProfileImage, getAllLocations, getLocationById, approveReimbursement, modifyReimbursement, updateTripRating, updateTruckerRating, getTripsByTruckerId   } from '../../services/api';
-import { Trip, Trucker, Reimbursement, Location } from '../../services/util';
-import { Image } from 'react-native';
+} from "react-native";
+import axios from "axios";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
+import { router } from "expo-router";
+import { useIsFocused } from "@react-navigation/native";
+import { Drawer } from "react-native-drawer-layout";
+import { Feather } from "@expo/vector-icons";
+import MapView, { Marker } from "react-native-maps";
+import { RootState } from "../../redux/store";
+import {
+  getAllTrips,
+  getAllTruckers,
+  getAllReimbursements,
+  getAdminProfileImage,
+  getAllLocations,
+  getLocationById,
+  approveReimbursement,
+  modifyReimbursement,
+  updateTripRating,
+  updateTruckerRating,
+  getTripsByTruckerId,
+} from "../../services/api";
+import { Trip, Trucker, Reimbursement, Location } from "../../services/util";
+import { Image } from "react-native";
 
 import { useDispatch } from "react-redux";
 import { resetUser } from "../../redux/slices/userSlice";
@@ -128,7 +140,7 @@ const adminDashboard = () => {
     setRefreshing(true);
     try {
       switch (activeSection) {
-        case 'map':
+        case "map":
           if (admin.isAdmin) {
             const locs = await getAllLocations();
             setLocations(locs);
@@ -137,26 +149,26 @@ const adminDashboard = () => {
             setLocations([loc]);
           }
           break;
-  
-        case 'trips': {
+
+        case "trips": {
           const tripsData = await getAllTrips();
           setTrips(tripsData);
           break;
         }
-  
-        case 'reimbursements': {
+
+        case "reimbursements": {
           const data = await getAllReimbursements();
           setReimbursements(data);
           break;
         }
-  
-        case 'truckers': {
+
+        case "truckers": {
           const data = await getAllTruckers();
           setTruckers(data);
           break;
         }
-  
-        case 'analytics': {
+
+        case "analytics": {
           const [t, r, tr] = await Promise.all([
             getAllTrips(),
             getAllReimbursements(),
@@ -169,13 +181,13 @@ const adminDashboard = () => {
         }
       }
     } catch (err) {
-      console.warn('Refresh failed:', err);
+      console.warn("Refresh failed:", err);
     } finally {
       setRefreshing(false);
     }
   };
-  
-  const openModify = (item: Reimbursement) => {       
+
+  const openModify = (item: Reimbursement) => {
     setEditingId(item.reimbursement_id);
     setEditAmt(parseFloat(item.amount.$numberDecimal).toString());
     setEditComment("");
@@ -207,7 +219,10 @@ const adminDashboard = () => {
   };
 
   const renderDrawerContent = () => (
-    <ScrollView style={styles.drawerContent} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={styles.drawerContent}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.profileSection}>
         {profilePicUrl ? (
           <View style={styles.profileImageWrapper}>
@@ -294,14 +309,14 @@ const adminDashboard = () => {
 
       <TouchableOpacity
         style={styles.drawerItem}
-        onPress={() => router.push('/truckForm')}
+        onPress={() => router.push("/truckForm")}
       >
         <Text style={styles.drawerItemText}>Add New Truck</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.drawerItem}
-        onPress={() => router.push('/tripAssignmentForm')}
+        onPress={() => router.push("/tripAssignmentForm")}
       >
         <Text style={styles.drawerItemText}>Assign Trips</Text>
       </TouchableOpacity>
@@ -321,7 +336,7 @@ const adminDashboard = () => {
 
       <TouchableOpacity
         style={styles.drawerItem}
-        onPress={() => router.push('/userProfile')}
+        onPress={() => router.push("/userProfile")}
       >
         <Text style={styles.drawerItemText}>Profile</Text>
       </TouchableOpacity>
@@ -345,47 +360,17 @@ const adminDashboard = () => {
 
     switch (activeSection) {
       case "map":
-        if (locLoading) {
-          return (
-            <View style={styles.loaderContainer}>
-              <ActivityIndicator size="large" color="#088395" />
-            </View>
-          );
-        }
-        if (locations.length === 0) {
-          return (
-            <View style={styles.mapWrapper}>
-              <MapView
-                style={styles.map}
-                initialRegion={{
-                  latitude: 30.3753,
-                  longitude: 69.3451,
-                  latitudeDelta: 15,
-                  longitudeDelta: 15,
-                }}
-              />
-              <View style={styles.noTripsBanner}>
-                <Text style={styles.noTripsText}>No active trips</Text>
-              </View>
-            </View>
-          );
-        }
         return (
-          <MapView style={styles.map}>
-            {locations.map((loc) => (
-              <Marker
-                key={loc.location_id}
-                coordinate={{
-                  latitude: loc.latitude,
-                  longitude: loc.longitude,
-                }}
-                title={`Trip ID: ${loc.trip_id}`}
-                description={`Timestamp: ${new Date(
-                  loc.timestamp
-                ).toLocaleString()}`}
-              />
-            ))}
-          </MapView>
+          <View style={styles.mapContainer}>
+            <View style={styles.mapNotAvailable}>
+              <Text style={styles.mapNotAvailableText}>
+                Maps are currently not working
+              </Text>
+              <Text style={styles.mapNotAvailableSubtext}>
+                Please check back later for live location tracking
+              </Text>
+            </View>
+          </View>
         );
 
       case "trips":
@@ -400,7 +385,7 @@ const adminDashboard = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> 
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           >
             <View style={styles.filterContainer}>
@@ -917,121 +902,148 @@ const adminDashboard = () => {
         );
       }
 
-        case 'analytics':
-          return (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-            >
-              <View style={[styles.card, styles.analyticsCard]}>
-                <Text style={styles.sectionTitle}>Trip Statistics</Text>
-                <View style={styles.statRow}>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>{trips.filter(t => t.status === 'Completed').length}</Text>
-                    <Text style={styles.statLabel}>Completed Trips</Text>
-                  </View>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>{trips.filter(t => t.status === 'Scheduled').length}</Text>
-                    <Text style={styles.statLabel}>Ongoing Trips</Text>
-                  </View>
+      case "analytics":
+        return (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            <View style={[styles.card, styles.analyticsCard]}>
+              <Text style={styles.sectionTitle}>Trip Statistics</Text>
+              <View style={styles.statRow}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>
+                    {trips.filter((t) => t.status === "Completed").length}
+                  </Text>
+                  <Text style={styles.statLabel}>Completed Trips</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>
+                    {trips.filter((t) => t.status === "Scheduled").length}
+                  </Text>
+                  <Text style={styles.statLabel}>Ongoing Trips</Text>
                 </View>
               </View>
+            </View>
 
-              <View style={[styles.card, styles.analyticsCard]}>
-                <Text style={styles.sectionTitle}>Reimbursement Overview</Text>
-                <View style={styles.statRow}>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>{reimbursements.filter(r => r.status === 'Pending').length}</Text>
-                    <Text style={styles.statLabel}>Pending</Text>
-                  </View>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>{reimbursements.filter(r => r.status === 'Approved').length}</Text>
-                    <Text style={styles.statLabel}>Approved</Text>
-                  </View>
+            <View style={[styles.card, styles.analyticsCard]}>
+              <Text style={styles.sectionTitle}>Reimbursement Overview</Text>
+              <View style={styles.statRow}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>
+                    {
+                      reimbursements.filter((r) => r.status === "Pending")
+                        .length
+                    }
+                  </Text>
+                  <Text style={styles.statLabel}>Pending</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>
+                    {
+                      reimbursements.filter((r) => r.status === "Approved")
+                        .length
+                    }
+                  </Text>
+                  <Text style={styles.statLabel}>Approved</Text>
                 </View>
               </View>
+            </View>
 
-              <View style={[styles.card, styles.analyticsCard]}>
-                <Text style={styles.sectionTitle}>Fleet Status</Text>
-                <View style={styles.statRow}>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>{truckers.filter(t => t.status === 'Active').length}</Text>
-                    <Text style={styles.statLabel}>Active Truckers</Text>
-                  </View>
-                  <View style={styles.statItem}>
-                    <Text style={styles.statNumber}>{truckers.filter(t => t.status === 'Inactive').length}</Text>
-                    <Text style={styles.statLabel}>Available Truckers</Text>
-                  </View>
+            <View style={[styles.card, styles.analyticsCard]}>
+              <Text style={styles.sectionTitle}>Fleet Status</Text>
+              <View style={styles.statRow}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>
+                    {truckers.filter((t) => t.status === "Active").length}
+                  </Text>
+                  <Text style={styles.statLabel}>Active Truckers</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>
+                    {truckers.filter((t) => t.status === "Inactive").length}
+                  </Text>
+                  <Text style={styles.statLabel}>Available Truckers</Text>
                 </View>
               </View>
-              <View>
-                <TouchableOpacity 
-                  style={styles.advancedButton}
-                  onPress={() => router.push('/advancedAnalytics')}
-                >
-                  <Text style={styles.advancedButtonText}>Advanced Analytics</Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
-          );
+            </View>
+            <View>
+              <TouchableOpacity
+                style={styles.advancedButton}
+                onPress={() => router.push("/advancedAnalytics")}
+              >
+                <Text style={styles.advancedButtonText}>
+                  Advanced Analytics
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        );
 
-        case 'approved': {
-          const approved = reimbursements.filter(r => r.status === 'Approved');
-          return (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-            >
-              {approved.map(item => (
-                <View key={item.reimbursement_id} style={[styles.card, styles.recentTripCard]}>
-                  <View style={styles.tripHeader}>
-                    <View style={styles.tripRoute}>
-                      <Text style={styles.routeText}>Reimbursement #{item.reimbursement_id}</Text>
-                    </View>
+      case "approved": {
+        const approved = reimbursements.filter((r) => r.status === "Approved");
+        return (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            {approved.map((item) => (
+              <View
+                key={item.reimbursement_id}
+                style={[styles.card, styles.recentTripCard]}
+              >
+                <View style={styles.tripHeader}>
+                  <View style={styles.tripRoute}>
+                    <Text style={styles.routeText}>
+                      Reimbursement #{item.reimbursement_id}
+                    </Text>
                   </View>
-                  <View style={styles.tripDetails}>
+                </View>
+                <View style={styles.tripDetails}>
+                  <View style={styles.locationContainer}>
+                    <Text style={styles.locationLabel}>Trip ID</Text>
+                    <Text style={styles.locationText}>{item.trip_id}</Text>
+                  </View>
+                  <View style={styles.locationContainer}>
+                    <Text style={styles.locationLabel}>Amount</Text>
+                    <Text style={styles.locationText}>
+                      $ {parseFloat(item.amount.$numberDecimal).toFixed(2)}
+                    </Text>
+                  </View>
+                  {item.comments ? (
                     <View style={styles.locationContainer}>
-                      <Text style={styles.locationLabel}>Trip ID</Text>
-                      <Text style={styles.locationText}>{item.trip_id}</Text>
+                      <Text style={styles.locationLabel}>Comments</Text>
+                      <Text style={styles.locationText}>{item.comments}</Text>
                     </View>
-                    <View style={styles.locationContainer}>
-                      <Text style={styles.locationLabel}>Amount</Text>
-                      <Text style={styles.locationText}>
-                        $ {parseFloat(item.amount.$numberDecimal).toFixed(2)}
-                      </Text>
-                    </View>
-                    {item.comments ? (
-                      <View style={styles.locationContainer}>
-                        <Text style={styles.locationLabel}>Comments</Text>
-                        <Text style={styles.locationText}>{item.comments}</Text>
-                      </View>
-                    ) : null}
-                  </View>
-                  <View style={styles.statusContainer}>
-                    <View style={styles.completedBadge}>
-                      <Text style={styles.completedBadgeText}>✓ Approved</Text>
-                    </View>
+                  ) : null}
+                </View>
+                <View style={styles.statusContainer}>
+                  <View style={styles.completedBadge}>
+                    <Text style={styles.completedBadgeText}>✓ Approved</Text>
                   </View>
                 </View>
-              ))}
-              {approved.length === 0 && (
-                <View style={[styles.card, styles.emptyCard]}>
-                  <Text style={styles.emptyText}>No approved reimbursements</Text>
-                </View>
-              )}
-            </ScrollView>
-          );
-        }
+              </View>
+            ))}
+            {approved.length === 0 && (
+              <View style={[styles.card, styles.emptyCard]}>
+                <Text style={styles.emptyText}>No approved reimbursements</Text>
+              </View>
+            )}
+          </ScrollView>
+        );
+      }
 
-      case 'truckers':
-        const filteredTruckers = truckers.filter(trucker => 
-          truckerFilter === 'all' ? true : 
-          truckerFilter === 'active' ? trucker.status === 'Active' : 
-          trucker.status === 'Inactive'
+      case "truckers":
+        const filteredTruckers = truckers.filter((trucker) =>
+          truckerFilter === "all"
+            ? true
+            : truckerFilter === "active"
+            ? trucker.status === "Active"
+            : trucker.status === "Inactive"
         );
         return (
           <ScrollView
@@ -1248,6 +1260,5 @@ const adminDashboard = () => {
     </Drawer>
   );
 };
-
 
 export default adminDashboard;
