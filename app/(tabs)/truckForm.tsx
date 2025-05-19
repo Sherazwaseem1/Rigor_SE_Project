@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import styles from '../../assets/styles/styleTruckForm';
+import styles from "../../assets/styles/styleTruckForm";
 import {
   View,
   TextInput,
@@ -15,15 +15,14 @@ import { useForm } from "react-hook-form";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "../../hooks/useThemeColor";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { createTruck, getTruckersWithoutTruck  } from "../../services/api"; 
+import { SafeAreaView } from "react-native-safe-area-context";
+import { createTruck, getTruckersWithoutTruck } from "../../services/api";
 import { router } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
-import { useState } from 'react';
+import { useState } from "react";
 import { ActivityIndicator } from "react-native";
-import { Trucker } from "../../services/util"; 
-
+import { Trucker } from "../../services/util";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -35,12 +34,12 @@ interface TruckFormData {
 }
 
 export default function TruckForm() {
-
   const [truckers, setTruckers] = useState<Trucker[]>([]);
-  const [selectedTruckerId, setSelectedTruckerId] = useState<string | undefined>(undefined);
+  const [selectedTruckerId, setSelectedTruckerId] = useState<
+    string | undefined
+  >(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  
   const backgroundColor = useThemeColor(
     { light: "#fff", dark: "#fff" },
     "background"
@@ -62,22 +61,17 @@ export default function TruckForm() {
       try {
         const data = await getTruckersWithoutTruck();
         setTruckers(data);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
-  
+
     if (isFocused) fetchTruckers();
   }, [isFocused]);
-  
 
   const onSubmit = async (data: TruckFormData) => {
-  const capacityValue = Number(data.capacity);
-  if (isSubmitting) return;
+    const capacityValue = Number(data.capacity);
 
-    if (isNaN(capacityValue) || capacityValue <= 0) {
-      alert("Capacity must be a number greater than 0");
-      return;
-    }
+    if (isSubmitting) return;
+
 
     const submissionData = {
       license_plate: data.license_plate,
@@ -88,12 +82,12 @@ export default function TruckForm() {
         : {}),
     };
 
-    setIsSubmitting(true); 
+    setIsSubmitting(true);
 
     try {
       const response = await createTruck(submissionData);
       alert("Truck created successfully!");
-      router.push("/adminDashboard"); 
+      router.push("/adminDashboard");
     } catch (error) {
       alert("Failed to create truck. Please try again.");
     }
@@ -106,12 +100,14 @@ export default function TruckForm() {
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => {
-                router.push('/adminDashboard');
+              router.push("/adminDashboard");
             }}
           >
             <View style={styles.backButtonContent}>
               <IconSymbol size={20} name="chevron.left" color="#202545" />
-              <Text style={[styles.backButtonLabel, { color: '#202545' }]}>Back</Text>
+              <Text style={[styles.backButtonLabel, { color: "#202545" }]}>
+                Back
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -175,40 +171,40 @@ export default function TruckForm() {
             </Text>
           )}
 
-        <Text style={[styles.label, { color: "#202545" }]}>Assign Trucker</Text>
-        <View style={[styles.input, { padding: 0 }]}>
-          <Picker
-            selectedValue={selectedTruckerId}
-            onValueChange={(itemValue) => {
-              setSelectedTruckerId(itemValue);
-              setValue("assigned_trucker_id", itemValue);
-            }}
-          >
-            <Picker.Item label="Select a trucker" value={undefined} />
-            {truckers.map((trucker) => (
-              <Picker.Item
-                key={trucker.trucker_id}
-                label={`${trucker.name} - ${trucker.trucker_id}`}
-                value={trucker.trucker_id.toString()}
-              />
-            ))}
-          </Picker>
-        </View>
-
+          <Text style={[styles.label, { color: "#202545" }]}>
+            Assign Trucker
+          </Text>
+          <View style={[styles.input, { padding: 0 }]}>
+            <Picker
+              selectedValue={selectedTruckerId}
+              onValueChange={(itemValue) => {
+                setSelectedTruckerId(itemValue);
+                setValue("assigned_trucker_id", itemValue);
+              }}
+            >
+              <Picker.Item label="Select a trucker" value={undefined} />
+              {(truckers || []).map((trucker) => (
+                <Picker.Item
+                  key={trucker.trucker_id}
+                  label={`${trucker.name} - ${trucker.trucker_id}`}
+                  value={trucker.trucker_id.toString()}
+                />
+              ))}
+            </Picker>
+          </View>
         </View>
 
         <TouchableOpacity
-            style={[styles.submitButton, isSubmitting && { opacity: 0.6 }]}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <ActivityIndicator size="small" color="#088395" />
-            ) : (
-              <Text style={styles.submitButtonText}>Submit</Text>
-            )}
-          </TouchableOpacity>
-
+          style={[styles.submitButton, isSubmitting && { opacity: 0.6 }]}
+          onPress={handleSubmit(onSubmit)}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <ActivityIndicator size="small" color="#088395" />
+          ) : (
+            <Text style={styles.submitButtonText}>Submit</Text>
+          )}
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
