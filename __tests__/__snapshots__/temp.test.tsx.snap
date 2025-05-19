@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Greeting component renders correctly with given name 1`] = `
+<View>
+  <Text>
+    Hello, 
+    Nomaan
+    !
+  </Text>
+</View>
+`;
