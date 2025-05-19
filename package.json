@@ -14,7 +14,7 @@
   "jest": {
     "preset": "jest-expo",
     "transformIgnorePatterns": [
-      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|react-redux)"
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|react-redux|redux-persist|@react-native-picker|@react-native-async-storage/async-storage|@react-native-community/.*|@unimodules/.*|expo-.*|expo-router/.*|expo-splash-screen/.*|expo-status-bar/.*|expo-system-ui/.*|expo-web-browser/.*|expo-blur/.*|expo-image-picker/.*|expo-location/.*|expo-permissions/.*|expo-constants/.*|expo-font/.*|expo-haptics/.*|expo-linking/.*)"
     ]
   },
   "dependencies": {

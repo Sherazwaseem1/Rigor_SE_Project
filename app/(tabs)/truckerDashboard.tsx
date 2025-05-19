@@ -9,7 +9,6 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import { Drawer } from "react-native-drawer-layout";
 import { router } from "expo-router";
@@ -34,26 +33,24 @@ import {
   sendEmailNotification,
 } from "../../services/api";
 
-import { RootState } from "../../redux/store";
 import { Trip, Reimbursement } from "../../services/util";
-
-import { useDispatch } from "react-redux";
-import { resetUser } from "../../redux/slices/userSlice";
-import { persistor } from "../../redux/store";
 import { Image, RefreshControl } from "react-native";
 
 const truckerDashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const trucker = useSelector((state: RootState) => state.user);
+  const trucker = {
+    id: 1,
+    name: "John Doe",
+    email: "johndoe@example.com",
+  }; // Hardcoded trucker data
   const isFocused = useIsFocused();
-  const [rating, setRating] = useState<number>(0);
+  const [rating, setRating] = useState<number>(4.5); // Hardcoded rating
   const [pastTrips, setPastTrips] = useState<Trip[]>([]);
   const [ongoingTrip, setOngoingTrip] = useState<Trip | null>(null);
   const [pendingReimbursements, setPendingReimbursements] = useState<
     Reimbursement[]
   >([]);
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
   const [activeSection, setActiveSection] = useState<
     "map" | "ongoing" | "recent" | "reimbursements"
   >("map"); 
@@ -72,7 +69,6 @@ const truckerDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!trucker?.id) return;
       try {
         const tripsData = await getTripsByTruckerId(trucker.id);
         const completedTrips = tripsData.filter(
@@ -80,12 +76,8 @@ const truckerDashboard = () => {
         );
         const activeTrip = tripsData.find((t) => t.status === "Scheduled");
 
-        const truckerData = await getTruckerByEmail(trucker.email);
-
         const profilePicResponse = await getTruckerProfilePic(trucker.id);
         setProfilePicUrl(profilePicResponse?.profile_pic_url || null);
-
-        setRating(truckerData.rating || 0);
 
         setPastTrips(completedTrips);
         setOngoingTrip(activeTrip || null);
@@ -100,7 +92,6 @@ const truckerDashboard = () => {
 
   useEffect(() => {
     const fetchReimbursements = async () => {
-      if (!trucker?.id) return;
       try {
         const tripsData = await getTripsByTruckerId(trucker.id);
   
@@ -253,8 +244,8 @@ const truckerDashboard = () => {
   };
 
   const handleSignOut = () => {
-    dispatch(resetUser());
-    persistor.purge();
+    console.log("User signed out");
+    router.push("/");
   };
 
   const renderDrawerContent = () => (
